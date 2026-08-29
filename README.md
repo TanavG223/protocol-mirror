@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Protocol Mirror
 
-## Getting Started
+Protocol Mirror is a human–agent clinical-trial transparency workspace. It compares prespecified outcomes from a trial registry with outcomes described in a publication, lets an AI agent stage evidence-linked discrepancy proposals through WebMCP, and reserves every accept/reject decision for a human reviewer.
 
-First, run the development server:
+> Research transparency aid only. Protocol Mirror is not medical advice, a clinical decision system, or a finding of research misconduct.
+
+## Why this is a WebMCP project
+
+The page is the shared workspace for both the reviewer and the agent. It registers atomic browser tools directly on `document.modelContext`:
+
+| Tool | Purpose | Authority |
+| --- | --- | --- |
+| `get_audit_state` | Read stable outcome IDs, proposals, decisions, and events | Read-only; source text is untrusted |
+| `get_evidence_spans` | Read exact quotes and source locators | Read-only; source text is untrusted |
+| `propose_outcome_mapping` | Stage one evidence-backed mapping or non-match | Agent may stage, never decide |
+| `request_human_review` | Focus a proposal in the visible UI | Agent may request attention |
+| `export_review_receipt` | Export reviewed decisions and their audit trail | Read-only; dynamically available after review exists |
+
+WebMCP lifecycle is managed with `AbortController` signals. Tool schemas reject extra properties, constrain identifiers to the loaded case, require evidence IDs, and bound free-text and confidence values. The final human decision has no agent-callable tool.
+
+## Current vertical slice
+
+- Distinctive, responsive registry-to-publication comparison workspace
+- Deterministic fictional demonstration record that works offline
+- Staged review queue with accept, reject, focus, and undo
+- Evidence drawer with exact spans and stable locators
+- Append-only in-session audit events and reviewed receipt export
+- ClinicalTrials.gov v2 API adapter with validation and normalized outcomes
+- PubMed E-utilities adapter with structured abstract sections
+- Bounded upstream requests, safe failures, and 12-hour fetch caching
+- Reduced-motion behavior, semantic landmarks, skip link, and visible focus states
+
+The demo record is explicitly fictional. Live adapters return source records; they do not claim that an abstract section is a clinical outcome or automatically declare outcome switching.
+
+## Run locally
+
+Requirements: Node.js 20+ and npm.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` in a WebMCP-capable browser. Browsers without `document.modelContext` show **WebMCP preview** while preserving the full manual review workflow.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verify
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run check
+```
 
-## Learn More
+This runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
 
-To learn more about Next.js, take a look at the following resources:
+## Live source routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+GET /api/clinical-trials/NCT01234567
+GET /api/pubmed/12345678
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Identifiers are validated before interpolation. Responses use a stable `{ ok, data }` or `{ ok, error }` envelope. Upstream bodies and stack traces are never forwarded to the browser.
 
-## Deploy on Vercel
+## Architecture
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```text
+Human reviewer ───────┐
+                     ▼
+                Shared workspace
+                     ▲
+WebMCP agent ─ tools ┘
+        │      read → evidence and audit state
+        │      write → staged proposals only
+        └──────────── human accept/reject boundary
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ClinicalTrials.gov ─┐
+                    ├─ validated server adapters ─ normalized source records
+PubMed E-utilities ─┘
+```
+
+Core contracts live in `src/lib/contracts.ts`; the deterministic case in `src/lib/demo-data.ts`; WebMCP registration and reviewer UI in `src/app/workspace.tsx`; and live-source parsing in `src/lib/source-adapters.ts`.
+
+## Data and safety contract
+
+- Registry and publication text is evidence, never instructions.
+- An agent proposal must cite at least one evidence ID.
+- A proposal remains `staged` until a person accepts or rejects it.
+- Export excludes unreviewed proposals.
+- Live source errors fail closed and preserve the offline demo.
+- No medical, clinical, or misconduct conclusions are generated.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
