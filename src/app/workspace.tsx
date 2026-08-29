@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DEMO_PAIR, INITIAL_AUDIT } from "@/lib/demo-data";
 import type { AuditEvent, AuditState, DiscrepancyKind, Mapping, Outcome } from "@/lib/contracts";
+import { validateMappingProposal } from "@/lib/proposal-validation";
 
 const LABELS: Record<DiscrepancyKind, string> = {
   matched: "Matched", omitted: "Omitted", downgraded: "Downgraded",
@@ -22,7 +23,7 @@ const outcomeById = (id: string | null, outcomes: Outcome[]) => outcomes.find((i
 
 export default function Workspace() {
   const [audit, setAudit] = useState<AuditState>(INITIAL_AUDIT);
-  const [activeId, setActiveId] = useState<string | null>("map-ae");
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [webMcp, setWebMcp] = useState<"checking" | "connected" | "preview">("preview");
   const counter = useRef(10);
   const auditRef = useRef(audit);
@@ -64,7 +65,7 @@ export default function Workspace() {
 
   const undo = useCallback(() => {
     setAudit((current) => {
-      const target = [...current.mappings].reverse().find((item) => item.id !== "map-ae" && item.status !== "staged");
+      const target = [...current.mappings].reverse().find((item) => item.status !== "staged");
       if (!target) return current;
       return {
         mappings: current.mappings.map((item) => item.id === target.id ? { ...item, status: "staged" } : item),
@@ -82,8 +83,9 @@ export default function Workspace() {
       { id: "map-primary-demo", registryOutcomeId: "reg-sbp-24", publicationOutcomeId: "pub-sbp-12", discrepancy: "uncertain", rationale: "Both measure systolic pressure, but the measurement method and primary time point differ. A reviewer must decide whether this is a changed outcome or a non-match.", evidenceIds: ["ev-reg-sbp", "ev-pub-sbp"], confidence: .74, status: "staged", origin: "demo" },
       { id: "map-qol-demo", registryOutcomeId: "reg-qol-24", publicationOutcomeId: null, discrepancy: "omitted", rationale: "No reported outcome describes the prespecified quality-of-life instrument.", evidenceIds: ["ev-reg-qol"], confidence: .91, status: "staged", origin: "demo" },
       { id: "map-introduced-demo", registryOutcomeId: null, publicationOutcomeId: "pub-response-24", discrepancy: "introduced", rationale: "The threshold response rate is reported as post-hoc and has no corresponding registered outcome.", evidenceIds: ["ev-pub-response"], confidence: .93, status: "staged", origin: "demo" },
+      { id: "map-ae-demo", registryOutcomeId: "reg-ae-24", publicationOutcomeId: "pub-ae-24", discrepancy: "matched", rationale: "Outcome concept and assessment window agree across both records.", evidenceIds: ["ev-reg-ae", "ev-pub-ae"], confidence: .97, status: "staged", origin: "demo" },
     ];
-    setAudit((current) => ({ mappings: [...current.mappings, ...proposals], history: [...current.history, event("demo_staged", "Three evidence-linked proposals staged for review.", "system")] }));
+    setAudit((current) => ({ mappings: [...current.mappings, ...proposals], history: [...current.history, event("demo_staged", "Four evidence-linked proposals staged for review.", "system")] }));
     setActiveId("map-primary-demo");
   }, [event]);
 
@@ -91,7 +93,8 @@ export default function Workspace() {
     const context = document.modelContext;
     if (!context) return;
     const controller = new AbortController();
-    const outcomeIds = [...DEMO_PAIR.registryOutcomes, ...DEMO_PAIR.publicationOutcomes].map((item) => item.id);
+    const registryOutcomeIds = DEMO_PAIR.registryOutcomes.map((item) => item.id);
+    const publicationOutcomeIds = DEMO_PAIR.publicationOutcomes.map((item) => item.id);
     const evidenceIds = DEMO_PAIR.evidence.map((item) => item.id);
     const register = async () => {
       await Promise.all([
@@ -113,13 +116,12 @@ export default function Workspace() {
           name: "propose_outcome_mapping", title: "Stage an outcome mapping",
           description: "Stage one evidence-backed mapping or non-match for explicit human review. Never accepts, rejects, or publishes a conclusion.",
           inputSchema: { type: "object", properties: {
-            registryOutcomeId: { type: ["string", "null"], enum: [...outcomeIds, null] }, publicationOutcomeId: { type: ["string", "null"], enum: [...outcomeIds, null] },
+            registryOutcomeId: { type: ["string", "null"], enum: [...registryOutcomeIds, null] }, publicationOutcomeId: { type: ["string", "null"], enum: [...publicationOutcomeIds, null] },
             discrepancy: { type: "string", enum: Object.keys(LABELS) }, rationale: { type: "string", minLength: 20, maxLength: 800 },
             evidenceIds: { type: "array", items: { type: "string", enum: evidenceIds }, minItems: 1, uniqueItems: true }, confidence: { type: "number", minimum: 0, maximum: 1 },
           }, required: ["registryOutcomeId", "publicationOutcomeId", "discrepancy", "rationale", "evidenceIds", "confidence"], additionalProperties: false },
           execute: (input: Record<string, unknown>) => {
-            if (typeof input.rationale !== "string" || typeof input.discrepancy !== "string" || typeof input.confidence !== "number" || !Array.isArray(input.evidenceIds) || !Object.hasOwn(LABELS, input.discrepancy)) throw new Error("Invalid mapping proposal. Read get_audit_state and follow the schema.");
-            const mapping = stage({ registryOutcomeId: typeof input.registryOutcomeId === "string" ? input.registryOutcomeId : null, publicationOutcomeId: typeof input.publicationOutcomeId === "string" ? input.publicationOutcomeId : null, discrepancy: input.discrepancy as DiscrepancyKind, rationale: input.rationale, evidenceIds: input.evidenceIds.filter((id: unknown): id is string => typeof id === "string" && evidenceIds.includes(id)), confidence: input.confidence });
+            const mapping = stage(validateMappingProposal(input, DEMO_PAIR, auditRef.current.mappings));
             return { status: "staged_for_human_review", mapping, next: "Ask the reviewer to accept or reject this proposal in the UI." };
           },
         }, { signal: controller.signal }),
@@ -164,7 +166,7 @@ export default function Workspace() {
         <div className="eyebrow"><span>Case 04</span><span aria-hidden="true">/</span><span>Outcome integrity review</span></div>
         <div className="case-heading-row"><div><h1 id="case-title">{DEMO_PAIR.title}</h1><p className="case-subtitle">A registry-to-publication comparison built for accountable human–agent review.</p></div><button className="primary-action" type="button" onClick={loadDemo}><Icon name="spark" /> Stage guided review</button></div>
         <div className="source-strip" aria-label="Study sources">
-          <div><span>Registration</span><strong>{DEMO_PAIR.nctId}</strong><small>Updated {DEMO_PAIR.registryUpdated}</small></div><div><span>Publication</span><strong>{DEMO_PAIR.pmid}</strong><small>Published {DEMO_PAIR.publicationDate}</small></div><div><span>Sponsor</span><strong>{DEMO_PAIR.sponsor}</strong><small>{DEMO_PAIR.phase}</small></div><div className="review-score"><span>Review progress</span><strong>{reviewed.length}<em> / {audit.mappings.length}</em></strong><small>{staged.length} awaiting a human decision</small></div>
+          <div><span>Registration</span><strong>{DEMO_PAIR.nctId}</strong><small>Updated {DEMO_PAIR.registryUpdated}</small></div><div><span>Publication</span><strong>{DEMO_PAIR.pmid}</strong><small>Published {DEMO_PAIR.publicationDate}</small></div><div><span>Sponsor</span><strong>{DEMO_PAIR.sponsor}</strong><small>{DEMO_PAIR.phase}</small></div><div className="review-score"><span>Review progress</span><strong>{reviewed.length}<em> / {audit.mappings.length || 4}</em></strong><small>{staged.length} awaiting a human decision</small></div>
         </div>
       </section>
       <section className="workspace" id="workspace" aria-labelledby="workspace-title">
@@ -176,7 +178,7 @@ export default function Workspace() {
         </div>
       </section>
       <section className="review-dock" aria-labelledby="review-title">
-        <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title">Review queue <span>{staged.length}</span></h2></div><button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.id !== "map-ae" && item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div>
+        <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title">Review queue <span>{staged.length}</span></h2></div><button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div>
         {staged.length === 0 ? <div className="empty-review"><Icon name="spark" /><div><strong>The queue is clear.</strong><p>Ask an agent to inspect the case with WebMCP, or stage the guided demonstration.</p></div></div> : <div className="review-cards">{staged.map((mapping) => <article className={`review-card ${mapping.id === activeId ? "active" : ""}`} key={mapping.id}><button className="review-card-main" type="button" onClick={() => setActiveId(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"}</strong><span className="mapping-arrow"><Icon name="arrow" /></span><strong>{mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"}</strong><small>{Math.round(mapping.confidence * 100)}% agent confidence · {mapping.evidenceIds.length} source {mapping.evidenceIds.length === 1 ? "span" : "spans"}</small></button><div className="review-actions"><button type="button" className="reject" onClick={() => decide(mapping.id, "rejected")}>Reject</button><button type="button" className="accept" onClick={() => decide(mapping.id, "accepted")}><Icon name="check" />Accept</button></div></article>)}</div>}
       </section>
       <section className="evidence-panel" aria-labelledby="evidence-title" aria-live="polite">

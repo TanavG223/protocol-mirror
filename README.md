@@ -14,7 +14,7 @@ The page is the shared workspace for both the reviewer and the agent. It registe
 | `get_evidence_spans` | Read exact quotes and source locators | Read-only; source text is untrusted |
 | `propose_outcome_mapping` | Stage one evidence-backed mapping or non-match | Agent may stage, never decide |
 | `request_human_review` | Focus a proposal in the visible UI | Agent may request attention |
-| `export_review_receipt` | Export reviewed decisions and their audit trail | Read-only; dynamically available after review exists |
+| `export_review_receipt` | Export reviewed decisions and their audit trail | Read-only; dynamically registered after review exists |
 
 WebMCP lifecycle is managed with `AbortController` signals. Tool schemas reject extra properties, constrain identifiers to the loaded case, require evidence IDs, and bound free-text and confidence values. The final human decision has no agent-callable tool.
 

@@ -32,9 +32,6 @@ export const DEMO_PAIR: TrialPair = {
 };
 
 export const INITIAL_AUDIT: AuditState = {
-  mappings: [{ id: "map-ae", registryOutcomeId: "reg-ae-24", publicationOutcomeId: "pub-ae-24", discrepancy: "matched", rationale: "Outcome concept and assessment window agree across both records.", evidenceIds: ["ev-reg-ae", "ev-pub-ae"], confidence: 0.97, status: "accepted", origin: "demo" }],
-  history: [
-    { id: "event-0", action: "pair_loaded", detail: "Deterministic demonstration pair loaded.", actor: "system" },
-    { id: "event-1", action: "mapping_accepted", detail: "Serious adverse event outcome verified by reviewer.", actor: "reviewer" },
-  ],
+  mappings: [],
+  history: [{ id: "event-0", action: "pair_loaded", detail: "Deterministic demonstration pair loaded.", actor: "system" }],
 };
