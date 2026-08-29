@@ -6,7 +6,9 @@ This is a working script, not the final recording copy.
 
 Show the case header and side-by-side outcome record.
 
-“A trial registry captures what researchers planned to measure. A paper captures what readers see. Comparing the two is slow, citation-heavy work—and a confident AI summary can hide exactly the details a reviewer needs.”
+“A trial registry captures what researchers planned to measure. A paper captures what readers see. In a 2019 cross-sectional study of 389 trials in high-impact journals, 130 had at least one primary-outcome change between registration and publication. Comparing those records is slow, citation-heavy work—and a confident AI summary can hide exactly the details a reviewer needs.”
+
+On-screen source: Chen et al., *JAMA Network Open* — https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/
 
 ## 0:25–0:55 — The WebMCP workspace
 
@@ -19,6 +21,8 @@ Show the WebMCP indicator and ask the agent to call `get_audit_state`, then `get
 Ask the agent to propose the systolic-pressure mapping and focus it for review. Open the evidence drawer.
 
 “The concepts look similar, but the measurement method and time point differ. The agent can stage this uncertainty with its evidence. It cannot accept its own conclusion.”
+
+Keep the visible keyboard-focus move in the recording: the same tool handoff is perceivable without relying on pointer position or color alone.
 
 Accept or reject the proposal manually. Undo once to demonstrate reversibility.
 

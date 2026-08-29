@@ -18,6 +18,9 @@ export function validateMappingProposal(
   if (registryOutcomeId && !registry) throw new ProposalValidationError("registryOutcomeId is not part of the loaded registry record.");
   if (publicationOutcomeId && !publication) throw new ProposalValidationError("publicationOutcomeId is not part of the loaded publication record.");
   if (typeof input.discrepancy !== "string" || !CATEGORIES.has(input.discrepancy as DiscrepancyKind)) throw new ProposalValidationError("Unknown discrepancy category.");
+  if (input.discrepancy === "omitted" && (!registry || publication)) throw new ProposalValidationError("An omitted outcome requires a registry outcome and a null publication outcome.");
+  if (input.discrepancy === "introduced" && (registry || !publication)) throw new ProposalValidationError("An introduced outcome requires a null registry outcome and a publication outcome.");
+  if (!["omitted", "introduced"].includes(input.discrepancy) && (!registry || !publication)) throw new ProposalValidationError(`${input.discrepancy} requires both a registry and publication outcome.`);
   if (typeof input.rationale !== "string" || input.rationale.trim().length < 20 || input.rationale.length > 800) throw new ProposalValidationError("Rationale must contain 20 to 800 characters.");
   if (typeof input.confidence !== "number" || !Number.isFinite(input.confidence) || input.confidence < 0 || input.confidence > 1) throw new ProposalValidationError("Confidence must be a finite number from 0 to 1.");
   if (!Array.isArray(input.evidenceIds) || input.evidenceIds.length === 0 || input.evidenceIds.some((id) => typeof id !== "string")) throw new ProposalValidationError("At least one valid evidence ID is required.");

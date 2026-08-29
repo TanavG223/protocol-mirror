@@ -19,8 +19,10 @@
 - [x] Structured safe failures and request timeouts
 - [x] Lint, tests, TypeScript, and production build pass
 - [x] Public repository and MIT license
+- [x] Public repository URL repeated in the submission draft's required links
 - [ ] Permanent public deployment claimed
 - [x] WCAG 2.1 AA structure, semantics, focus styling, and contrast audit completed
+- [x] Agent-triggered review focus exercised as an accessibility handoff
 - [ ] Final supported-browser rehearsal completed
 
 ## Impact
@@ -28,7 +30,7 @@
 - [x] Concrete reviewer audience and research-transparency task
 - [x] Exact evidence spans remain visible with proposals
 - [x] Human authority and product limitations are explicit
-- [ ] Add a short sourced impact statement to the final video/description
+- [x] Sourced, bounded impact statement added to the description and demo script
 
 ## Creativity and ambition
 

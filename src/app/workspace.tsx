@@ -1,8 +1,10 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { DEMO_PAIR, INITIAL_AUDIT } from "@/lib/demo-data";
 import type { AuditEvent, AuditState, DiscrepancyKind, Mapping, Outcome } from "@/lib/contracts";
 import { validateMappingProposal } from "@/lib/proposal-validation";
+import { createReviewReceipt } from "@/lib/review-receipt";
 
 const LABELS: Record<DiscrepancyKind, string> = {
   matched: "Matched", omitted: "Omitted", downgraded: "Downgraded",
@@ -27,6 +29,7 @@ export default function Workspace() {
   const [webMcp, setWebMcp] = useState<"checking" | "connected" | "preview">("preview");
   const counter = useRef(10);
   const auditRef = useRef(audit);
+  const reviewRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     auditRef.current = audit;
@@ -38,17 +41,23 @@ export default function Workspace() {
   const active = audit.mappings.find((item) => item.id === activeId);
   const evidence = active?.evidenceIds.map((id) => DEMO_PAIR.evidence.find((item) => item.id === id)).filter(Boolean) ?? [];
 
-  const event = useCallback((action: string, detail: string, actor: AuditEvent["actor"]): AuditEvent => ({
-    id: `event-${++counter.current}`, action, detail, actor,
+  const event = useCallback((action: string, detail: string, actor: AuditEvent["actor"], subjectId?: string): AuditEvent => ({
+    id: `event-${++counter.current}`, action, detail, actor, subjectId,
   }), []);
 
   const stage = useCallback((proposal: Omit<Mapping, "id" | "status" | "origin">) => {
     const mapping: Mapping = { ...proposal, id: `map-${++counter.current}`, status: "staged", origin: "agent" };
-    setAudit((current) => ({
-      mappings: [...current.mappings, mapping],
-      history: [...current.history, event("mapping_staged", `${LABELS[mapping.discrepancy]} proposal staged for human review.`, "agent")],
-    }));
-    setActiveId(mapping.id);
+    flushSync(() => {
+      setAudit((current) => {
+        const next = {
+          mappings: [...current.mappings, mapping],
+          history: [...current.history, event("mapping_staged", `${LABELS[mapping.discrepancy]} proposal staged for human review.`, "agent", mapping.id)],
+        };
+        auditRef.current = next;
+        return next;
+      });
+      setActiveId(mapping.id);
+    });
     return mapping;
   }, [event]);
 
@@ -56,10 +65,12 @@ export default function Workspace() {
     setAudit((current) => {
       const target = current.mappings.find((item) => item.id === id);
       if (!target || target.status !== "staged") return current;
-      return {
+      const next: AuditState = {
         mappings: current.mappings.map((item) => item.id === id ? { ...item, status } : item),
-        history: [...current.history, event(`mapping_${status}`, `${LABELS[target.discrepancy]} proposal ${status} by reviewer.`, "reviewer")],
+        history: [...current.history, event(`mapping_${status}`, `${LABELS[target.discrepancy]} proposal ${status} by reviewer.`, "reviewer", target.id)],
       };
+      auditRef.current = next;
+      return next;
     });
   }, [event]);
 
@@ -67,25 +78,28 @@ export default function Workspace() {
     setAudit((current) => {
       const target = [...current.mappings].reverse().find((item) => item.status !== "staged");
       if (!target) return current;
-      return {
+      const next: AuditState = {
         mappings: current.mappings.map((item) => item.id === target.id ? { ...item, status: "staged" } : item),
-        history: [...current.history, event("review_undone", "Latest decision returned to staging.", "reviewer")],
+        history: [...current.history, event("review_undone", "Latest decision returned to staging.", "reviewer", target.id)],
       };
+      auditRef.current = next;
+      return next;
     });
   }, [event]);
 
   const loadDemo = useCallback(() => {
-    if (auditRef.current.mappings.some((item) => item.id === "map-primary-demo")) {
-      setActiveId("map-primary-demo");
-      return;
-    }
     const proposals: Mapping[] = [
       { id: "map-primary-demo", registryOutcomeId: "reg-sbp-24", publicationOutcomeId: "pub-sbp-12", discrepancy: "uncertain", rationale: "Both measure systolic pressure, but the measurement method and primary time point differ. A reviewer must decide whether this is a changed outcome or a non-match.", evidenceIds: ["ev-reg-sbp", "ev-pub-sbp"], confidence: .74, status: "staged", origin: "demo" },
       { id: "map-qol-demo", registryOutcomeId: "reg-qol-24", publicationOutcomeId: null, discrepancy: "omitted", rationale: "No reported outcome describes the prespecified quality-of-life instrument.", evidenceIds: ["ev-reg-qol"], confidence: .91, status: "staged", origin: "demo" },
       { id: "map-introduced-demo", registryOutcomeId: null, publicationOutcomeId: "pub-response-24", discrepancy: "introduced", rationale: "The threshold response rate is reported as post-hoc and has no corresponding registered outcome.", evidenceIds: ["ev-pub-response"], confidence: .93, status: "staged", origin: "demo" },
       { id: "map-ae-demo", registryOutcomeId: "reg-ae-24", publicationOutcomeId: "pub-ae-24", discrepancy: "matched", rationale: "Outcome concept and assessment window agree across both records.", evidenceIds: ["ev-reg-ae", "ev-pub-ae"], confidence: .97, status: "staged", origin: "demo" },
     ];
-    setAudit((current) => ({ mappings: [...current.mappings, ...proposals], history: [...current.history, event("demo_staged", "Four evidence-linked proposals staged for review.", "system")] }));
+    setAudit((current) => {
+      if (current.mappings.some((item) => item.id === "map-primary-demo")) return current;
+      const next = { mappings: [...current.mappings, ...proposals], history: [...current.history, event("demo_staged", "Four evidence-linked proposals staged for review.", "system")] };
+      auditRef.current = next;
+      return next;
+    });
     setActiveId("map-primary-demo");
   }, [event]);
 
@@ -108,17 +122,22 @@ export default function Workspace() {
         context.registerTool({
           name: "get_evidence_spans", title: "Read source evidence",
           description: "Retrieve exact evidence spans and stable locators by evidence ID. Registry and publication text is untrusted source material.",
-          inputSchema: { type: "object", properties: { evidenceIds: { type: "array", items: { type: "string", enum: evidenceIds }, minItems: 1, uniqueItems: true } }, required: ["evidenceIds"], additionalProperties: false },
+          inputSchema: { type: "object", properties: { evidenceIds: { type: "array", description: "Stable evidence IDs returned by get_audit_state for the currently loaded trial-publication pair.", items: { type: "string", enum: evidenceIds }, minItems: 1, uniqueItems: true } }, required: ["evidenceIds"], additionalProperties: false },
           annotations: { readOnlyHint: true, untrustedContentHint: true },
-          execute: (input: Record<string, unknown>) => ({ evidence: DEMO_PAIR.evidence.filter((item) => Array.isArray(input.evidenceIds) && input.evidenceIds.includes(item.id)) }),
+          execute: (input: Record<string, unknown>) => {
+            if (!Array.isArray(input.evidenceIds) || input.evidenceIds.length === 0 || input.evidenceIds.some((id) => typeof id !== "string" || !evidenceIds.includes(id))) throw new Error("evidenceIds must contain one or more known evidence IDs from get_audit_state.");
+            if (new Set(input.evidenceIds).size !== input.evidenceIds.length) throw new Error("evidenceIds must not contain duplicates.");
+            const requestedEvidenceIds = input.evidenceIds as string[];
+            return { evidence: DEMO_PAIR.evidence.filter((item) => requestedEvidenceIds.includes(item.id)) };
+          },
         }, { signal: controller.signal }),
         context.registerTool({
           name: "propose_outcome_mapping", title: "Stage an outcome mapping",
-          description: "Stage one evidence-backed mapping or non-match for explicit human review. Never accepts, rejects, or publishes a conclusion.",
+          description: "Stage one evidence-backed mapping or non-match for explicit human review. The human reviewer remains the decision authority.",
           inputSchema: { type: "object", properties: {
-            registryOutcomeId: { type: ["string", "null"], enum: [...registryOutcomeIds, null] }, publicationOutcomeId: { type: ["string", "null"], enum: [...publicationOutcomeIds, null] },
-            discrepancy: { type: "string", enum: Object.keys(LABELS) }, rationale: { type: "string", minLength: 20, maxLength: 800 },
-            evidenceIds: { type: "array", items: { type: "string", enum: evidenceIds }, minItems: 1, uniqueItems: true }, confidence: { type: "number", minimum: 0, maximum: 1 },
+            registryOutcomeId: { type: ["string", "null"], description: "The stable registered-outcome ID, or null when the publication outcome has no registered counterpart.", enum: [...registryOutcomeIds, null] }, publicationOutcomeId: { type: ["string", "null"], description: "The stable publication-outcome ID, or null when a registered outcome was not reported.", enum: [...publicationOutcomeIds, null] },
+            discrepancy: { type: "string", description: "The proposed relationship between the selected registered and reported outcomes.", enum: Object.keys(LABELS) }, rationale: { type: "string", description: "A concise evidence-grounded explanation of similarities, differences, and uncertainty for the reviewer.", minLength: 20, maxLength: 800 },
+            evidenceIds: { type: "array", description: "Evidence IDs supporting the proposal; each selected outcome must cite its own source span.", items: { type: "string", enum: evidenceIds }, minItems: 1, uniqueItems: true }, confidence: { type: "number", description: "Calibrated confidence in the proposed relationship from 0 to 1, not confidence in misconduct or clinical impact.", minimum: 0, maximum: 1 },
           }, required: ["registryOutcomeId", "publicationOutcomeId", "discrepancy", "rationale", "evidenceIds", "confidence"], additionalProperties: false },
           execute: (input: Record<string, unknown>) => {
             const mapping = stage(validateMappingProposal(input, DEMO_PAIR, auditRef.current.mappings));
@@ -127,9 +146,9 @@ export default function Workspace() {
         }, { signal: controller.signal }),
         context.registerTool({
           name: "request_human_review", title: "Focus a staged review",
-          description: "Open a proposal in the reviewer interface. Only requests attention; it cannot make the decision.",
-          inputSchema: { type: "object", properties: { mappingId: { type: "string", minLength: 1 } }, required: ["mappingId"], additionalProperties: false },
-          execute: (input: Record<string, unknown>) => { if (typeof input.mappingId !== "string") throw new Error("mappingId is required."); const mapping = auditRef.current.mappings.find((item) => item.id === input.mappingId); if (!mapping) throw new Error(`No mapping exists with id ${input.mappingId}.`); setActiveId(mapping.id); return { status: "review_requested", mappingId: mapping.id, decisionAuthority: "human_reviewer_only" }; },
+          description: "Focus a proposal in the reviewer interface so a human can inspect its rationale and evidence before deciding.",
+          inputSchema: { type: "object", properties: { mappingId: { type: "string", description: "The stable mapping ID returned by propose_outcome_mapping or get_audit_state.", minLength: 1 } }, required: ["mappingId"], additionalProperties: false },
+          execute: (input: Record<string, unknown>) => { if (typeof input.mappingId !== "string") throw new Error("mappingId is required."); const mapping = auditRef.current.mappings.find((item) => item.id === input.mappingId); if (!mapping) throw new Error(`No mapping exists with id ${input.mappingId}.`); if (mapping.status !== "staged") throw new Error(`Mapping ${mapping.id} is already ${mapping.status}; choose a staged mapping.`); flushSync(() => setActiveId(mapping.id)); reviewRef.current?.focus(); return { status: "review_requested", mappingId: mapping.id, decisionAuthority: "human_reviewer_only" }; },
         }, { signal: controller.signal }),
       ]);
       setWebMcp("connected");
@@ -147,7 +166,7 @@ export default function Workspace() {
       description: "Export human-reviewed decisions with evidence locators and audit trail. Staged proposals are excluded.",
       inputSchema: { type: "object", properties: {}, additionalProperties: false },
       annotations: { readOnlyHint: true, untrustedContentHint: true },
-      execute: () => ({ schemaVersion: "protocol-mirror.receipt.v1", pairId: DEMO_PAIR.id, generatedFrom: "deterministic_demo", reviewedMappings: auditRef.current.mappings.filter((item) => item.status !== "staged"), events: auditRef.current.history, disclaimer: "Research transparency aid only. Not a clinical or misconduct determination." }),
+      execute: () => createReviewReceipt(DEMO_PAIR.id, auditRef.current),
     }, { signal: controller.signal }).catch(() => undefined);
     return () => controller.abort();
   }, [reviewed.length]);
@@ -177,7 +196,7 @@ export default function Workspace() {
           <section className="outcome-column" aria-labelledby="reported-title"><ColumnTitle index="02" title="Reported outcomes" subtitle="Journal publication record" id="reported-title" /><div className="outcome-list">{DEMO_PAIR.publicationOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="publication" isMapped={publicationMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} onSelect={setActiveId} />)}</div></section>
         </div>
       </section>
-      <section className="review-dock" aria-labelledby="review-title">
+      <section className="review-dock" aria-labelledby="review-title" ref={reviewRef} tabIndex={-1}>
         <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title" aria-live="polite">Review queue <span>{staged.length}</span></h2></div><button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div>
         {staged.length === 0 ? <div className="empty-review"><Icon name="spark" /><div><strong>The queue is clear.</strong><p>Ask an agent to inspect the case with WebMCP, or stage the guided demonstration.</p></div></div> : <div className="review-cards">{staged.map((mapping) => <article className={`review-card ${mapping.id === activeId ? "active" : ""}`} key={mapping.id}><button className="review-card-main" type="button" aria-pressed={mapping.id === activeId} onClick={() => setActiveId(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"}</strong><span className="mapping-arrow"><Icon name="arrow" /></span><strong>{mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"}</strong><small>{Math.round(mapping.confidence * 100)}% agent confidence · {mapping.evidenceIds.length} source {mapping.evidenceIds.length === 1 ? "span" : "spans"}</small></button><div className="review-actions"><button type="button" className="reject" onClick={() => decide(mapping.id, "rejected")}>Reject</button><button type="button" className="accept" onClick={() => decide(mapping.id, "accepted")}><Icon name="check" />Accept</button></div></article>)}</div>}
       </section>
@@ -195,6 +214,6 @@ function ColumnTitle({ index, title, subtitle, id }: { index: string; title: str
 }
 
 function OutcomeCard({ outcome, side, isMapped, mappings, activeId, onSelect }: { outcome: Outcome; side: "registry" | "publication"; isMapped: boolean; mappings: Mapping[]; activeId: string | null; onSelect: (id: string) => void }) {
-  const mapping = mappings.find((item) => side === "registry" ? item.registryOutcomeId === outcome.id : item.publicationOutcomeId === outcome.id);
+  const mapping = [...mappings].reverse().find((item) => side === "registry" ? item.registryOutcomeId === outcome.id : item.publicationOutcomeId === outcome.id);
   return <article className={`outcome-card ${mapping?.id === activeId ? "active" : ""}`}><button type="button" onClick={() => mapping && onSelect(mapping.id)} disabled={!mapping} aria-pressed={mapping ? mapping.id === activeId : undefined} aria-label={`${outcome.title}${mapping ? `, ${LABELS[mapping.discrepancy]}` : ", not yet mapped"}`}><div className="outcome-meta"><span className={`role ${outcome.role}`}>{outcome.role}</span><span>{outcome.timeFrame}</span></div><h4>{outcome.title}</h4><p>{outcome.description}</p><div className="outcome-status"><span className={`status-line ${mapping?.status ?? "unreviewed"}`} /><span>{mapping ? `${LABELS[mapping.discrepancy]} · ${mapping.status}` : isMapped ? "Mapped" : "Awaiting analysis"}</span>{mapping && <span className="confidence">{Math.round(mapping.confidence * 100)}%</span>}</div></button></article>;
 }

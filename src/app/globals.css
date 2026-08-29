@@ -85,6 +85,7 @@ main { max-width: 1480px; margin: auto; }
 .thread::before, .thread::after { content: ""; position: absolute; width: 5px; height: 5px; border: 1px solid var(--blue); background: var(--surface); border-radius: 50%; top: -3px; }
 .thread::before { left: -2px; } .thread::after { right: -2px; } .thread.one { top: 33%; } .thread.two { top: 57%; background: var(--amber); } .thread.two::before, .thread.two::after { border-color: var(--amber); } .thread.three { top: 79%; }
 .review-dock { margin: 0 clamp(20px,4vw,64px) 70px; padding: 34px; border: 1px solid var(--ink); background: #e8e5dc; box-shadow: 7px 7px 0 var(--ink); }
+.review-dock:focus-visible { outline: 4px solid rgba(31,84,164,.52); outline-offset: 5px; }
 .review-dock-heading h2 span { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--amber); color: white; font-family: var(--font-sans); font-size: 12px; vertical-align: middle; }
 .text-button { border: 0; background: transparent; color: var(--blue); display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; cursor: pointer; }
 .text-button:disabled { color: #999; cursor: not-allowed; }

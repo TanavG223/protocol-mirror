@@ -41,7 +41,9 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` in a WebMCP-capable browser. Browsers without `document.modelContext` show **WebMCP preview** while preserving the full manual review workflow.
+Open `http://localhost:3000` in a WebMCP-capable browser. The primary supported rehearsal path is the ChatGPT/Codex desktop in-app browser with site tools enabled. Browsers without `document.modelContext` show **WebMCP preview** while preserving the full manual review workflow.
+
+`request_human_review` moves keyboard focus to the shared review region after the requested staged mapping becomes active. This makes an agent's request visible to sighted reviewers and immediately available to keyboard and assistive-technology users.
 
 ## Verify
 
@@ -50,6 +52,10 @@ npm run check
 ```
 
 This runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
+
+Current verified baseline: 19 passing tests, clean lint, and a successful production build.
+
+The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
 
 ## Live source routes
 
@@ -91,3 +97,7 @@ Core contracts live in `src/lib/contracts.ts`; the deterministic case in `src/li
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Public source
+
+The complete challenge source is public at https://github.com/TanavG223/protocol-mirror. The repository link should also appear in the Devpost project description and Try it out section so judges do not need access to hidden submission fields.

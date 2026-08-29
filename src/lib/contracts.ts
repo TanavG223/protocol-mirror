@@ -59,6 +59,7 @@ export interface AuditEvent {
   action: string;
   detail: string;
   actor: "agent" | "reviewer" | "system";
+  subjectId?: string;
 }
 
 export interface AuditState {

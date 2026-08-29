@@ -16,9 +16,13 @@ Protocol Mirror is a WebMCP-native review workspace where an agent compares regi
 
 Clinical-trial registries capture what researchers planned to measure; publications capture what readers ultimately see. Comparing those records is valuable but slow, detail-heavy work. A generic AI summary can make the problem worse by collapsing uncertainty and citations into one confident paragraph. We wanted an agent to help with the tedious comparison while making its limits more visible—not less.
 
+## Evidence of need
+
+A 2019 cross-sectional study of 389 trials published in high-impact journals found that 130 had at least one primary-outcome change between registration and publication. Of those 130 trials, 66 involved a registered primary outcome that was not reported or was omitted. Protocol Mirror does not assume that every change is improper; it makes the comparison and its evidence reviewable. [Chen et al., *JAMA Network Open*](https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/)
+
 ## What it does
 
-Protocol Mirror places registered and reported outcomes side by side. Through WebMCP, an agent can read stable outcome IDs, retrieve exact evidence spans, stage a mapping or non-match, and focus the relevant review card. Every proposal includes a discrepancy category, rationale, evidence IDs, and confidence.
+Protocol Mirror places registered and reported outcomes side by side. Through WebMCP, an agent can read stable outcome IDs, retrieve exact evidence spans, stage a mapping or non-match, and focus the relevant review card. The focus request moves keyboard focus to the review region, keeping the agent's handoff perceivable for keyboard and assistive-technology users. Every proposal includes a discrepancy category, rationale, evidence IDs, and confidence.
 
 The agent cannot accept or reject its own conclusion. A person reviews the source spans in the same interface and makes the decision. Only reviewed decisions appear in the exportable audit receipt, and that export capability is registered dynamically after a human decision exists.
 
@@ -46,11 +50,11 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 
 ## Accomplishments
 
-- A complete human–agent review loop that works in the Codex WebMCP browser
+- A complete human–agent review loop exercised through real tool calls in the Codex WebMCP browser
 - Dynamic tool registration verified in the live page
 - Deterministic offline demonstration data plus bounded live-source adapters
 - Evidence-side validation that rejects cross-record IDs, unrelated citations, duplicates, and unknown evidence
-- 15 passing deterministic tests, a clean lint run, and a successful production build
+- 19 passing deterministic tests, a clean lint run, and a successful production build
 
 ## What we learned
 
@@ -66,6 +70,7 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 ## Required links
 
 - Source: https://github.com/TanavG223/protocol-mirror
+- Public repository mirror for the Try it out field: https://github.com/TanavG223/protocol-mirror
 - License: https://github.com/TanavG223/protocol-mirror/blob/main/LICENSE
 - Live app: pending permanent Vercel claim
 - Demo video: pending recording
