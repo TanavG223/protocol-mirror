@@ -20,7 +20,7 @@
 - [x] Lint, tests, TypeScript, and production build pass
 - [x] Public repository and MIT license
 - [ ] Permanent public deployment claimed
-- [ ] Accessibility audit completed
+- [x] WCAG 2.1 AA structure, semantics, focus styling, and contrast audit completed
 - [ ] Final supported-browser rehearsal completed
 
 ## Impact

@@ -2,11 +2,11 @@
   --paper: #f2efe7;
   --surface: #fbfaf6;
   --ink: #18201e;
-  --muted: #68706b;
+  --muted: #646c67;
   --line: #c9c8bd;
   --blue: #1f54a4;
   --blue-soft: #e3ebf8;
-  --amber: #ad5d1a;
+  --amber: #a65316;
   --amber-soft: #f8e9d4;
   --green: #2d704d;
   --green-soft: #dfeee5;
@@ -33,7 +33,7 @@ svg { width: 1.1em; height: 1.1em; fill: none; stroke: currentColor; stroke-widt
 .connection-badge > span { width: 7px; height: 7px; border-radius: 50%; background: #999; }
 .connection-badge.connected > span { background: #3d9b65; box-shadow: 0 0 0 3px rgba(61,155,101,.14); }
 .connection-badge.preview > span { background: var(--amber); }
-.avatar { width: 36px; height: 36px; border: 1px solid var(--ink); border-radius: 50%; background: var(--ink); color: var(--surface); font-size: 11px; font-weight: 700; cursor: pointer; }
+.avatar { width: 36px; height: 36px; border: 1px solid var(--ink); border-radius: 50%; background: var(--ink); color: var(--surface); font-size: 11px; font-weight: 700; display: grid; place-items: center; }
 .avatar:focus-visible, .primary-action:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid rgba(31,84,164,.35); outline-offset: 3px; }
 main { max-width: 1480px; margin: auto; }
 .case-header { padding: clamp(40px,7vw,92px) clamp(20px,4vw,64px) 0; }
