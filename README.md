@@ -62,6 +62,8 @@ Current verified baseline: 25 passing tests, clean lint and TypeScript checks, a
 The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
 The scoped threat model, implemented controls, and residual risks are recorded in [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md) and [`docs/SECURITY_REVIEW.md`](docs/SECURITY_REVIEW.md).
 The exact recording sequence and final external-action checklist are in [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) and [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.md).
+The canonical Devpost-ready field packet is [`devpost-submission.md`](devpost-submission.md); it clearly separates verified material from the pending live-app and video URLs.
+The dated challenge-page evidence and requirement-to-artifact audit are in [`docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md`](docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md).
 
 ## Live source routes
 

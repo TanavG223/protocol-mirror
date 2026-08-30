@@ -1,5 +1,7 @@
 # Devpost submission draft
 
+> The canonical form-ready packet is now `devpost-submission.md` in the repository root. This file remains the concise narrative source.
+
 ## Project name
 
 Protocol Mirror

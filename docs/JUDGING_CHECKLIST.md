@@ -45,6 +45,7 @@
 - [x] Originality and provenance log
 - [x] Three-minute demo spine
 - [x] Devpost narrative draft
+- [x] Canonical plugin-shaped `devpost-submission.md` packet with testing instructions, AI/Codex usage, limitations, and explicit placeholders
 - [x] Five final Codex-browser screenshots captured and visually reviewed, including mobile
 - [ ] Public YouTube video under three minutes with audio
 - [ ] Devpost form completed and reviewed
