@@ -1,8 +1,15 @@
-# Three-minute demo spine
+# Three-minute demo script
 
-This is a working script, not the final recording copy.
+Target runtime: 2:45–2:55. Record at 1280 by 720 or higher with browser zoom at 100%, notifications hidden, and the production URL visible at least once. Keep the pointer still while the agent-controlled focus handoff occurs.
 
-## 0:00–0:25 — The problem
+## Before recording
+
+1. Open a fresh production session and confirm the header says **WebMCP connected**.
+2. Confirm the initial tool list contains exactly four tools and does not contain `export_review_receipt`.
+3. Keep `docs/screenshots/01-hero.jpg` available as a fallback title frame.
+4. Use the exact prompts below so the workflow is reproducible.
+
+## 0:00–0:20 — The problem
 
 Show the case header and side-by-side outcome record.
 
@@ -10,40 +17,54 @@ Show the case header and side-by-side outcome record.
 
 On-screen source: Chen et al., *JAMA Network Open* — https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/
 
-## 0:25–0:55 — The WebMCP workspace
+## 0:20–0:45 — The WebMCP workspace
 
-Show the WebMCP indicator and ask the agent to call `get_audit_state`, then `get_evidence_spans`.
+Show the WebMCP indicator and use this prompt:
+
+> Inspect the current audit state, then retrieve the exact source spans for the registered systolic-blood-pressure outcome and its reported counterpart. Do not propose or decide anything yet.
 
 “Protocol Mirror turns the live page into a shared, typed workspace. The agent receives stable IDs and source spans rather than scraping the interface. Source text is explicitly untrusted.”
 
-## 0:55–1:35 — Agent stages, human decides
+## 0:45–1:20 — Agent stages, human decides
 
-Ask the agent to propose the systolic-pressure mapping and focus it for review. Open the evidence drawer.
+Use this prompt:
+
+> Stage an uncertain mapping between the registered systolic-blood-pressure outcome and the reported systolic-blood-pressure outcome. Cite both exact source spans, explain the measurement and time-point differences, set a calibrated confidence, and request human review. Do not accept or reject it.
 
 “The concepts look similar, but the measurement method and time point differ. The agent can stage this uncertainty with its evidence. It cannot accept its own conclusion.”
 
 Keep the visible keyboard-focus move in the recording: the same tool handoff is perceivable without relying on pointer position or color alone.
 
-Accept or reject the proposal manually. Undo once to demonstrate reversibility.
+Accept the proposal manually, then undo once and accept it again to demonstrate reversibility without leaving the final receipt empty.
 
-## 1:35–2:05 — Discrepancies become legible
+## 1:20–1:50 — Discrepancies become legible
 
-Stage the guided review. Show the omitted quality-of-life outcome and introduced response-rate outcome.
+Click **Stage guided review**. Show the omitted quality-of-life outcome and introduced response-rate outcome.
 
 “The interface keeps registered intent, reported record, agent rationale, and exact evidence visible together. Reviewers can inspect uncertainty instead of receiving a black-box verdict.”
 
-## 2:05–2:35 — Dynamic capability and receipt
+## 1:50–2:15 — Dynamic capability and receipt
 
-Call `export_review_receipt` after a decision.
+Use this prompt:
+
+> Export the current reviewed receipt and summarize only what the receipt actually contains. Explicitly confirm whether staged proposals were excluded.
 
 “The export tool is dynamically available only when reviewed work exists. Its receipt excludes staged proposals and preserves evidence IDs plus the audit trail.”
 
-## 2:35–2:55 — Live sources and honest boundary
+## 2:15–2:40 — Live sources and honest boundary
 
-Briefly show the validated source routes or architecture diagram.
+Briefly show the architecture section in the repository README or the validated source routes.
 
 “Live adapters retrieve ClinicalTrials.gov outcomes and PubMed abstract sections with bounded requests and safe failures. The deterministic demo remains available if a public API is down.”
 
-## 2:55–3:00 — Close
+## 2:40–2:45 — Close
 
 “Protocol Mirror makes AI useful precisely where it should not be the final authority.”
+
+## Recording acceptance checks
+
+- Runtime is under three minutes and narration is audible.
+- The WebMCP connected state, exact evidence, staged proposal, keyboard-focus handoff, human-only decision, dynamic fifth tool, and reviewed receipt are all visible.
+- The recording never calls an agent tool to accept or reject a proposal.
+- No clinical-validation, misconduct-detection, or measured-accuracy claim is made.
+- The source repository and live-app URLs are included in the video description.
