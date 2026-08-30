@@ -40,7 +40,7 @@ The current app ships with a deterministic fictional case so the core demo never
 - `fast-xml-parser` for PubMed XML
 - GSAP for short, state-linked interface transitions with a complete reduced-motion opt-out
 - Vitest contract tests and a GitHub Actions verification workflow
-- A custom responsive “forensic editorial” interface with evidence threads, visible human checkpoints, focus states, and reduced-motion support
+- A custom responsive “forensic editorial” interface with direct source inspection, state-backed relationship summaries, visible human checkpoints, focus states, and reduced-motion support
 
 ## WebMCP leverage
 
@@ -84,7 +84,7 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 ## Screenshot assets
 
 - `docs/screenshots/01-hero.jpg` — case context, connected WebMCP state, and comparison entry point
-- `docs/screenshots/02-comparison.jpg` — registered and reported outcomes linked across the evidence spine
+- `docs/screenshots/02-comparison.jpg` — registered and reported source columns with state-backed relationship status
 - `docs/screenshots/03-review-queue.jpg` — staged proposals and the human-only accept/reject checkpoint
 - `docs/screenshots/04-evidence-drawer.jpg` — agent rationale beside exact source spans and locators
 - `docs/screenshots/05-mobile.jpg` — mobile hero, connected WebMCP state, and stacked case metadata

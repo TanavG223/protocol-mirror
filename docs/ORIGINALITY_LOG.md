@@ -5,7 +5,7 @@
 - Working title: Protocol Mirror
 - Repository created: 2026-08-29
 - Core concept: a human–agent workbench for comparing registered clinical-trial outcomes with published outcomes
-- Signature interaction: evidence threads plus a staged review queue where agents propose and humans decide
+- Signature interaction: exact source spans plus an evidence-bound review queue where agents propose and humans decide
 
 ## Source and dependency provenance
 

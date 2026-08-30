@@ -126,7 +126,7 @@ The finished local master is `docs/demo/protocol-mirror-demo.mp4`: 1:19.61, 1280
 ## Screenshot Shot List
 
 1. `docs/screenshots/01-hero.jpg` — case context, connected WebMCP state, and the three-step authority model
-2. `docs/screenshots/02-comparison.jpg` — registered and reported outcomes linked across the evidence spine
+2. `docs/screenshots/02-comparison.jpg` — registered and reported source columns with state-backed relationship status
 3. `docs/screenshots/03-review-queue.jpg` — four staged proposals and the human-only checkpoint
 4. `docs/screenshots/04-evidence-drawer.jpg` — rationale beside exact quotations and source locators
 5. `docs/screenshots/05-mobile.jpg` — responsive 390 by 844 layout without horizontal overflow

@@ -43,7 +43,7 @@ This criterion is equal-weight with the other three and is the third tie-break.
 
 This criterion is equal-weight with the other three and is the fourth tie-break.
 
-- [x] Evidence-thread visual language rather than a generic chatbot
+- [x] Source-first comparison and state-backed relationship language rather than a generic chatbot
 - [x] State-dependent capability model
 - [x] Reversible, auditable review decisions
 - [x] Honest online/offline source architecture
