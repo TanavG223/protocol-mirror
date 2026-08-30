@@ -26,16 +26,16 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 
 ## 3. Record and publish the demo
 
-1. Follow `docs/DEMO_SCRIPT.md` against the verified permanent URL.
-2. Export at 1080p when practical and confirm the final runtime is under three minutes.
+1. Use the finished `docs/demo/protocol-mirror-demo.mp4` master and the metadata in `docs/YOUTUBE_METADATA.md`.
+2. Confirm the final 1:19.61 runtime remains under three minutes after upload processing.
 3. Watch the complete upload with sound before making it public or unlisted as allowed by the rules.
 4. Put the live app and public repository links in the video description.
-5. Replace the pending demo-video line in `docs/SUBMISSION_DRAFT.md` with the final URL.
+5. Replace the pending demo-video line in `docs/SUBMISSION_DRAFT.md` with the final URL and watch the uploaded result end to end with sound.
 
 ## 4. Complete the Devpost entry
 
 - Paste the narrative from `docs/SUBMISSION_DRAFT.md` and preserve its truthful-claim guardrail.
-- Add all five files from `docs/screenshots/` in narrative order.
+- Add the six files from `docs/screenshots/` in narrative order; use `06-agent-reviewed.png` as direct proof of the public seven-tool reviewed state.
 - Put the permanent app URL in **Try it out** and repeat the public source URL in the description.
 - Add the public video URL and repository license URL.
 - Re-open the official rules immediately before submission and verify the displayed deadline, eligibility, required fields, public-access requirements, and video limit.

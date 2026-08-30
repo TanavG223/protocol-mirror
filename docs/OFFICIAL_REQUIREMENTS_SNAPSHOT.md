@@ -52,7 +52,7 @@ The demo must not use copyrighted music, third-party trademarks, or other protec
 | Detectable open-source license | GitHub API reports MIT; top-level `LICENSE` is tracked | Ready |
 | Screenshots | Five production-mode desktop/mobile assets | Ready |
 | Text description | Root `devpost-submission.md` packet | Ready |
-| Working live URL | Vercel import authorized and configured; production deployment and public-browser verification in progress | In progress |
+| Working live URL | `https://protocol-mirror.vercel.app`; six-before/seven-after tool lifecycle and live source reads verified in Codex browser | Ready |
 | Public YouTube demo under three minutes with audio | Script ready; recording/upload pending | Missing |
 | Devpost registration | Official Devpost integration reports `registered` with submissions open | Ready |
 | Devpost project/form access | No Protocol Mirror Devpost project exists yet; authenticated creation and field review remain | Missing |

@@ -21,7 +21,7 @@
 - [x] Lint, tests, TypeScript, and production build pass
 - [x] Public repository and MIT license
 - [x] Public repository URL repeated in the submission draft's required links
-- [ ] Permanent public deployment claimed
+- [x] Permanent public deployment claimed and fully exercised in the Codex in-app browser
 - [x] WCAG AA-oriented structure, semantics, focus styling, and key color-pair contrast checks completed
 - [x] Agent-triggered review focus exercised as an accessibility handoff
 - [x] Final production-mode supported-browser rehearsal completed in the Codex in-app browser
@@ -47,8 +47,9 @@
 - [x] Three-minute demo spine
 - [x] Devpost narrative draft
 - [x] Canonical plugin-shaped `devpost-submission.md` packet with testing instructions, AI/Codex usage, limitations, and explicit placeholders
-- [x] Five final Codex-browser screenshots captured and visually reviewed, including mobile
-- [ ] Public YouTube video under three minutes with audio
+- [x] Six final Codex-browser screenshots captured and visually reviewed, including mobile and the permanent seven-tool reviewed state
+- [x] Final 1:19.61 H.264/AAC demo master rendered, audio-level checked, and visually reviewed
+- [ ] Public YouTube upload under three minutes with audio
 - [x] Devpost integration reports hackathon registration complete and submissions open
 - [ ] Devpost form completed and reviewed
 - [ ] Freeze code and submission before deadline

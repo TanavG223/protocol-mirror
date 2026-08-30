@@ -78,8 +78,8 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 - Source: https://github.com/TanavG223/protocol-mirror
 - Public repository mirror for the Try it out field: https://github.com/TanavG223/protocol-mirror
 - License: https://github.com/TanavG223/protocol-mirror/blob/main/LICENSE
-- Live app: pending permanent Vercel claim
-- Demo video: pending recording
+- Live app: https://protocol-mirror.vercel.app
+- Demo video: 1:19.61 narrated local master complete; public YouTube upload pending
 
 ## Screenshot assets
 
@@ -88,6 +88,7 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 - `docs/screenshots/03-review-queue.jpg` — staged proposals and the human-only accept/reject checkpoint
 - `docs/screenshots/04-evidence-drawer.jpg` — agent rationale beside exact source spans and locators
 - `docs/screenshots/05-mobile.jpg` — mobile hero, connected WebMCP state, and stacked case metadata
+- `docs/screenshots/06-agent-reviewed.png` — public deployment after agent staging and human acceptance, with the seven-tool badge and exact evidence visible
 
 ## Truthful-claim guardrail
 

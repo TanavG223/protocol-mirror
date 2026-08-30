@@ -1,0 +1,11 @@
+Protocol Mirror turns clinical-trial reporting checks into a shared human-agent workflow. You are watching the permanent production site running inside the Codex WebMCP browser.
+
+The page begins with six typed tools. An agent reads stable outcome IDs and exact source spans; registry and publication text is explicitly treated as untrusted evidence. It then stages an uncertain mapping between the registered and reported systolic-pressure outcomes. The concepts look similar, but the measurement method and primary time point differ.
+
+The agent can focus this evidence-linked proposal for review, but it cannot accept its own conclusion. That decision remains a visible human action. Once the reviewer accepts, the interface changes from six to seven tools. The new receipt tool exports only reviewed work, including the exact cited locators and the append-only stage and decision events.
+
+The guided review also makes omissions and introduced outcomes legible beside the source record, instead of collapsing uncertainty into a confident summary.
+
+Two of the six initial tools retrieve live ClinicalTrials.gov and PubMed records through fixed-host, bounded adapters. The fictional case keeps judging reliable if a public API is unavailable, while the live tools prove the architecture is not a mock.
+
+Protocol Mirror makes AI useful precisely where it should not be the final authority.

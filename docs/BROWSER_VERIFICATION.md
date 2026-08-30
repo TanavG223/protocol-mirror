@@ -1,6 +1,6 @@
 # WebMCP browser verification
 
-Verified on 2026-08-30 in the Codex desktop in-app browser against a local production build at `http://127.0.0.1:4173`. This is a release rehearsal, not evidence of a permanent public deployment.
+Verified on 2026-08-30 in the Codex desktop in-app browser against both a local production build at `http://127.0.0.1:4173` and the permanent public deployment at `https://protocol-mirror.vercel.app`.
 
 ## Initial capability surface
 
@@ -40,3 +40,7 @@ The reported schemas included bounded identifiers and arrays, per-property descr
 - At an exact 390 by 844 CSS-pixel viewport, the document width remained 390 pixels with no horizontal overflow.
 
 This is implementation evidence, not clinical validation or measured research-integrity accuracy.
+
+## Permanent deployment closure
+
+The public Vercel deployment built commit `ebead5b72027cbc6f36bbd0e2ed6aa5fa9f6eb70` and loaded without authentication. The Codex in-app browser reported the expected six-tool initial surface at the HTTPS origin. Through those public tools it retrieved `NCT04280705` (43 normalized outcomes) and PubMed `32445440` (four structured abstract sections), staged and focused an evidence-linked uncertain mapping, and preserved the `human_reviewer_only` focus response. A human click accepted the proposal; the header changed to seven tools, and `export_review_receipt` returned one reviewed mapping, the two exact cited locators, and the pair/stage/accept audit events.

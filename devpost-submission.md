@@ -107,7 +107,9 @@ Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs E
 
 ## Public Demo Link
 
-**TODO before entry:** add the permanent Vercel HTTPS URL after deployed-browser verification.
+https://protocol-mirror.vercel.app
+
+Verified in the Codex in-app browser on 2026-08-30: the public HTTPS deployment exposed six initial WebMCP tools, returned live ClinicalTrials.gov and PubMed records, completed the agent-stage → human-accept workflow, exposed the seventh receipt tool, and exported both cited evidence locators.
 
 ## Public Repository Link
 
@@ -117,7 +119,7 @@ The repository is public, GitHub detects its MIT license, all required source an
 
 ## Demo Video
 
-**TODO before entry:** add the public YouTube URL. The final 2:45 script and exact agent prompts are in `docs/DEMO_SCRIPT.md`.
+The finished local master is `docs/demo/protocol-mirror-demo.mp4`: 1:19.61, 1280×720 H.264/AAC, audible original narration, no music, and direct capture of the permanent production workflow. Public YouTube upload is pending channel creation and the required user confirmation. Upload title, description, and disclosure settings are ready in `docs/YOUTUBE_METADATA.md`.
 
 ## Screenshot Shot List
 
@@ -126,6 +128,7 @@ The repository is public, GitHub detects its MIT license, all required source an
 3. `docs/screenshots/03-review-queue.jpg` — four staged proposals and the human-only checkpoint
 4. `docs/screenshots/04-evidence-drawer.jpg` — rationale beside exact quotations and source locators
 5. `docs/screenshots/05-mobile.jpg` — responsive 390 by 844 layout without horizontal overflow
+6. `docs/screenshots/06-agent-reviewed.png` — permanent deployment after the agent-to-human handoff, showing the dynamic seven-tool state and exact evidence drawer
 
 ## Submission Readiness Notes
 
@@ -133,9 +136,10 @@ The repository is public, GitHub detects its MIT license, all required source an
 - [x] Non-trivial top-level `document.modelContext.registerTool()` implementation
 - [x] 30 deterministic tests, clean lint and TypeScript checks, and a successful production build
 - [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
-- [x] Five final screenshots and a timed demo script
-- [ ] Permanent live URL deployed and verified in the Codex in-app browser
-- [ ] Public YouTube video under three minutes with audio uploaded and watched end to end
+- [x] Six final screenshots, including a permanent-deployment review proof, and a timed demo script
+- [x] Permanent live URL deployed and fully exercised in the Codex in-app browser
+- [x] Final 1:19.61 demo master rendered with audible narration and visually reviewed
+- [ ] Public YouTube upload completed and watched end to end
 - [x] Devpost MCP reports the account registered for The WebMCP Challenge with submissions open
 - [ ] Authenticated Devpost project form fields and final preview verified
 - [ ] Final Devpost preview reviewed and entry receipt saved before the displayed deadline
