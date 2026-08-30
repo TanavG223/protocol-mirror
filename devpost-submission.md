@@ -154,9 +154,27 @@ The finished local master is `docs/demo/protocol-mirror-demo.mp4`: 1:19.61, 1280
 
 ## TODO Official Form Fields
 
-- Permanent public demo URL
-- Public YouTube demo URL
-- Any exact form-only category, team, testing, or credential fields visible after Devpost sign-in
-- Codex session ID only if the authenticated form explicitly requests it and the project owner confirms the correct session
+Authenticated Devpost preflight on 2026-08-30 returned these exact project fields. Values marked **Confirm** require the project owner's personal choice; they are not inferred.
+
+| Official field | Prepared answer |
+| --- | --- |
+| Submitter Type | **Confirm:** Individual, Team of Individuals, or Organization |
+| Country/countries of residence | **Confirm:** required country selection |
+| Organization name | Leave blank unless the selected submitter type requires it |
+| App Status | New |
+| Existing-app update explanation | Not applicable for a new project |
+| Live URL | https://protocol-mirror.vercel.app |
+| Testing instructions/credentials | No credentials required. Open the live URL in the Codex/ChatGPT in-app browser with WebMCP enabled; use the deterministic case or call the bounded live-source tools, stage a proposal, complete the visible human review, then export the reviewed receipt. |
+| Public repository | https://github.com/TanavG223/protocol-mirror |
+| Tested agents/clients | Codex desktop in-app browser with WebMCP site tools enabled. Manual non-WebMCP fallback was also verified. |
+| AI tools leveraged | OpenAI Codex for research, scoping, implementation, debugging, deterministic tests, security review, accessibility inspection, browser verification, deployment, and submission preparation. Protocol Mirror itself uses page-native typed WebMCP tools and does not require a hosted model API at runtime. |
+| Learning level | **Confirm:** None, Moderate, or Significant |
+| Career AI value | **Confirm:** Yes or No |
+
+Still required before the form can be finalized:
+
+- Public YouTube demo URL after the project owner reviews and uploads the prepared master
+- Explicit rules acknowledgment in the local hackathon workflow
+- Final authenticated Devpost preview and the separate literal `yes, submit` confirmation
 
 Official page snapshot checked in the Codex browser on 2026-08-30. The Devpost website and official rules prevail if any requirement changes.
