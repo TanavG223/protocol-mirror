@@ -1,5 +1,17 @@
 # YouTube upload metadata
 
+## Verified master
+
+- File: `docs/demo/protocol-mirror-demo.mp4`
+- SHA-256: `03f6258bb34316c37aeb290873ff64c5ee2b64addd5a4ef2302d191abb28f9b8`
+- Duration: 79.607664 seconds
+- Video: H.264, 1280×720, 15 fps
+- Audio: AAC mono, 22.05 kHz, mean −15.8 dB, peak −1.6 dB
+- Automated continuity checks: no black segment of 0.5 seconds or longer at the tested threshold; no silence of 2 seconds or longer below −40 dB
+- Thumbnail SHA-256: `f2c30941c47ae9e920933a7e35a1920165f8fa8224cec63ba2a303b26fa4a7bf`
+
+These checks confirm media integrity, not editorial quality. The project owner should still watch the complete upload with sound before publishing or using its URL in the entry.
+
 ## Title
 
 Protocol Mirror — Human-Agent Clinical-Trial Transparency with WebMCP

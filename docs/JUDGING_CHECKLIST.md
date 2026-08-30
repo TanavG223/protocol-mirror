@@ -2,6 +2,8 @@
 
 ## WebMCP leverage
 
+This criterion is equal-weight with the other three and is the first tie-break.
+
 - [x] Top-level `document.modelContext.registerTool()` registration
 - [x] Atomic live-source read, case read, propose, focus, and export tools
 - [x] Narrow schemas with `additionalProperties: false`
@@ -13,6 +15,8 @@
 - [x] Both live ClinicalTrials.gov and PubMed tools exercised through the real WebMCP surface
 
 ## Execution
+
+This criterion is equal-weight with the other three and is the second tie-break.
 
 - [x] Responsive primary workflow
 - [x] Deterministic offline demonstration
@@ -28,12 +32,16 @@
 
 ## Impact
 
+This criterion is equal-weight with the other three and is the third tie-break.
+
 - [x] Concrete reviewer audience and research-transparency task
 - [x] Exact evidence spans remain visible with proposals
 - [x] Human authority and product limitations are explicit
 - [x] Sourced, bounded impact statement added to the description and demo script
 
 ## Creativity and ambition
+
+This criterion is equal-weight with the other three and is the fourth tie-break.
 
 - [x] Evidence-thread visual language rather than a generic chatbot
 - [x] State-dependent capability model

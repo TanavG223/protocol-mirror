@@ -159,7 +159,7 @@ Authenticated Devpost preflight on 2026-08-30 returned these exact project field
 | Official field | Prepared answer |
 | --- | --- |
 | Submitter Type | **Confirm:** Individual, Team of Individuals, or Organization |
-| Country/countries of residence | **Confirm:** required country selection |
+| Country of residence of yourself and team members if applicable | **Confirm:** required multi-country selection |
 | Organization name | Leave blank unless the selected submitter type requires it |
 | App Status | New |
 | Existing-app update explanation | Not applicable for a new project |

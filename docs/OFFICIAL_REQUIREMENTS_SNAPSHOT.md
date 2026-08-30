@@ -1,19 +1,26 @@
 # Official WebMCP Challenge requirements snapshot
 
-Checked on 2026-08-30 using the Codex in-app browser.
+Checked on 2026-08-30 using the Codex in-app browser and refreshed through the authenticated Devpost connection at 14:29–14:30 UTC.
 
 Sources:
 
 - Challenge overview: https://webmcp.devpost.com/
 - Official rules: https://webmcp.devpost.com/rules
 
-The official rules and Devpost website prevail if anything below changes or conflicts with the live pages.
+The official rules hosted on Devpost prevail if anything below changes or conflicts with this snapshot or other event-page copy.
 
 ## Current schedule
 
 - Registration and submission close September 3, 2026 at 1:00 PM Pacific Time, displayed by Devpost as 4:00 PM EDT for this account locale.
 - Judging is scheduled for September 4 through September 21, 2026.
 - Winners are scheduled to be announced on or around September 23, 2026.
+
+## Eligibility snapshot
+
+- Individuals must be above the age of majority in their country of residence and reside where OpenAI API access is supported.
+- Teams must consist of eligible individuals; eligible organizations must be organized or incorporated in supported countries and appoint an eligible representative.
+- The official rules exclude listed jurisdictions and conflict categories. Eligibility must be checked against the current official rules before the owner acknowledges or enters.
+- Registration remains confirmed for the authenticated account, and submissions remain open.
 
 ## Project requirements relevant to Protocol Mirror
 
@@ -37,10 +44,18 @@ The demo must not use copyrighted music, third-party trademarks, or other protec
 
 ## Judging criteria
 
+The four Stage 2 criteria are equally weighted on a five-point scale:
+
 1. **WebMCP Leverage** — non-trivial, skillful use of the WebMCP capability surface.
 2. **Execution** — a coherent, complete working product rather than only a technical proof of concept.
 3. **Potential Impact** — a credible case for a specific audience and real problem supported by what is demonstrated.
 4. **Creativity & Ambition** — a novel concept that differs meaningfully from existing ideas.
+
+The tie-break begins with WebMCP Leverage, then proceeds through the remaining criteria in the listed order. Stage 1 is a pass/fail check for theme viability and reasonable use of the required capability.
+
+## Prize snapshot
+
+Ten winners receive $3,500 cash each ($35,000 total) plus the sponsor benefits listed on Devpost. Prize and tax eligibility remain governed by the official rules.
 
 ## Current evidence and gaps
 
@@ -56,6 +71,8 @@ The demo must not use copyrighted music, third-party trademarks, or other protec
 | Public YouTube demo under three minutes with audio | Verified 1:19.61 H.264/AAC master and custom thumbnail ready; public upload pending | Missing |
 | Devpost registration | Official Devpost integration reports `registered` with submissions open | Ready |
 | Devpost project/form access | No Protocol Mirror Devpost project exists yet; authenticated creation and field review remain | Missing |
+
+The entry is locked at the submission deadline except for narrowly permitted corrections described by the official rules. Final text, images, URLs, and the processed YouTube video therefore need end-to-end review before the deadline.
 
 ## Final revalidation
 
