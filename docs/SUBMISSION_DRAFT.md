@@ -34,6 +34,7 @@ The current app ships with a deterministic fictional case so the core demo never
 
 - Next.js 16 and React 19 for the application and server routes
 - Browser-native WebMCP tools registered through `document.modelContext`
+- Live ClinicalTrials.gov and PubMed reads exposed as bounded, untrusted-content WebMCP tools
 - Narrow JSON schemas, `readOnlyHint`, `untrustedContentHint`, and abort-signal lifecycle management
 - Zod validation for ClinicalTrials.gov records and stable error envelopes
 - `fast-xml-parser` for PubMed XML
@@ -58,7 +59,7 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 - Deterministic offline demonstration data plus bounded live-source adapters
 - Evidence-side validation that rejects cross-record IDs, unrelated citations, duplicates, and unknown evidence
 - Restrictive production response headers, bounded upstream payloads, and entity-safe XML parsing
-- 25 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
+- 30 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
 - A production-mode Codex-browser rehearsal at desktop and 390-pixel mobile widths with no horizontal overflow or browser errors
 
 ## What we learned

@@ -3,13 +3,14 @@
 ## WebMCP leverage
 
 - [x] Top-level `document.modelContext.registerTool()` registration
-- [x] Atomic read, propose, focus, and export tools
+- [x] Atomic live-source read, case read, propose, focus, and export tools
 - [x] Narrow schemas with `additionalProperties: false`
 - [x] Read-only and untrusted-content annotations
 - [x] Abort-signal lifecycle cleanup
 - [x] Dynamic export registration after human review
 - [x] Agent cannot call the human accept/reject action
-- [x] Codex browser reports the expected four-before/five-after tools
+- [x] Codex browser reports the expected six-before/seven-after tools
+- [x] Both live ClinicalTrials.gov and PubMed tools exercised through the real WebMCP surface
 
 ## Execution
 
@@ -48,5 +49,6 @@
 - [x] Canonical plugin-shaped `devpost-submission.md` packet with testing instructions, AI/Codex usage, limitations, and explicit placeholders
 - [x] Five final Codex-browser screenshots captured and visually reviewed, including mobile
 - [ ] Public YouTube video under three minutes with audio
+- [x] Devpost integration reports hackathon registration complete and submissions open
 - [ ] Devpost form completed and reviewed
 - [ ] Freeze code and submission before deadline

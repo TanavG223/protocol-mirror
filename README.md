@@ -12,6 +12,8 @@ The page is the shared workspace for both the reviewer and the agent. It registe
 
 | Tool | Purpose | Authority |
 | --- | --- | --- |
+| `get_live_clinical_trial` | Retrieve a current ClinicalTrials.gov record through the bounded adapter | Read-only; source text is untrusted |
+| `get_live_pubmed_article` | Retrieve a current PubMed abstract through the bounded adapter | Read-only; source text is untrusted |
 | `get_audit_state` | Read stable outcome IDs, proposals, decisions, and events | Read-only; source text is untrusted |
 | `get_evidence_spans` | Read exact quotes and source locators | Read-only; source text is untrusted |
 | `propose_outcome_mapping` | Stage one evidence-backed mapping or non-match | Agent may stage, never decide |
@@ -57,7 +59,7 @@ npm run check
 
 This runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
 
-Current verified baseline: 25 passing tests, clean lint and TypeScript checks, and a successful production build.
+Current verified baseline: 30 passing tests, clean lint and TypeScript checks, and a successful production build. The Codex in-app-browser rehearsal also called both public live-source tools and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
 
 The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
 The scoped threat model, implemented controls, and residual risks are recorded in [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md) and [`docs/SECURITY_REVIEW.md`](docs/SECURITY_REVIEW.md).
@@ -91,7 +93,7 @@ ClinicalTrials.gov ─┐
 PubMed E-utilities ─┘
 ```
 
-Core contracts live in `src/lib/contracts.ts`; the deterministic case in `src/lib/demo-data.ts`; WebMCP registration and reviewer UI in `src/app/workspace.tsx`; and live-source parsing in `src/lib/source-adapters.ts`.
+Core contracts live in `src/lib/contracts.ts`; the deterministic case in `src/lib/demo-data.ts`; WebMCP registration and reviewer UI in `src/app/workspace.tsx`; live WebMCP source tools in `src/lib/webmcp-tools.ts`; and server-side source parsing in `src/lib/source-adapters.ts`.
 
 ## Data and safety contract
 

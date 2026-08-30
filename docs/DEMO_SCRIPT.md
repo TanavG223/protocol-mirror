@@ -5,11 +5,19 @@ Target runtime: 2:45–2:55. Record at 1280 by 720 or higher with browser zoom a
 ## Before recording
 
 1. Open a fresh production session and confirm the header says **WebMCP connected**.
-2. Confirm the initial tool list contains exactly four tools and does not contain `export_review_receipt`.
+2. Confirm the header says **WebMCP connected · 6 tools** and the initial tool list does not contain `export_review_receipt`.
 3. Keep `docs/screenshots/01-hero.jpg` available as a fallback title frame.
 4. Use the exact prompts below so the workflow is reproducible.
 
-## 0:00–0:20 — The problem
+## 0:00–0:15 — Cold open: working in the first ten seconds
+
+Start on the connected production page and immediately use this prompt:
+
+> Inspect the current audit state and retrieve the exact source spans for the registered systolic-blood-pressure outcome and its reported counterpart. Do not propose or decide anything yet.
+
+As the cited spans appear, say: “This agent is reading stable IDs and exact evidence directly from the live page—not scraping pixels.”
+
+## 0:15–0:35 — The problem
 
 Show the case header and side-by-side outcome record.
 
@@ -17,15 +25,11 @@ Show the case header and side-by-side outcome record.
 
 On-screen source: Chen et al., *JAMA Network Open* — https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/
 
-## 0:20–0:45 — The WebMCP workspace
+## 0:35–0:50 — The WebMCP workspace
 
-Show the WebMCP indicator and use this prompt:
+Show the **6 tools** indicator and briefly identify the two live-source adapters. “Protocol Mirror turns the page into a shared, typed workspace. Source text is explicitly untrusted.”
 
-> Inspect the current audit state, then retrieve the exact source spans for the registered systolic-blood-pressure outcome and its reported counterpart. Do not propose or decide anything yet.
-
-“Protocol Mirror turns the live page into a shared, typed workspace. The agent receives stable IDs and source spans rather than scraping the interface. Source text is explicitly untrusted.”
-
-## 0:45–1:20 — Agent stages, human decides
+## 0:50–1:25 — Agent stages, human decides
 
 Use this prompt:
 
@@ -37,7 +41,7 @@ Keep the visible keyboard-focus move in the recording: the same tool handoff is 
 
 Accept the proposal manually, then undo once and accept it again to demonstrate reversibility without leaving the final receipt empty.
 
-## 1:20–1:50 — Discrepancies become legible
+## 1:25–1:50 — Discrepancies become legible
 
 Click **Stage guided review**. Show the omitted quality-of-life outcome and introduced response-rate outcome.
 
@@ -49,7 +53,7 @@ Use this prompt:
 
 > Export the current reviewed receipt and summarize only what the receipt actually contains. Explicitly confirm whether staged proposals were excluded.
 
-“The export tool is dynamically available only when reviewed work exists. Its receipt excludes staged proposals and preserves evidence IDs plus the audit trail.”
+“The seventh tool is dynamically available only when reviewed work exists. Its receipt excludes staged proposals and preserves the exact cited evidence locator plus the audit trail.”
 
 ## 2:15–2:40 — Live sources and honest boundary
 
@@ -64,7 +68,8 @@ Briefly show the architecture section in the repository README or the validated 
 ## Recording acceptance checks
 
 - Runtime is under three minutes and narration is audible.
-- The WebMCP connected state, exact evidence, staged proposal, keyboard-focus handoff, human-only decision, dynamic fifth tool, and reviewed receipt are all visible.
+- A real tool action is visible in the first 10 seconds.
+- The WebMCP connected state, exact evidence, staged proposal, keyboard-focus handoff, human-only decision, dynamic seventh tool, and reviewed receipt are all visible.
 - The recording never calls an agent tool to accept or reject a proposal.
 - No clinical-validation, misconduct-detection, or measured-accuracy claim is made.
 - The source repository and live-app URLs are included in the video description.

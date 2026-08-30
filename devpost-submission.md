@@ -33,6 +33,8 @@ The product does not hide a server-side model behind an API route. Instead, it e
 
 - `get_audit_state` reads stable outcome IDs, proposals, decisions, and audit events.
 - `get_evidence_spans` returns exact source quotations and locators while marking source text as untrusted.
+- `get_live_clinical_trial` retrieves a current ClinicalTrials.gov record through a fixed-host, bounded server adapter.
+- `get_live_pubmed_article` retrieves a current PubMed abstract through a fixed-host, entity-safe server adapter.
 - `propose_outcome_mapping` stages one schema-bound, evidence-linked proposal.
 - `request_human_review` focuses and scrolls the matching visible checkpoint into view.
 - `export_review_receipt` appears only after reviewed work exists and excludes staged proposals.
@@ -47,7 +49,7 @@ Codex also challenged overbroad claims: the project distinguishes a browser-tool
 
 ## Key Features
 
-- Five atomic WebMCP tools with narrow schemas and lifecycle cleanup
+- Seven atomic WebMCP tools with narrow schemas and lifecycle cleanup; six are available initially and the reviewed-receipt tool appears only after a human decision
 - Stable, evidence-linked registered-to-reported outcome comparison
 - Agent-staged proposals with a human-only accept/reject boundary
 - Dynamic capability registration after review state changes
@@ -82,12 +84,12 @@ WebMCP registration and the reviewer UI live in `src/app/workspace.tsx`. Runtime
 ### Hosted judging flow
 
 1. Open the public app in ChatGPT's in-app browser.
-2. Confirm the header says **WebMCP connected** and four tools are initially available.
+2. Confirm the header says **WebMCP connected · 6 tools** and the browser exposes both live-source tools plus the four case-review tools.
 3. Ask the agent to inspect the audit state and retrieve the exact systolic-blood-pressure evidence spans.
 4. Ask it to stage an uncertain mapping using both evidence spans and request human review.
 5. Confirm focus moves to the visible review checkpoint; accept or reject manually.
-6. Confirm `export_review_receipt` appears as the fifth tool.
-7. Export the receipt and confirm staged proposals are excluded.
+6. Confirm `export_review_receipt` appears as the seventh tool.
+7. Export the receipt and confirm staged proposals are excluded while the accepted mapping's exact evidence locator is included.
 
 No login, API key, patient data, or paid service is required.
 
@@ -101,7 +103,7 @@ npm run check
 npm run dev
 ```
 
-Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 25 deterministic tests, TypeScript through the production build, and the optimized Next.js build.
+Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 30 deterministic tests, TypeScript through the production build, and the optimized Next.js build.
 
 ## Public Demo Link
 
@@ -129,12 +131,13 @@ The repository is public, GitHub detects its MIT license, all required source an
 
 - [x] Public repository with all source, assets, instructions, and detected MIT license
 - [x] Non-trivial top-level `document.modelContext.registerTool()` implementation
-- [x] 25 deterministic tests, clean lint and TypeScript checks, successful production build, and green GitHub Actions
-- [x] Real Codex in-app-browser rehearsal of four-before/five-after tool registration and the complete stage/review/export flow
+- [x] 30 deterministic tests, clean lint and TypeScript checks, and a successful production build
+- [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
 - [x] Five final screenshots and a timed demo script
 - [ ] Permanent live URL deployed and verified in the Codex in-app browser
 - [ ] Public YouTube video under three minutes with audio uploaded and watched end to end
-- [ ] Devpost account sign-in, hackathon registration, eligibility, and final form fields verified by the project owner
+- [x] Devpost MCP reports the account registered for The WebMCP Challenge with submissions open
+- [ ] Authenticated Devpost project form fields and final preview verified
 - [ ] Final Devpost preview reviewed and entry receipt saved before the displayed deadline
 
 ## Known Limitations

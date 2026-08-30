@@ -1,15 +1,17 @@
 # WebMCP browser verification
 
-Verified on 2026-08-30 in the Codex desktop in-app browser against a local production build at `http://localhost:3001`. This is a release rehearsal, not evidence of a permanent public deployment.
+Verified on 2026-08-30 in the Codex desktop in-app browser against a local production build at `http://127.0.0.1:4173`. This is a release rehearsal, not evidence of a permanent public deployment.
 
 ## Initial capability surface
 
-The browser exposed four tools before any human decision:
+The browser exposed six tools before any human decision:
 
-1. `get_audit_state`
-2. `get_evidence_spans`
-3. `propose_outcome_mapping`
-4. `request_human_review`
+1. `get_live_clinical_trial`
+2. `get_live_pubmed_article`
+3. `get_audit_state`
+4. `get_evidence_spans`
+5. `propose_outcome_mapping`
+6. `request_human_review`
 
 The reported schemas included bounded identifiers and arrays, per-property descriptions, `additionalProperties: false`, and read-only/untrusted-content annotations on the read tools.
 
@@ -17,10 +19,12 @@ The reported schemas included bounded identifiers and arrays, per-property descr
 
 - `get_audit_state` returned the deterministic pair, stable outcome IDs, and an empty mapping list.
 - `get_evidence_spans` returned exact registry and publication quotes with stable locators.
+- `get_live_clinical_trial` retrieved current normalized outcomes for `NCT04280705` from ClinicalTrials.gov through the deployed application contract.
+- `get_live_pubmed_article` retrieved the structured abstract for PubMed `32445440`; the returned record retained the explicit limitation that abstract sections are not a canonical clinical-outcome schema.
 - `propose_outcome_mapping` staged an `omitted` proposal. An immediate `get_audit_state` call observed the new mapping and its subject-linked audit event, confirming the UI state was committed before the first tool returned.
 - `request_human_review` selected the mapping, moved actual keyboard focus to the `review-dock` region labelled by `review-title`, and scrolled the checkpoint into view.
-- A human click on **Accept** dynamically exposed `export_review_receipt` as the fifth tool.
-- The exported receipt contained the accepted mapping and its pair/stage/accept events. No staged mapping was present.
+- A human click on **Accept** dynamically exposed `export_review_receipt` as the seventh tool.
+- The exported receipt contained the accepted mapping, its exact cited evidence span and locator, and its pair/stage/accept events. No staged mapping or unused evidence was present.
 
 ## Fail-closed checks
 
@@ -31,7 +35,7 @@ The reported schemas included bounded identifiers and arrays, per-property descr
 ## Production and responsive checks
 
 - The production response included a Content Security Policy, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, a restrictive Permissions Policy, and `Referrer-Policy: strict-origin-when-cross-origin`; the framework-identifying header was absent.
-- The four initial tools still registered under the production CSP, and the full stage/review/export workflow completed without browser warnings or errors.
+- The six initial tools still registered under the production CSP, and both live reads plus the full stage/review/export workflow completed without browser warnings or errors.
 - GSAP interface transitions remained tied to workflow state; reduced-motion users bypass the animation code path.
 - At an exact 390 by 844 CSS-pixel viewport, the document width remained 390 pixels with no horizontal overflow.
 

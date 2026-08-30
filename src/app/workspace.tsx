@@ -5,7 +5,9 @@ import { DEMO_PAIR, INITIAL_AUDIT } from "@/lib/demo-data";
 import type { AuditEvent, AuditState, DiscrepancyKind, Mapping, Outcome } from "@/lib/contracts";
 import { validateMappingProposal } from "@/lib/proposal-validation";
 import { createReviewReceipt } from "@/lib/review-receipt";
+import { findLatestReviewedMappingId } from "@/lib/audit-state";
 import { useWorkspaceMotion } from "@/lib/use-workspace-motion";
+import { createLiveSourceTools } from "@/lib/webmcp-tools";
 
 const LABELS: Record<DiscrepancyKind, string> = {
   matched: "Matched", omitted: "Omitted", downgraded: "Downgraded",
@@ -79,11 +81,11 @@ export default function Workspace() {
 
   const undo = useCallback(() => {
     setAudit((current) => {
-      const target = [...current.mappings].reverse().find((item) => item.status !== "staged");
-      if (!target) return current;
+      const targetId = findLatestReviewedMappingId(current);
+      if (!targetId) return current;
       const next: AuditState = {
-        mappings: current.mappings.map((item) => item.id === target.id ? { ...item, status: "staged" } : item),
-        history: [...current.history, event("review_undone", "Latest decision returned to staging.", "reviewer", target.id)],
+        mappings: current.mappings.map((item) => item.id === targetId ? { ...item, status: "staged" } : item),
+        history: [...current.history, event("review_undone", "Latest decision returned to staging.", "reviewer", targetId)],
       };
       auditRef.current = next;
       return next;
@@ -115,6 +117,7 @@ export default function Workspace() {
     const evidenceIds = DEMO_PAIR.evidence.map((item) => item.id);
     const register = async () => {
       await Promise.all([
+        ...createLiveSourceTools().map((tool) => context.registerTool(tool, { signal: controller.signal })),
         context.registerTool({
           name: "get_audit_state", title: "Read audit state",
           description: "Read the trial-publication pair, stable outcome IDs, proposals, decisions, and audit-event summary. Use before proposing changes.",
@@ -169,7 +172,7 @@ export default function Workspace() {
       description: "Export human-reviewed decisions with evidence locators and audit trail. Staged proposals are excluded.",
       inputSchema: { type: "object", properties: {}, additionalProperties: false },
       annotations: { readOnlyHint: true, untrustedContentHint: true },
-      execute: () => createReviewReceipt(DEMO_PAIR.id, auditRef.current),
+      execute: () => createReviewReceipt(DEMO_PAIR, auditRef.current),
     }, { signal: controller.signal }).catch(() => undefined);
     return () => controller.abort();
   }, [reviewed.length]);
@@ -181,7 +184,7 @@ export default function Workspace() {
     <a className="skip-link" href="#workspace">Skip to comparison workspace</a>
     <header className="site-header">
       <a className="brand" href="#top" aria-label="Protocol Mirror home"><span className="brand-mark" aria-hidden="true"><span>P</span><span>M</span></span><span>Protocol Mirror</span></a>
-      <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? "WebMCP connected" : webMcp === "checking" ? "Checking WebMCP" : "WebMCP preview"}</span><span className="avatar" aria-hidden="true">TG</span></div>
+      <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? `WebMCP connected · ${reviewed.length > 0 ? 7 : 6} tools` : webMcp === "checking" ? "Checking WebMCP" : "WebMCP preview"}</span><span className="avatar" aria-hidden="true">TG</span></div>
     </header>
     <main id="top">
       <section className="case-header" aria-labelledby="case-title">

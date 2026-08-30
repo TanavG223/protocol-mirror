@@ -15,7 +15,7 @@ This step changes external state and requires the project owner's explicit confi
 
 - Home page returns HTTP 200 over HTTPS.
 - Header shows **WebMCP connected** in the Codex in-app browser.
-- Exactly four tools exist initially; the export tool appears only after a human decision.
+- Exactly six tools exist initially; the export tool appears as the seventh only after a human decision.
 - Stage, focus, accept, undo, re-accept, and export complete without console errors.
 - The receipt excludes staged proposals.
 - Invalid live-source identifiers return the documented structured 400 response.
