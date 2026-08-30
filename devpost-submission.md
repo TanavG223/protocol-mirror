@@ -5,7 +5,7 @@ Nothing has been sent to Devpost.
 
 ## One-line Summary
 
-Protocol Mirror is a WebMCP-native clinical-trial transparency workspace where an agent compares registered outcomes with published reports, stages evidence-linked discrepancies, and hands every conclusion to a human reviewer.
+AI assembles evidence. A human decides. Protocol Mirror is a WebMCP-native clinical-trial transparency workspace where an agent compares registered outcomes with published reports, stages evidence-linked discrepancies, and hands every conclusion to a human reviewer.
 
 ## Problem
 
@@ -22,6 +22,8 @@ The agent cannot accept or reject its own proposal. A person reviews the rationa
 The app includes a deterministic fictional case so the complete judging flow remains available without an upstream network dependency. Validated server adapters also retrieve normalized ClinicalTrials.gov outcomes and structured PubMed abstract sections.
 
 ## Why This Matters
+
+Most agent experiences are designed around delegation: tell the agent what you want, and it performs an action. Protocol Mirror explores a harder WebMCP question—how should humans and agents work together when the agent is useful but should not have final authority?
 
 Protocol Mirror demonstrates a reason to build for people and agents together rather than adding a chatbot beside an existing interface. The agent handles structured inspection and evidence assembly; the human retains the domain judgment. The shared page makes the agent's limits, citations, uncertainty, and authority boundary visible.
 
