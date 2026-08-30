@@ -49,7 +49,10 @@
 - [x] Canonical plugin-shaped `devpost-submission.md` packet with testing instructions, AI/Codex usage, limitations, and explicit placeholders
 - [x] Six final Codex-browser screenshots captured and visually reviewed, including mobile and the permanent seven-tool reviewed state
 - [x] Final 1:19.61 H.264/AAC demo master rendered, audio-level checked, and visually reviewed
+- [x] Branded 1280×720 upload thumbnail and exact YouTube metadata prepared
+- [x] Judge-facing 60-second no-credentials test path added to the public README
 - [ ] Public YouTube upload under three minutes with audio
 - [x] Devpost integration reports hackathon registration complete and submissions open
 - [ ] Devpost form completed and reviewed
-- [ ] Freeze code and submission before deadline
+- [x] Application code and local release assets frozen on a green public `main` branch
+- [ ] Freeze the final external URLs and Devpost receipt before the deadline

@@ -8,6 +8,17 @@ Protocol Mirror is a human–agent clinical-trial transparency workspace. It com
 
 ![Protocol Mirror comparison workspace](docs/screenshots/01-hero.jpg)
 
+## 60-second judge path
+
+No account, API key, or setup is required.
+
+1. Open the live application in the Codex/ChatGPT in-app browser with WebMCP site tools enabled and confirm the header reports six tools.
+2. Ask the agent for the audit state and exact evidence spans, then have it stage one evidence-linked proposal and request human review.
+3. Use the visible **Accept** or **Reject** control yourself. There is intentionally no agent-callable decision tool.
+4. Confirm the header now reports seven tools and call `export_review_receipt`; the receipt contains only reviewed work and the exact evidence locators that supported it.
+
+For bounded live-source proof, call `get_live_clinical_trial` with `NCT04280705` and `get_live_pubmed_article` with `32445440`. The deterministic fictional case remains available if either public upstream is unavailable.
+
 ## Why this is a WebMCP project
 
 The page is the shared workspace for both the reviewer and the agent. It registers atomic browser tools directly on `document.modelContext`:

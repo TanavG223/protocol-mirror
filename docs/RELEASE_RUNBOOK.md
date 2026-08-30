@@ -2,6 +2,17 @@
 
 This runbook starts from a clean, CI-verified `main` branch.
 
+## Current release state
+
+- Permanent application: https://protocol-mirror.vercel.app
+- Public MIT repository: https://github.com/TanavG223/protocol-mirror
+- Permanent WebMCP workflow: verified end to end in the Codex in-app browser
+- Demo master: `docs/demo/protocol-mirror-demo.mp4` (1:19.61, H.264/AAC)
+- Upload thumbnail: `docs/demo/title-card.png` (1280×720)
+- Still pending by owner choice: public YouTube upload, explicit rules acknowledgment, Devpost project write, and final `yes, submit`
+
+The steps below are the reproducible release procedure and final external-action checklist. Do not repeat completed account or deployment actions unless current verification contradicts the state above.
+
 ## 1. Claim the permanent deployment
 
 This step changes external state and requires the project owner's explicit confirmation at action time.
