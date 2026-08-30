@@ -1,6 +1,6 @@
 # Final owner demo script
 
-Target runtime: 2:10–2:25. Hard limit: under three minutes. This is the recommended owner-recorded replacement for the existing synthesized master.
+Target runtime: 2:10–2:25. Hard limit: under three minutes. This is the final owner-recording plan; any older generated media in `docs/demo/` is reference material only.
 
 ## Before recording
 

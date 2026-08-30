@@ -79,7 +79,7 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 - Public repository mirror for the Try it out field: https://github.com/TanavG223/protocol-mirror
 - License: https://github.com/TanavG223/protocol-mirror/blob/main/LICENSE
 - Live app: https://protocol-mirror.vercel.app
-- Demo video: 1:19.61 narrated local master complete; public YouTube upload pending
+- Demo video: owner-recording script complete; final recording and public YouTube upload pending
 
 ## Screenshot assets
 

@@ -1,8 +1,8 @@
 # YouTube upload metadata
 
-## Verified master
+## Reference media only
 
-- File: `docs/demo/protocol-mirror-demo.mp4`
+- Reference file, not for submission: `docs/demo/protocol-mirror-demo.mp4`
 - SHA-256: `03f6258bb34316c37aeb290873ff64c5ee2b64addd5a4ef2302d191abb28f9b8`
 - Duration: 79.607664 seconds
 - Video: H.264, 1280×720, 15 fps
@@ -10,7 +10,7 @@
 - Automated continuity checks: no black segment of 0.5 seconds or longer at the tested threshold; no silence of 2 seconds or longer below −40 dB
 - Thumbnail SHA-256: `f2c30941c47ae9e920933a7e35a1920165f8fa8224cec63ba2a303b26fa4a7bf`
 
-These checks confirm media integrity, not editorial quality. The project owner should still watch the complete upload with sound before publishing or using its URL in the entry.
+These checks describe the older generated reference file only. They do not validate the final owner-recorded submission video. After recording, the project owner must confirm the actual final file is under three minutes, audible throughout, visually complete, and watch the processed YouTube upload end to end before using its URL in the entry.
 
 ## Title
 
@@ -41,5 +41,5 @@ Built for The WebMCP Challenge.
 - Audience: No, it is not made for kids
 - Category: Science & Technology
 - Language: English
-- Synthetic media disclosure: narration is synthesized; no realistic person or event is depicted
+- Synthetic media disclosure: follow YouTube's current disclosure prompt truthfully based on the final owner-recorded video's actual contents
 - Music: none

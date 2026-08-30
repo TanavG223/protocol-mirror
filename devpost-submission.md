@@ -121,7 +121,7 @@ The repository is public, GitHub detects its MIT license, all required source an
 
 ## Demo Video
 
-The finished local master is `docs/demo/protocol-mirror-demo.mp4`: 1:19.61, 1280×720 H.264/AAC, audible original narration, no music, and direct capture of the permanent production workflow. The branded 1280×720 upload thumbnail is `docs/demo/title-card.png`. Public YouTube upload is pending channel creation and the required user confirmation. Upload title, description, and disclosure settings are ready in `docs/YOUTUBE_METADATA.md`.
+The project owner will record and upload the final demo using `docs/FINAL_OWNER_DEMO_SCRIPT.md`. It is timed for 2:10–2:25 and demonstrates the permanent deployment, six initial WebMCP tools, exact evidence retrieval, an agent-staged proposal, the human-only decision, the dynamic seventh tool, and the reviewed-only receipt. A prior generated video in `docs/demo/` is reference material only and is not the submission video. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
 
 ## Screenshot Shot List
 
@@ -140,7 +140,8 @@ The finished local master is `docs/demo/protocol-mirror-demo.mp4`: 1:19.61, 1280
 - [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
 - [x] Six final screenshots, including a permanent-deployment review proof, and a timed demo script
 - [x] Permanent live URL deployed and fully exercised in the Codex in-app browser
-- [x] Final 1:19.61 demo master rendered with audible narration and visually reviewed
+- [x] Final owner-recording script, shot sequence, narration, and acceptance checklist prepared
+- [ ] Owner-recorded demo completed, reviewed end to end, and confirmed under three minutes with clear audio
 - [ ] Public YouTube upload completed and watched end to end
 - [x] Devpost MCP reports the account registered for The WebMCP Challenge with submissions open
 - [ ] Authenticated Devpost project form fields and final preview verified
@@ -175,7 +176,7 @@ Authenticated Devpost preflight on 2026-08-30 returned these exact project field
 
 Still required before the form can be finalized:
 
-- Public YouTube demo URL after the project owner reviews and uploads the prepared master
+- Public YouTube demo URL after the project owner records, reviews, and uploads the final video
 - Explicit rules acknowledgment in the local hackathon workflow
 - Final authenticated Devpost preview and the separate literal `yes, submit` confirmation
 

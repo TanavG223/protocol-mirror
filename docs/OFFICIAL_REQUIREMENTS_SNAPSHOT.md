@@ -65,10 +65,10 @@ Ten winners receive $3,500 cash each ($35,000 total) plus the sponsor benefits l
 | Non-trivial WebMCP implementation | Six initial state-aware tools, dynamic seventh receipt tool, schemas, authority boundary, live public-source and review rehearsal | Ready |
 | Public source and functional instructions | Public repository, README, lockfile, CI | Ready |
 | Detectable open-source license | GitHub API reports MIT; top-level `LICENSE` is tracked | Ready |
-| Screenshots | Five production-mode desktop/mobile assets | Ready |
+| Screenshots | Six production-mode desktop/mobile assets, including permanent seven-tool reviewed state | Ready |
 | Text description | Root `devpost-submission.md` packet | Ready |
 | Working live URL | `https://protocol-mirror.vercel.app`; six-before/seven-after tool lifecycle and live source reads verified in Codex browser | Ready |
-| Public YouTube demo under three minutes with audio | Verified 1:19.61 H.264/AAC master and custom thumbnail ready; public upload pending | Missing |
+| Public YouTube demo under three minutes with audio | Owner-recording script, shot plan, upload metadata, and custom thumbnail ready; final recording and public upload pending | Missing |
 | Devpost registration | Official Devpost integration reports `registered` with submissions open | Ready |
 | Devpost project/form access | No Protocol Mirror Devpost project exists yet; authenticated creation and field review remain | Missing |
 

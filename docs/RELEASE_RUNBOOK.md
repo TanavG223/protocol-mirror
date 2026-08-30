@@ -7,7 +7,8 @@ This runbook starts from a clean, CI-verified `main` branch.
 - Permanent application: https://protocol-mirror.vercel.app
 - Public MIT repository: https://github.com/TanavG223/protocol-mirror
 - Permanent WebMCP workflow: verified end to end in the Codex in-app browser
-- Demo master: `docs/demo/protocol-mirror-demo.mp4` (1:19.61, H.264/AAC)
+- Final demo: owner recording pending; use `docs/FINAL_OWNER_DEMO_SCRIPT.md`
+- Older generated media in `docs/demo/`: reference only, not the submission video
 - Upload thumbnail: `docs/demo/title-card.png` (1280×720)
 - Still pending by owner choice: public YouTube upload, explicit rules acknowledgment, Devpost project write, and final `yes, submit`
 
@@ -37,11 +38,11 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 
 ## 3. Record and publish the demo
 
-1. Use the finished `docs/demo/protocol-mirror-demo.mp4` master and the metadata in `docs/YOUTUBE_METADATA.md`.
-2. Confirm the final 1:19.61 runtime remains under three minutes after upload processing.
+1. Record the production workflow using `docs/FINAL_OWNER_DEMO_SCRIPT.md` and the paste-ready metadata in `docs/YOUTUBE_METADATA.md`.
+2. Confirm the actual final runtime remains under three minutes after upload processing and that the narration is clear throughout.
 3. Watch the complete upload with sound before making it public or unlisted as allowed by the rules.
 4. Put the live app and public repository links in the video description.
-5. Replace the pending demo-video line in `docs/SUBMISSION_DRAFT.md` with the final URL and watch the uploaded result end to end with sound.
+5. Replace the pending demo-video lines in `docs/SUBMISSION_DRAFT.md` and `devpost-submission.md` with the final URL only after watching the uploaded result end to end with sound.
 
 ## 4. Complete the Devpost entry
 
