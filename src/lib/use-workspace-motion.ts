@@ -11,8 +11,10 @@ export function useWorkspaceMotion(
   root: RefObject<HTMLDivElement | null>,
   stagedCount: number,
   activeId: string | null,
+  reviewedCount: number,
 ) {
   const previousStagedCount = useRef(stagedCount);
+  const previousReviewedCount = useRef(reviewedCount);
 
   useLayoutEffect(() => {
     if (!root.current || !motionIsAllowed()) return;
@@ -76,4 +78,21 @@ export function useWorkspaceMotion(
     }, root);
     return () => context.revert();
   }, [root, activeId]);
+
+  useLayoutEffect(() => {
+    const hasNewDecision = reviewedCount > previousReviewedCount.current;
+    previousReviewedCount.current = reviewedCount;
+    if (!root.current || !hasNewDecision || !motionIsAllowed()) return;
+    const context = gsap.context(() => {
+      gsap.fromTo([".hero-action-stack p", ".connection-badge"], { scale: 0.96, opacity: 0.55 }, {
+        scale: 1,
+        opacity: 1,
+        duration: 0.34,
+        stagger: 0.045,
+        ease: "back.out(1.7)",
+        clearProps: "transform,opacity",
+      });
+    }, root);
+    return () => context.revert();
+  }, [root, reviewedCount]);
 }

@@ -44,3 +44,18 @@ This is implementation evidence, not clinical validation or measured research-in
 ## Permanent deployment closure
 
 The public Vercel deployment built commit `ebead5b72027cbc6f36bbd0e2ed6aa5fa9f6eb70` and loaded without authentication. The Codex in-app browser reported the expected six-tool initial surface at the HTTPS origin. Through those public tools it retrieved `NCT04280705` (43 normalized outcomes) and PubMed `32445440` (four structured abstract sections), staged and focused an evidence-linked uncertain mapping, and preserved the `human_reviewer_only` focus response. A human click accepted the proposal; the header changed to seven tools, and `export_review_receipt` returned one reviewed mapping, the two exact cited locators, and the pair/stage/accept audit events.
+
+## Evidence-bound UI regression pass
+
+After the final visual and interaction refinement, a fresh local Codex in-app-browser pass verified:
+
+- Any registered or reported outcome can expose its exact source span before a mapping exists.
+- Staging the guided case produced four proposals. Only the active proposal's uniquely named **Accept** and **Reject** controls were enabled; selecting another proposal moved that authority to the newly displayed evidence.
+- Accepting a proposal announced the exact decision, moved focus to the stable review region, selected the next proposal for inspection, changed the capability surface from six tools to seven, and exported a reviewed-only receipt. Undo restored the proposal, selected it, announced the reversal, and removed the receipt tool when no reviewed work remained.
+- A full WebMCP run read audit state and evidence, rejected duplicate evidence IDs, staged and focused an uncertain mapping, accepted it through the human UI, and exported the exact accepted mapping, two locators, and pair/stage/accept events.
+- The live adapters returned current records for ClinicalTrials.gov `NCT03619213` and PubMed `33915143` through the local application contract.
+- Exact 375, 768, 1024, and 1440 CSS-pixel widths had no horizontal document overflow. The 375-pixel layout kept the central hook and human action in the first viewport; the tablet layout exposed a mapping-centric relationship summary.
+- Reduced-motion emulation reported a readable final state (`transform: none`, `opacity: 1`), automatic scrolling, and effectively disabled transitions. The skip link measured 44 pixels high and its keyboard focus outline was an opaque 3-pixel dark blue.
+- No browser console warnings or errors appeared during these checks.
+
+This regression section describes the local release candidate. The permanent deployment must be rechecked after its final commit is built.

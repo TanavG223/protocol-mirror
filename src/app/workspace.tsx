@@ -29,6 +29,8 @@ const outcomeById = (id: string | null, outcomes: Outcome[]) => outcomes.find((i
 export default function Workspace() {
   const [audit, setAudit] = useState<AuditState>(INITIAL_AUDIT);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [selectedOutcomeId, setSelectedOutcomeId] = useState<string | null>(null);
+  const [decisionNotice, setDecisionNotice] = useState("No human decisions recorded yet.");
   const [webMcp, setWebMcp] = useState<"checking" | "connected" | "preview">("preview");
   const counter = useRef(10);
   const auditRef = useRef(audit);
@@ -43,8 +45,10 @@ export default function Workspace() {
   const reviewed = audit.mappings.filter((item) => item.status !== "staged");
   const accepted = audit.mappings.filter((item) => item.status === "accepted");
   const active = audit.mappings.find((item) => item.id === activeId);
-  const evidence = active?.evidenceIds.map((id) => DEMO_PAIR.evidence.find((item) => item.id === id)).filter(Boolean) ?? [];
-  useWorkspaceMotion(shellRef, staged.length, activeId);
+  const selectedOutcome = [...DEMO_PAIR.registryOutcomes, ...DEMO_PAIR.publicationOutcomes].find((item) => item.id === selectedOutcomeId);
+  const activeEvidenceIds = active?.evidenceIds ?? selectedOutcome?.evidenceIds ?? [];
+  const evidence = activeEvidenceIds.map((id) => DEMO_PAIR.evidence.find((item) => item.id === id)).filter(Boolean);
+  useWorkspaceMotion(shellRef, staged.length, activeId, reviewed.length);
 
   const event = useCallback((action: string, detail: string, actor: AuditEvent["actor"], subjectId?: string): AuditEvent => ({
     id: `event-${++counter.current}`, action, detail, actor, subjectId,
@@ -62,34 +66,55 @@ export default function Workspace() {
         return next;
       });
       setActiveId(mapping.id);
+      setSelectedOutcomeId(null);
     });
     return mapping;
   }, [event]);
 
   const decide = useCallback((id: string, status: "accepted" | "rejected") => {
-    setAudit((current) => {
-      const target = current.mappings.find((item) => item.id === id);
-      if (!target || target.status !== "staged") return current;
-      const next: AuditState = {
-        mappings: current.mappings.map((item) => item.id === id ? { ...item, status } : item),
-        history: [...current.history, event(`mapping_${status}`, `${LABELS[target.discrepancy]} proposal ${status} by reviewer.`, "reviewer", target.id)],
-      };
-      auditRef.current = next;
-      return next;
+    if (id !== activeId) return;
+    let nextActiveId: string | null = null;
+    let notice = "";
+    flushSync(() => {
+      setAudit((current) => {
+        const target = current.mappings.find((item) => item.id === id);
+        if (!target || target.status !== "staged") return current;
+        nextActiveId = current.mappings.find((item) => item.status === "staged" && item.id !== id)?.id ?? null;
+        notice = `${LABELS[target.discrepancy]} proposal ${status}. ${nextActiveId ? "The next proposal is ready for inspection." : "The human review queue is clear."}`;
+        const next: AuditState = {
+          mappings: current.mappings.map((item) => item.id === id ? { ...item, status } : item),
+          history: [...current.history, event(`mapping_${status}`, `${LABELS[target.discrepancy]} proposal ${status} by reviewer.`, "reviewer", target.id)],
+        };
+        auditRef.current = next;
+        return next;
+      });
     });
-  }, [event]);
+    setActiveId(nextActiveId);
+    setSelectedOutcomeId(null);
+    if (notice) setDecisionNotice(notice);
+    requestAnimationFrame(() => reviewRef.current?.focus());
+  }, [activeId, event]);
 
   const undo = useCallback(() => {
-    setAudit((current) => {
-      const targetId = findLatestReviewedMappingId(current);
-      if (!targetId) return current;
-      const next: AuditState = {
-        mappings: current.mappings.map((item) => item.id === targetId ? { ...item, status: "staged" } : item),
-        history: [...current.history, event("review_undone", "Latest decision returned to staging.", "reviewer", targetId)],
-      };
-      auditRef.current = next;
-      return next;
+    let restoredId: string | null = null;
+    flushSync(() => {
+      setAudit((current) => {
+        const targetId = findLatestReviewedMappingId(current);
+        if (!targetId) return current;
+        restoredId = targetId;
+        const next: AuditState = {
+          mappings: current.mappings.map((item) => item.id === targetId ? { ...item, status: "staged" } : item),
+          history: [...current.history, event("review_undone", "Latest decision returned to staging.", "reviewer", targetId)],
+        };
+        auditRef.current = next;
+        return next;
+      });
     });
+    if (restoredId) {
+      setActiveId(restoredId);
+      setSelectedOutcomeId(null);
+      setDecisionNotice("The latest human decision was undone and returned to review.");
+    }
   }, [event]);
 
   const loadDemo = useCallback(() => {
@@ -106,7 +131,23 @@ export default function Workspace() {
       return next;
     });
     setActiveId("map-primary-demo");
+    setSelectedOutcomeId(null);
+    setDecisionNotice("Four evidence-linked proposals are staged. Inspect the active proposal before deciding.");
   }, [event]);
+
+  const selectMapping = useCallback((mappingId: string) => {
+    setSelectedOutcomeId(null);
+    setActiveId(mappingId);
+  }, []);
+
+  const inspectOutcome = useCallback((outcomeId: string, mappingId?: string) => {
+    if (mappingId) {
+      selectMapping(mappingId);
+      return;
+    }
+    setActiveId(null);
+    setSelectedOutcomeId(outcomeId);
+  }, [selectMapping]);
 
   useEffect(() => {
     const context = document.modelContext;
@@ -154,7 +195,7 @@ export default function Workspace() {
           name: "request_human_review", title: "Focus a staged review",
           description: "Focus a proposal in the reviewer interface so a human can inspect its rationale and evidence before deciding.",
           inputSchema: { type: "object", properties: { mappingId: { type: "string", description: "The stable mapping ID returned by propose_outcome_mapping or get_audit_state.", minLength: 1, maxLength: 80 } }, required: ["mappingId"], additionalProperties: false },
-          execute: (input: Record<string, unknown>) => { if (typeof input.mappingId !== "string" || input.mappingId.length === 0 || input.mappingId.length > 80) throw new Error("mappingId must contain 1 to 80 characters."); const mapping = auditRef.current.mappings.find((item) => item.id === input.mappingId); if (!mapping) throw new Error(`No mapping exists with id ${input.mappingId}.`); if (mapping.status !== "staged") throw new Error(`Mapping ${mapping.id} is already ${mapping.status}; choose a staged mapping.`); flushSync(() => setActiveId(mapping.id)); const reviewDock = reviewRef.current; reviewDock?.focus(); reviewDock?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" }); return { status: "review_requested", mappingId: mapping.id, decisionAuthority: "human_reviewer_only" }; },
+          execute: (input: Record<string, unknown>) => { if (typeof input.mappingId !== "string" || input.mappingId.length === 0 || input.mappingId.length > 80) throw new Error("mappingId must contain 1 to 80 characters."); const mapping = auditRef.current.mappings.find((item) => item.id === input.mappingId); if (!mapping) throw new Error(`No mapping exists with id ${input.mappingId}.`); if (mapping.status !== "staged") throw new Error(`Mapping ${mapping.id} is already ${mapping.status}; choose a staged mapping.`); flushSync(() => { setSelectedOutcomeId(null); setActiveId(mapping.id); }); const reviewDock = reviewRef.current; reviewDock?.focus(); reviewDock?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" }); return { status: "review_requested", mappingId: mapping.id, decisionAuthority: "human_reviewer_only" }; },
         }, { signal: controller.signal }),
       ]);
       setWebMcp("connected");
@@ -189,31 +230,33 @@ export default function Workspace() {
     <main id="top">
       <section className="case-header" aria-labelledby="case-title">
         <div className="eyebrow case-reveal"><span>Case 04</span><span aria-hidden="true">/</span><span>Outcome integrity review</span></div>
-        <div className="case-heading-row case-reveal"><div><h1 id="case-title">{DEMO_PAIR.title}</h1><p className="case-subtitle">A registry-to-publication comparison built for accountable human–agent review.</p></div><button className="primary-action" type="button" onClick={loadDemo}><Icon name="spark" /> Stage guided review</button></div>
+        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>AI assembles evidence.</span><span>A human decides.</span></h1><p className="case-subtitle">A WebMCP workspace for registry-to-publication review—built to make agent reasoning inspectable without giving the agent final authority.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={loadDemo}><Icon name="spark" /> Stage guided review</button><p><strong>{reviewed.length > 0 ? "7 tools" : "6 tools"}</strong><span aria-hidden="true">→</span>{reviewed.length > 0 ? "Receipt unlocked by review" : "Human decision unlocks receipt"}</p></div></div>
         <ol className="agent-rail case-reveal" aria-label="Accountable WebMCP workflow">
           <li><span>01</span><strong>Inspect exact spans</strong><small>Source text stays untrusted</small></li>
           <li><span>02</span><strong>Stage a proposal</strong><small>Schema-bound and evidence-linked</small></li>
-          <li><span>03</span><strong>Human decides</strong><small>No silent acceptance</small></li>
+          <li><span>03</span><strong>Human decides</strong><small>Only review unlocks the receipt</small></li>
         </ol>
+        <div className="case-passport case-reveal"><span>Active demonstration case</span><h2>{DEMO_PAIR.title}</h2><p>Deterministic fictional record · no clinical claim</p></div>
         <div className="source-strip" role="group" aria-label="Study sources">
           <div><span>Registration</span><strong>{DEMO_PAIR.nctId}</strong><small>Updated {DEMO_PAIR.registryUpdated}</small></div><div><span>Publication</span><strong>{DEMO_PAIR.pmid}</strong><small>Published {DEMO_PAIR.publicationDate}</small></div><div><span>Sponsor</span><strong>{DEMO_PAIR.sponsor}</strong><small>{DEMO_PAIR.phase}</small></div><div className="review-score"><span>Review progress</span><strong>{reviewed.length}<em> / {audit.mappings.length || 4}</em></strong><small>{staged.length} awaiting a human decision</small></div>
         </div>
       </section>
       <section className="workspace" id="workspace" aria-labelledby="workspace-title">
         <div className="workspace-heading"><div><p className="section-kicker">Evidence table</p><h2 id="workspace-title">Registered intent <span aria-hidden="true">↔</span> reported record</h2></div><div className="legend"><span><i className="dot matched" />Matched</span><span><i className="dot flagged" />Flagged</span><span><i className="dot unreviewed" />Unreviewed</span></div></div>
+        {audit.mappings.length > 0 && <div className="mobile-mapping-summary" aria-label="Proposed outcome relationships">{audit.mappings.map((mapping) => <button type="button" key={mapping.id} className={mapping.id === activeId ? "active" : ""} onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"}</strong></button>)}</div>}
         <div className="comparison-grid">
-          <section className="outcome-column" aria-labelledby="registered-title"><ColumnTitle index="01" title="Registered outcomes" subtitle="ClinicalTrials.gov protocol record" id="registered-title" /><div className="outcome-list">{DEMO_PAIR.registryOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="registry" isMapped={registryMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} onSelect={setActiveId} />)}</div></section>
-          <div className="evidence-spine" aria-hidden="true"><span className="spine-label">Evidence threads</span><i className="thread one" /><i className="thread two" /><i className="thread three" /></div>
-          <section className="outcome-column" aria-labelledby="reported-title"><ColumnTitle index="02" title="Reported outcomes" subtitle="Journal publication record" id="reported-title" /><div className="outcome-list">{DEMO_PAIR.publicationOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="publication" isMapped={publicationMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} onSelect={setActiveId} />)}</div></section>
+          <section className="outcome-column" aria-labelledby="registered-title"><ColumnTitle index="01" title="Registered outcomes" subtitle="ClinicalTrials.gov protocol record" id="registered-title" /><div className="outcome-list">{DEMO_PAIR.registryOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="registry" isMapped={registryMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} selectedOutcomeId={selectedOutcomeId} onSelect={inspectOutcome} />)}</div></section>
+          <div className="evidence-spine" role="note" aria-label={`${audit.mappings.length} proposed relationships`}><strong>{audit.mappings.length}</strong><span>proposed relationships</span><div className="relationship-dots" aria-hidden="true">{audit.mappings.map((mapping) => <i className={mapping.status} key={mapping.id} />)}</div></div>
+          <section className="outcome-column" aria-labelledby="reported-title"><ColumnTitle index="02" title="Reported outcomes" subtitle="Journal publication record" id="reported-title" /><div className="outcome-list">{DEMO_PAIR.publicationOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="publication" isMapped={publicationMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} selectedOutcomeId={selectedOutcomeId} onSelect={inspectOutcome} />)}</div></section>
         </div>
       </section>
       <section className="review-dock" aria-labelledby="review-title" ref={reviewRef} tabIndex={-1}>
-        <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title" aria-live="polite">Review queue <span>{staged.length}</span></h2></div><button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div>
-        {staged.length === 0 ? <div className="empty-review"><Icon name="spark" /><div><strong>The queue is clear.</strong><p>Ask an agent to inspect the case with WebMCP, or stage the guided demonstration.</p></div></div> : <div className="review-cards">{staged.map((mapping) => <article className={`review-card ${mapping.id === activeId ? "active" : ""}`} key={mapping.id}><button className="review-card-main" type="button" aria-pressed={mapping.id === activeId} onClick={() => setActiveId(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"}</strong><span className="mapping-arrow"><Icon name="arrow" /></span><strong>{mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"}</strong><small>{Math.round(mapping.confidence * 100)}% agent confidence · {mapping.evidenceIds.length} source {mapping.evidenceIds.length === 1 ? "span" : "spans"}</small></button><div className="review-actions"><button type="button" className="reject" onClick={() => decide(mapping.id, "rejected")}>Reject</button><button type="button" className="accept" onClick={() => decide(mapping.id, "accepted")}><Icon name="check" />Accept</button></div></article>)}</div>}
+        <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title">Review queue <span>{staged.length}</span></h2><p className="decision-notice" role="status" aria-live="polite">{decisionNotice}</p></div><button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div>
+        {staged.length === 0 ? <div className="empty-review"><Icon name="spark" /><div><strong>The queue is clear.</strong><p>Ask an agent to inspect the case with WebMCP, or stage the guided demonstration.</p></div></div> : <div className="review-cards">{staged.map((mapping) => { const isActive = mapping.id === activeId; const registryTitle = mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"; const publicationTitle = mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"; const mappingName = `${LABELS[mapping.discrepancy]} proposal from ${registryTitle} to ${publicationTitle}`; return <article className={`review-card ${isActive ? "active" : ""}`} key={mapping.id}><button className="review-card-main" type="button" aria-pressed={isActive} aria-controls="evidence-drawer" onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{registryTitle}</strong><span className="mapping-arrow"><Icon name="arrow" /></span><strong>{publicationTitle}</strong><small>{Math.round(mapping.confidence * 100)}% agent confidence · {mapping.evidenceIds.length} source {mapping.evidenceIds.length === 1 ? "span" : "spans"}{!isActive && " · inspect before deciding"}</small></button><div className="review-actions"><button type="button" className="reject" disabled={!isActive} aria-label={`Reject ${mappingName}`} onClick={() => decide(mapping.id, "rejected")}>Reject</button><button type="button" className="accept" disabled={!isActive} aria-label={`Accept ${mappingName}`} onClick={() => decide(mapping.id, "accepted")}><Icon name="check" />Accept</button></div></article>; })}</div>}
       </section>
-      <section className="evidence-panel" aria-labelledby="evidence-title" aria-live="polite">
-        <div className="evidence-heading"><div><p className="section-kicker">Inspectable reasoning</p><h2 id="evidence-title">Evidence drawer</h2></div>{active && <span className={`classification ${active.discrepancy}`}>{LABELS[active.discrepancy]}</span>}</div>
-        {active ? <div className="evidence-content"><div className="rationale"><span>Agent rationale</span><p>{active.rationale}</p><small>Proposal only · source text is treated as untrusted data</small></div><div className="quotes">{evidence.map((item) => item && <blockquote key={item.id}><Icon name="quote" /><p>“{item.quote}”</p><cite>{item.sourceLabel}<span>{item.locator}</span></cite></blockquote>)}</div></div> : <p className="muted">Select a mapping to inspect its rationale and source spans.</p>}
+      <section className="evidence-panel" id="evidence-drawer" aria-labelledby="evidence-title" aria-live="polite">
+        <div className="evidence-heading"><div><p className="section-kicker">Inspectable reasoning</p><h2 id="evidence-title">{active ? "Proposal evidence" : selectedOutcome ? "Source evidence" : "Evidence drawer"}</h2></div>{active && <span className={`classification ${active.discrepancy}`}>{LABELS[active.discrepancy]}</span>}</div>
+        {active || selectedOutcome ? <div className="evidence-content"><div className="rationale"><span>{active ? "Agent rationale" : "Selected outcome"}</span>{active && <div className="evidence-mapping-identity"><strong>{active.registryOutcomeId ? outcomeById(active.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{active.publicationOutcomeId ? outcomeById(active.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"}</strong></div>}<p>{active ? active.rationale : selectedOutcome?.title}</p><small>{active ? "Proposal only · source text is treated as untrusted data" : "Direct source inspection · no mapping or inference required"}</small></div><div className="quotes">{evidence.map((item) => item && <blockquote key={item.id}><Icon name="quote" /><p>“{item.quote}”</p><cite>{item.sourceLabel}<span>{item.locator}</span></cite><a href={item.url} target="_blank" rel="noreferrer" aria-label={`Open the ${item.source} source database for ${item.sourceLabel}`}>Open source database <Icon name="arrow" /></a></blockquote>)}</div></div> : <p className="muted">Select any outcome to inspect its exact source span, or select a staged proposal to inspect the agent rationale.</p>}
       </section>
     </main>
     <footer><p>Protocol Mirror is a research transparency aid—not medical advice or a finding of misconduct.</p><p>{accepted.length} accepted · {audit.history.length} auditable {audit.history.length === 1 ? "event" : "events"} · deterministic demo data</p></footer>
@@ -224,7 +267,8 @@ function ColumnTitle({ index, title, subtitle, id }: { index: string; title: str
   return <div className="column-heading"><span className="source-index">{index}</span><div><h3 id={id}>{title}</h3><p>{subtitle}</p></div></div>;
 }
 
-function OutcomeCard({ outcome, side, isMapped, mappings, activeId, onSelect }: { outcome: Outcome; side: "registry" | "publication"; isMapped: boolean; mappings: Mapping[]; activeId: string | null; onSelect: (id: string) => void }) {
+function OutcomeCard({ outcome, side, isMapped, mappings, activeId, selectedOutcomeId, onSelect }: { outcome: Outcome; side: "registry" | "publication"; isMapped: boolean; mappings: Mapping[]; activeId: string | null; selectedOutcomeId: string | null; onSelect: (outcomeId: string, mappingId?: string) => void }) {
   const mapping = [...mappings].reverse().find((item) => side === "registry" ? item.registryOutcomeId === outcome.id : item.publicationOutcomeId === outcome.id);
-  return <article className={`outcome-card ${mapping?.id === activeId ? "active" : ""}`}><button type="button" onClick={() => mapping && onSelect(mapping.id)} disabled={!mapping} aria-pressed={mapping ? mapping.id === activeId : undefined} aria-label={`${outcome.title}${mapping ? `, ${LABELS[mapping.discrepancy]}` : ", not yet mapped"}`}><div className="outcome-meta"><span className={`role ${outcome.role}`}>{outcome.role}</span><span>{outcome.timeFrame}</span></div><h4>{outcome.title}</h4><p>{outcome.description}</p><div className="outcome-status"><span className={`status-line ${mapping?.status ?? "unreviewed"}`} /><span>{mapping ? `${LABELS[mapping.discrepancy]} · ${mapping.status}` : isMapped ? "Mapped" : "Awaiting analysis"}</span>{mapping && <span className="confidence">{Math.round(mapping.confidence * 100)}%</span>}</div></button></article>;
+  const isActive = mapping ? mapping.id === activeId : selectedOutcomeId === outcome.id;
+  return <article className={`outcome-card ${isActive ? "active" : ""}`}><button type="button" onClick={() => onSelect(outcome.id, mapping?.id)} aria-pressed={isActive} aria-controls="evidence-drawer" aria-label={`Inspect source evidence for ${outcome.title}${mapping ? `, ${LABELS[mapping.discrepancy]}` : ", not yet mapped"}`}><div className="outcome-meta"><span className={`role ${outcome.role}`}>{outcome.role}</span><span>{outcome.timeFrame}</span></div><h4>{outcome.title}</h4><p>{outcome.description}</p><div className="outcome-status"><span className={`status-line ${mapping?.status ?? "unreviewed"}`} /><span>{mapping ? `${LABELS[mapping.discrepancy]} · ${mapping.status}` : isMapped ? "Mapped" : "Inspect source span"}</span>{mapping && <span className="confidence">{Math.round(mapping.confidence * 100)}%</span>}</div></button></article>;
 }

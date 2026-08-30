@@ -39,8 +39,10 @@ WebMCP lifecycle is managed with `AbortController` signals. Tool schemas reject 
 
 - Distinctive, responsive registry-to-publication comparison workspace
 - Deterministic fictional demonstration record that works offline
-- Staged review queue with accept, reject, focus, and undo
-- Evidence drawer with exact spans and stable locators
+- Direct inspection of exact source spans before any mapping exists
+- Evidence-bound review controls: a proposal must be active before its uniquely named accept/reject actions unlock
+- Staged review queue with accept, reject, deterministic focus recovery, and undo
+- Evidence drawer with mapping identity, exact spans, stable locators, and authoritative source links
 - Append-only in-session audit events and reviewed receipt export
 - ClinicalTrials.gov v2 API adapter with validation and normalized outcomes
 - PubMed E-utilities adapter with structured abstract sections
@@ -77,7 +79,7 @@ Current verified baseline: 30 passing tests, clean lint and TypeScript checks, a
 The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
 The scoped threat model, implemented controls, and residual risks are recorded in [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md) and [`docs/SECURITY_REVIEW.md`](docs/SECURITY_REVIEW.md).
 The exact recording sequence and final external-action checklist are in [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) and [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.md).
-The verified narrated demo master and branded upload thumbnail are in [`docs/demo/`](docs/demo/).
+The owner-recording script is [`docs/FINAL_OWNER_DEMO_SCRIPT.md`](docs/FINAL_OWNER_DEMO_SCRIPT.md). Draft media assets remain in [`docs/demo/`](docs/demo/), but the owner will record and upload the final submission video.
 The canonical Devpost-ready field packet is [`devpost-submission.md`](devpost-submission.md); it clearly separates the verified live application from the pending public video URL.
 The dated challenge-page evidence and requirement-to-artifact audit are in [`docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md`](docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md).
 
