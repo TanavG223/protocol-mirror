@@ -72,7 +72,7 @@ npm run check
 
 This runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
 
-Current verified baseline: 30 passing tests, clean lint and TypeScript checks, and a successful production build. The Codex in-app-browser rehearsal also called both public live-source tools and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
+Current verified baseline: 30 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also called both public live-source tools and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
 
 The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
 The scoped threat model, implemented controls, and residual risks are recorded in [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md) and [`docs/SECURITY_REVIEW.md`](docs/SECURITY_REVIEW.md).

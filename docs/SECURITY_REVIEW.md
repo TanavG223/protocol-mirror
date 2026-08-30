@@ -6,6 +6,8 @@ Review date: 2026-08-30
 
 The review covered the Next.js browser application, WebMCP argument and authority boundaries, public-source adapters, response headers, and production dependency state. No critical or high-severity findings remain in this scope. Three concrete hardening findings were fixed and covered by deterministic tests.
 
+The public CI pipeline runs `npm audit --omit=dev --audit-level=high` before lint, deterministic tests, TypeScript validation, and the production build. The 2026-08-30 release audit reported zero vulnerabilities.
+
 This is a focused application review, not an external penetration test, clinical-system assessment, or compliance certification.
 
 ## Fixed findings
