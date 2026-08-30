@@ -35,6 +35,7 @@ The current app ships with a deterministic fictional case so the core demo never
 - Narrow JSON schemas, `readOnlyHint`, `untrustedContentHint`, and abort-signal lifecycle management
 - Zod validation for ClinicalTrials.gov records and stable error envelopes
 - `fast-xml-parser` for PubMed XML
+- GSAP for short, state-linked interface transitions with a complete reduced-motion opt-out
 - Vitest contract tests and a GitHub Actions verification workflow
 - A custom responsive “forensic editorial” interface with evidence threads, visible human checkpoints, focus states, and reduced-motion support
 
@@ -54,7 +55,9 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 - Dynamic tool registration verified in the live page
 - Deterministic offline demonstration data plus bounded live-source adapters
 - Evidence-side validation that rejects cross-record IDs, unrelated citations, duplicates, and unknown evidence
-- 19 passing deterministic tests, a clean lint run, and a successful production build
+- Restrictive production response headers, bounded upstream payloads, and entity-safe XML parsing
+- 25 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
+- A production-mode Codex-browser rehearsal at desktop and 390-pixel mobile widths with no horizontal overflow or browser errors
 
 ## What we learned
 
@@ -74,6 +77,14 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 - License: https://github.com/TanavG223/protocol-mirror/blob/main/LICENSE
 - Live app: pending permanent Vercel claim
 - Demo video: pending recording
+
+## Screenshot assets
+
+- `docs/screenshots/01-hero.jpg` — case context, connected WebMCP state, and comparison entry point
+- `docs/screenshots/02-comparison.jpg` — registered and reported outcomes linked across the evidence spine
+- `docs/screenshots/03-review-queue.jpg` — staged proposals and the human-only accept/reject checkpoint
+- `docs/screenshots/04-evidence-drawer.jpg` — agent rationale beside exact source spans and locators
+- `docs/screenshots/05-mobile.jpg` — mobile hero, connected WebMCP state, and stacked case metadata
 
 ## Truthful-claim guardrail
 

@@ -49,6 +49,28 @@ describe("ClinicalTrials.gov adapter", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({ message: "not a study" }), { status: 200 })));
     await expect(fetchClinicalTrial("NCT01234567")).rejects.toMatchObject({ code: "invalid_upstream_data", status: 502 });
   });
+
+  it("rejects malformed and oversized upstream records", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(new Response("{not-json", { status: 200 })));
+    await expect(fetchClinicalTrial("NCT01234567")).rejects.toMatchObject({ code: "invalid_upstream_data" });
+
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(new Response("{}", {
+      status: 200,
+      headers: { "Content-Length": "2000001" },
+    })));
+    await expect(fetchClinicalTrial("NCT01234567")).rejects.toMatchObject({ code: "invalid_upstream_data" });
+
+    const encoder = new TextEncoder();
+    const oversizedStream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(encoder.encode("a".repeat(1_500_000)));
+        controller.enqueue(encoder.encode("b".repeat(500_001)));
+        controller.close();
+      },
+    });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(new Response(oversizedStream, { status: 200 })));
+    await expect(fetchClinicalTrial("NCT01234567")).rejects.toMatchObject({ code: "invalid_upstream_data" });
+  });
 });
 
 describe("PubMed adapter", () => {
@@ -63,6 +85,15 @@ describe("PubMed adapter", () => {
       expect.objectContaining({ label: "RESULTS", text: "Reported results." }),
     ]);
     expect(result.limitation).toContain("must be proposed and reviewed");
+  });
+
+  it("rejects oversized PubMed responses before parsing XML", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("<PubmedArticleSet />", {
+      status: 200,
+      headers: { "Content-Length": "1000001" },
+    })));
+
+    await expect(fetchPubMedArticle("12345678")).rejects.toMatchObject({ code: "invalid_upstream_data" });
   });
 });
 

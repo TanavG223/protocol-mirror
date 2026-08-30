@@ -3,24 +3,26 @@ import { z } from "zod";
 
 const NctId = z.string().regex(/^NCT\d{8}$/i, "Expected an NCT identifier such as NCT01234567.");
 const Pmid = z.string().regex(/^\d{1,9}$/, "Expected a numeric PubMed identifier.");
+const MAX_CLINICAL_TRIAL_BYTES = 2_000_000;
+const MAX_PUBMED_BYTES = 1_000_000;
 
 const CtgovOutcome = z.object({
-  measure: z.string().min(1),
-  description: z.string().optional().default("No description supplied by the registry."),
-  timeFrame: z.string().optional().default("Not specified"),
+  measure: z.string().min(1).max(500),
+  description: z.string().max(10_000).optional().default("No description supplied by the registry."),
+  timeFrame: z.string().max(500).optional().default("Not specified"),
 });
 
 const CtgovStudy = z.object({
   protocolSection: z.object({
     identificationModule: z.object({
-      nctId: z.string(),
-      briefTitle: z.string(),
-      organization: z.object({ fullName: z.string().optional() }).optional(),
+      nctId: z.string().max(20),
+      briefTitle: z.string().max(1_000),
+      organization: z.object({ fullName: z.string().max(500).optional() }).optional(),
     }),
     outcomesModule: z.object({
-      primaryOutcomes: z.array(CtgovOutcome).optional().default([]),
-      secondaryOutcomes: z.array(CtgovOutcome).optional().default([]),
-      otherOutcomes: z.array(CtgovOutcome).optional().default([]),
+      primaryOutcomes: z.array(CtgovOutcome).max(250).optional().default([]),
+      secondaryOutcomes: z.array(CtgovOutcome).max(250).optional().default([]),
+      otherOutcomes: z.array(CtgovOutcome).max(250).optional().default([]),
     }).optional(),
   }),
 });
@@ -47,6 +49,36 @@ export function parsePmid(value: string) {
   return parsed.data;
 }
 
+async function readBoundedText(response: Response, maxBytes: number, source: string) {
+  const declaredLength = Number(response.headers.get("content-length"));
+  if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
+    throw new SourceAdapterError(`${source} returned a record larger than the supported limit.`, 502, "invalid_upstream_data");
+  }
+
+  if (!response.body) return "";
+  const reader = response.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    totalBytes += value.byteLength;
+    if (totalBytes > maxBytes) {
+      await reader.cancel();
+      throw new SourceAdapterError(`${source} returned a record larger than the supported limit.`, 502, "invalid_upstream_data");
+    }
+    chunks.push(value);
+  }
+
+  const body = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(body);
+}
+
 export async function fetchClinicalTrial(rawNctId: string) {
   const nctId = parseNctId(rawNctId);
   const response = await fetch(`https://clinicaltrials.gov/api/v2/studies/${encodeURIComponent(nctId)}`, {
@@ -56,7 +88,14 @@ export async function fetchClinicalTrial(rawNctId: string) {
   });
   if (response.status === 404) throw new SourceAdapterError(`No ClinicalTrials.gov study was found for ${nctId}.`, 404, "not_found");
   if (!response.ok) throw new SourceAdapterError("ClinicalTrials.gov is temporarily unavailable.", 502, "upstream_error");
-  const parsed = CtgovStudy.safeParse(await response.json());
+  let payload: unknown;
+  try {
+    payload = JSON.parse(await readBoundedText(response, MAX_CLINICAL_TRIAL_BYTES, "ClinicalTrials.gov"));
+  } catch (error) {
+    if (error instanceof SourceAdapterError) throw error;
+    throw new SourceAdapterError("ClinicalTrials.gov returned malformed JSON.", 502, "invalid_upstream_data");
+  }
+  const parsed = CtgovStudy.safeParse(payload);
   if (!parsed.success) throw new SourceAdapterError("ClinicalTrials.gov returned an unexpected record shape.", 502, "invalid_upstream_data");
   const section = parsed.data.protocolSection;
   const outcomes = section.outcomesModule;
@@ -83,7 +122,7 @@ export async function fetchClinicalTrial(rawNctId: string) {
   };
 }
 
-const xmlParser = new XMLParser({ ignoreAttributes: false, trimValues: true, parseTagValue: false });
+const xmlParser = new XMLParser({ ignoreAttributes: false, trimValues: true, parseTagValue: false, processEntities: false });
 const asArray = <T>(value: T | T[] | undefined): T[] => value === undefined ? [] : Array.isArray(value) ? value : [value];
 const text = (value: unknown): string => {
   if (typeof value === "string") return value;
@@ -104,7 +143,7 @@ export async function fetchPubMedArticle(rawPmid: string) {
     signal: AbortSignal.timeout(8_000),
   });
   if (!response.ok) throw new SourceAdapterError("PubMed is temporarily unavailable.", 502, "upstream_error");
-  const parsed = xmlParser.parse(await response.text()) as Record<string, unknown>;
+  const parsed = xmlParser.parse(await readBoundedText(response, MAX_PUBMED_BYTES, "PubMed")) as Record<string, unknown>;
   const set = parsed.PubmedArticleSet as Record<string, unknown> | undefined;
   const articleRoot = asArray(set?.PubmedArticle)[0] as Record<string, unknown> | undefined;
   if (!articleRoot) throw new SourceAdapterError(`No PubMed article was found for ${pmid}.`, 404, "not_found");

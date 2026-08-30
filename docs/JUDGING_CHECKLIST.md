@@ -21,9 +21,9 @@
 - [x] Public repository and MIT license
 - [x] Public repository URL repeated in the submission draft's required links
 - [ ] Permanent public deployment claimed
-- [x] WCAG 2.1 AA structure, semantics, focus styling, and contrast audit completed
+- [x] WCAG AA-oriented structure, semantics, focus styling, and key color-pair contrast checks completed
 - [x] Agent-triggered review focus exercised as an accessibility handoff
-- [ ] Final supported-browser rehearsal completed
+- [x] Final production-mode supported-browser rehearsal completed in the Codex in-app browser
 
 ## Impact
 
@@ -45,7 +45,7 @@
 - [x] Originality and provenance log
 - [x] Three-minute demo spine
 - [x] Devpost narrative draft
-- [ ] Final screenshots
+- [x] Five final Codex-browser screenshots captured and visually reviewed, including mobile
 - [ ] Public YouTube video under three minutes with audio
 - [ ] Devpost form completed and reviewed
 - [ ] Freeze code and submission before deadline

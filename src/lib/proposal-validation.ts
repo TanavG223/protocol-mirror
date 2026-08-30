@@ -24,8 +24,10 @@ export function validateMappingProposal(
   if (typeof input.rationale !== "string" || input.rationale.trim().length < 20 || input.rationale.length > 800) throw new ProposalValidationError("Rationale must contain 20 to 800 characters.");
   if (typeof input.confidence !== "number" || !Number.isFinite(input.confidence) || input.confidence < 0 || input.confidence > 1) throw new ProposalValidationError("Confidence must be a finite number from 0 to 1.");
   if (!Array.isArray(input.evidenceIds) || input.evidenceIds.length === 0 || input.evidenceIds.some((id) => typeof id !== "string")) throw new ProposalValidationError("At least one valid evidence ID is required.");
+  if (input.evidenceIds.length > pair.evidence.length) throw new ProposalValidationError("The proposal cites more evidence IDs than exist in the loaded record.");
+  if (new Set(input.evidenceIds).size !== input.evidenceIds.length) throw new ProposalValidationError("Evidence IDs must not contain duplicates.");
 
-  const evidenceIds = [...new Set(input.evidenceIds as string[])];
+  const evidenceIds = input.evidenceIds as string[];
   const knownEvidence = new Set(pair.evidence.map((item) => item.id));
   if (evidenceIds.some((id) => !knownEvidence.has(id))) throw new ProposalValidationError("The proposal cites evidence outside the loaded record.");
   if (registry && !registry.evidenceIds.some((id) => evidenceIds.includes(id))) throw new ProposalValidationError("The selected registry outcome must cite its own registry evidence.");

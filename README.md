@@ -4,6 +4,8 @@ Protocol Mirror is a human–agent clinical-trial transparency workspace. It com
 
 > Research transparency aid only. Protocol Mirror is not medical advice, a clinical decision system, or a finding of research misconduct.
 
+![Protocol Mirror comparison workspace](docs/screenshots/01-hero.jpg)
+
 ## Why this is a WebMCP project
 
 The page is the shared workspace for both the reviewer and the agent. It registers atomic browser tools directly on `document.modelContext`:
@@ -28,13 +30,15 @@ WebMCP lifecycle is managed with `AbortController` signals. Tool schemas reject 
 - ClinicalTrials.gov v2 API adapter with validation and normalized outcomes
 - PubMed E-utilities adapter with structured abstract sections
 - Bounded upstream requests, safe failures, and 12-hour fetch caching
+- Restrictive response headers, bounded source payloads, and entity-safe XML parsing
+- Purposeful GSAP handoff motion that is disabled when reduced motion is requested
 - Reduced-motion behavior, semantic landmarks, skip link, and visible focus states
 
 The demo record is explicitly fictional. Live adapters return source records; they do not claim that an abstract section is a clinical outcome or automatically declare outcome switching.
 
 ## Run locally
 
-Requirements: Node.js 20+ and npm.
+Requirements: Node.js 20.9+ and npm.
 
 ```bash
 npm install
@@ -53,9 +57,10 @@ npm run check
 
 This runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
 
-Current verified baseline: 19 passing tests, clean lint, and a successful production build.
+Current verified baseline: 25 passing tests, clean lint and TypeScript checks, and a successful production build.
 
 The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
+The scoped threat model, implemented controls, and residual risks are recorded in [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md) and [`docs/SECURITY_REVIEW.md`](docs/SECURITY_REVIEW.md).
 
 ## Live source routes
 

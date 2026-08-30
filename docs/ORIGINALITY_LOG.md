@@ -15,6 +15,7 @@
 - Framework: Next.js / React
 - Validation: Zod
 - XML parsing: fast-xml-parser
+- State-linked motion: GSAP
 - Tests: Vitest
 
 No source code from another hackathon entry was copied. The fictional demonstration trial, publication, outcome descriptions, mappings, and visual design were authored specifically for this project. Reused third-party packages retain their own licenses.
@@ -24,7 +25,7 @@ No source code from another hackathon entry was copied. The fictional demonstrat
 Claims allowed now:
 
 - The production build compiles.
-- The deterministic contract suite contains 19 passing tests.
+- The deterministic contract suite contains 25 passing tests.
 - The page registers WebMCP tools when `document.modelContext` is available; the Codex in-app browser exposed the expected four initial tools during live verification.
 - Agent writes create staged proposals only.
 - The public challenge source is available at `https://github.com/TanavG223/protocol-mirror` under MIT terms.
