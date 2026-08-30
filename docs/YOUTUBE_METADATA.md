@@ -20,6 +20,7 @@ Built for The WebMCP Challenge.
 
 ## Upload settings
 
+- Custom thumbnail: `docs/demo/title-card.png`
 - Visibility: Public
 - Audience: No, it is not made for kids
 - Category: Science & Technology

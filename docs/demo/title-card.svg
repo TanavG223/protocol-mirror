@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#f4f1e8"/>
+  <path d="M0 0h1280v14H0z" fill="#1f54a4"/>
+  <path d="M0 706h1280v14H0z" fill="#a65316"/>
+  <rect x="78" y="72" width="68" height="68" fill="#13252f"/>
+  <rect x="78" y="72" width="34" height="34" fill="#f4f1e8" stroke="#13252f" stroke-width="2"/>
+  <text x="95" y="96" text-anchor="middle" font-family="Georgia, serif" font-size="19" font-weight="700" fill="#13252f">P</text>
+  <text x="129" y="131" text-anchor="middle" font-family="Georgia, serif" font-size="19" font-weight="700" fill="#f4f1e8">M</text>
+  <text x="166" y="118" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#13252f">Protocol Mirror</text>
+  <text x="80" y="242" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing="3" fill="#1f54a4">LIVE WEBMCP DEMO</text>
+  <text x="76" y="337" font-family="Georgia, serif" font-size="70" font-weight="500" fill="#13252f">AI assembles evidence.</text>
+  <text x="76" y="418" font-family="Georgia, serif" font-size="70" font-weight="500" fill="#13252f">A human decides.</text>
+  <text x="80" y="493" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#59656a">Six typed tools inspect live and deterministic records. A seventh exports only reviewed work.</text>
+  <rect x="78" y="556" width="756" height="70" rx="4" fill="#ffffff" stroke="#c7c9c4" stroke-width="2"/>
+  <circle cx="116" cy="591" r="8" fill="#3d9b65"/>
+  <text x="143" y="599" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#13252f">https://protocol-mirror.vercel.app</text>
+  <text x="1200" y="660" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#59656a">Research transparency aid · Not medical advice</text>
+</svg>

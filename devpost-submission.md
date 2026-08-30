@@ -119,7 +119,7 @@ The repository is public, GitHub detects its MIT license, all required source an
 
 ## Demo Video
 
-The finished local master is `docs/demo/protocol-mirror-demo.mp4`: 1:19.61, 1280×720 H.264/AAC, audible original narration, no music, and direct capture of the permanent production workflow. Public YouTube upload is pending channel creation and the required user confirmation. Upload title, description, and disclosure settings are ready in `docs/YOUTUBE_METADATA.md`.
+The finished local master is `docs/demo/protocol-mirror-demo.mp4`: 1:19.61, 1280×720 H.264/AAC, audible original narration, no music, and direct capture of the permanent production workflow. The branded 1280×720 upload thumbnail is `docs/demo/title-card.png`. Public YouTube upload is pending channel creation and the required user confirmation. Upload title, description, and disclosure settings are ready in `docs/YOUTUBE_METADATA.md`.
 
 ## Screenshot Shot List
 

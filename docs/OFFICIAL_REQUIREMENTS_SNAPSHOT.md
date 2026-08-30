@@ -53,7 +53,7 @@ The demo must not use copyrighted music, third-party trademarks, or other protec
 | Screenshots | Five production-mode desktop/mobile assets | Ready |
 | Text description | Root `devpost-submission.md` packet | Ready |
 | Working live URL | `https://protocol-mirror.vercel.app`; six-before/seven-after tool lifecycle and live source reads verified in Codex browser | Ready |
-| Public YouTube demo under three minutes with audio | Script ready; recording/upload pending | Missing |
+| Public YouTube demo under three minutes with audio | Verified 1:19.61 H.264/AAC master and custom thumbnail ready; public upload pending | Missing |
 | Devpost registration | Official Devpost integration reports `registered` with submissions open | Ready |
 | Devpost project/form access | No Protocol Mirror Devpost project exists yet; authenticated creation and field review remain | Missing |
 
