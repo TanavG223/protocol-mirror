@@ -1,6 +1,6 @@
 # Demo recording plan
 
-The tracked 30 fps master is superseded. The release renderer now targets constant 60 fps and requires an owner-approved ElevenLabs narration before replacing `docs/demo/protocol-mirror-final-demo.mp4`. The plan below and `docs/FINAL_OWNER_DEMO_SCRIPT.md` remain reproducible live-recording fallbacks.
+The final local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: constant 60 fps with an ElevenLabs narration. The plan below and `docs/FINAL_OWNER_DEMO_SCRIPT.md` remain reproducible live-recording fallbacks if the owner requests another editorial pass.
 
 This expanded 2:45–2:55 sequence remains a fallback recording plan. Record at 1280 by 720 or higher with browser zoom at 100%, notifications hidden, and the production URL visible at least once. Keep the pointer still while the agent-controlled focus handoff occurs.
 

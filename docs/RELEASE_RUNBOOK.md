@@ -7,8 +7,8 @@ This runbook starts from a clean, CI-verified `main` branch.
 - Permanent application: https://protocol-mirror.vercel.app
 - Public MIT repository: https://github.com/TanavG223/protocol-mirror
 - Permanent WebMCP workflow: verified end to end in the Codex in-app browser
-- Final local demo: pending owner-approved ElevenLabs narration and 60 fps regeneration; do not upload the tracked superseded 30 fps file
-- Verified visual preview: 89.65 seconds, 1280×720 H.264 at constant 60 fps
+- Final local candidate: `docs/demo/protocol-mirror-final-demo.mp4`; 89.65 seconds, 1280×720 H.264 at constant 60 fps, ElevenLabs narration
+- Candidate verification: 5,379 frames; no tested black/silence discontinuity; no variable cadence; owner watch-and-approve still pending
 - Reproducible edit: `scripts/render-final-demo.sh`; release mode requires `ELEVENLABS_AUDIO`
 - Upload thumbnail: `docs/demo/title-card.png` (1280×720)
 - Still pending by owner choice: public YouTube upload, explicit rules acknowledgment, Devpost project write, and final `yes, submit`

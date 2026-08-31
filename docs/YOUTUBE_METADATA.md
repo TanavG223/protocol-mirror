@@ -1,16 +1,19 @@
 # YouTube upload metadata
 
-## Final local master — pending regeneration
+## Final local candidate
 
 - File: `docs/demo/protocol-mirror-final-demo.mp4`
-- Status: the tracked 30 fps/Reed version is superseded and must not be uploaded
-- Target: H.264, 1280×720, constant 60 fps, AAC stereo at 48 kHz
-- Narration: owner-approved ElevenLabs generation following `docs/demo/ELEVENLABS_VOICE_DIRECTION.md`
+- SHA-256: `0ce0b5b4aabaccf1baa5ec6f193b47785bbfff2ef0c4f6ee39a4f689c3f58797`
+- Duration: 89.650000 seconds
+- Video: H.264, 1280×720, constant 60 fps, 5,379 frames
+- Audio: AAC stereo, 48 kHz, 88.900000-second program, integrated −16.66 LUFS, true peak −4.27 dBTP
+- Narration: ElevenLabs `Chris - Charming, Down-to-Earth`, Eleven Multilingual v2; source settings and direction in `docs/demo/ELEVENLABS_VOICE_DIRECTION.md`
 - Music: none
-- Current visual preview: 89.65 seconds, 5,379 frames, constant 60 fps, 31,900,676 bytes; no black segment of 0.4 seconds or longer and no silence of 1.5 seconds or longer at the tested thresholds
+- File size: 32,043,212 bytes
+- Automated continuity checks: no black segment of 0.4 seconds or longer; no silence of 1.5 seconds or longer below −40 dB; no variable-frame-rate cadence
 - Thumbnail SHA-256: `f2c30941c47ae9e920933a7e35a1920165f8fa8224cec63ba2a303b26fa4a7bf`
 
-The preview checks confirm visual timing, codec, cadence, and continuity properties; they do not validate the pending ElevenLabs narration. After generation, refresh every checksum and media measurement, then have the project owner watch the complete master with sound and watch the processed public YouTube upload end to end before using its URL in the entry.
+These checks confirm timing, codec, cadence, continuity, and measured audio properties; they do not replace human editorial review. The project owner must watch and approve the complete local candidate with sound, then watch the processed public YouTube upload end to end before using its URL in the entry.
 
 ## Title
 

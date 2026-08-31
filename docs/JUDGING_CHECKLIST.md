@@ -57,7 +57,7 @@ This criterion is equal-weight with the other three and is the fourth tie-break.
 - [x] Canonical plugin-shaped `devpost-submission.md` packet with testing instructions, AI/Codex usage, limitations, and explicit placeholders
 - [x] Six final Codex-browser screenshots captured and visually reviewed, including mobile and the permanent seven-tool reviewed state
 - [x] Constant-60-fps visual preview, kinetic overlays, and fail-closed release renderer prepared
-- [ ] Final master rendered with owner-approved ElevenLabs narration and re-verified
+- [x] Final candidate rendered with ElevenLabs narration and re-verified
 - [x] Branded 1280×720 upload thumbnail and exact YouTube metadata prepared
 - [x] Judge-facing 60-second no-credentials test path added to the public README
 - [ ] Project owner watched and approved the complete local master with sound

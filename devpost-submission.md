@@ -121,7 +121,7 @@ The repository is public, GitHub detects its MIT license, all required source an
 
 ## Demo Video
 
-The previous tracked 30 fps master is superseded and must not be uploaded. A local 89.65-second 1280×720 H.264 visual preview now runs at a verified constant 60 fps with motion-compensated intermediate frames, a substantially higher-quality encode, clean kinetic labels, product-first pacing, smooth transitions, no black segment of 0.4 seconds or longer, and the truthful six-before/seven-after capability sequence. The final release render is intentionally blocked until the owner approves a natural ElevenLabs narration. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
+The final local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.65 seconds, 1280×720 H.264 at a verified constant 60 fps, with an 88.9-second natural ElevenLabs narration by `Chris - Charming, Down-to-Earth`. It uses motion-compensated intermediate frames, a substantially higher-quality encode, clean kinetic labels, product-first pacing, smooth transitions, no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer at the tested threshold, and the truthful six-before/seven-after capability sequence. The project owner must still watch and approve the complete candidate with sound before upload. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
 
 ## Screenshot Shot List
 
@@ -140,7 +140,7 @@ The previous tracked 30 fps master is superseded and must not be uploaded. A loc
 - [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
 - [x] Six final screenshots, including a permanent-deployment review proof, and a timed demo script
 - [x] Permanent live URL deployed and fully exercised in the Codex in-app browser
-- [ ] Final 60 fps master rendered with owner-approved ElevenLabs narration
+- [x] Final 60 fps candidate rendered with ElevenLabs narration and automated release checks
 - [ ] Project owner watched and approved the complete local master with sound
 - [ ] Public YouTube upload completed and watched end to end
 - [x] Devpost MCP reports the account registered for The WebMCP Challenge with submissions open

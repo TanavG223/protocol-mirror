@@ -8,6 +8,7 @@ asset_dir="$project_dir/docs/demo/edit-assets"
 output_video="${OUTPUT_VIDEO:-$project_dir/docs/demo/protocol-mirror-final-demo.mp4}"
 output_voice="${OUTPUT_VOICE:-$project_dir/docs/demo/protocol-mirror-final-voiceover.m4a}"
 external_voice="${ELEVENLABS_AUDIO:-}"
+voice_tempo="${VOICE_TEMPO:-1}"
 render_tmp="$(mktemp -d /tmp/protocol-mirror-final-demo.XXXXXX)"
 trap 'rm -rf "$render_tmp"' EXIT
 
@@ -40,7 +41,7 @@ fi
 
 ffmpeg -hide_banner -loglevel error -y \
   -i "$voice_input" \
-  -af "highpass=f=70,lowpass=f=12000,acompressor=threshold=-18dB:ratio=2.4:attack=18:release=180,loudnorm=I=-16:TP=-1.5:LRA=7" \
+  -af "atempo=$voice_tempo,highpass=f=70,lowpass=f=12000,acompressor=threshold=-18dB:ratio=2.4:attack=18:release=180,loudnorm=I=-16:TP=-1.5:LRA=7" \
   -ar 48000 -ac 2 -c:a aac -b:a 192k "$output_voice"
 
 ffmpeg -hide_banner -loglevel error -y \

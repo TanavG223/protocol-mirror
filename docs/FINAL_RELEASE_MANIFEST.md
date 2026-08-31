@@ -1,6 +1,6 @@
 # Final release manifest
 
-Prepared after repository state `c39b921cf54bf26d37257990dafb3eab2a7ac4e9` on 2026-08-30 America/New_York. This is a pre-release evidence manifest, not evidence that a final ElevenLabs master, Devpost entry, or YouTube upload exists. Refresh the release commit, media checksums, and media measurements after the owner-approved voice is rendered.
+Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs candidate was rendered and automatically verified. This is pre-submission evidence, not evidence of owner editorial approval, a Devpost entry, or a YouTube upload. Refresh the release commit after the candidate is committed.
 
 ## Authoritative release references
 
@@ -24,12 +24,12 @@ Prepared after repository state `c39b921cf54bf26d37257990dafb3eab2a7ac4e9` on 20
 
 | Artifact | SHA-256 | Verified properties |
 | --- | --- | --- |
-| `docs/demo/protocol-mirror-final-demo.mp4` | obsolete | The tracked 30 fps/Reed artifact is superseded and must not be uploaded |
-| `docs/demo/protocol-mirror-60fps-preview.mp4` | `0a21ab1cfb4f89841f485170672709ad0b2ca02c3079383a0358e412ae9c9a4c` | Local ignored preview; 89.65 seconds; 1280×720; H.264; constant 60 fps; 5,379 frames; temporary voice; not a release artifact |
-| `docs/demo/protocol-mirror-final-voiceover.m4a` | pending | Must be replaced by an owner-approved ElevenLabs generation before release |
+| `docs/demo/protocol-mirror-final-demo.mp4` | `0ce0b5b4aabaccf1baa5ec6f193b47785bbfff2ef0c4f6ee39a4f689c3f58797` | 89.650000 seconds; 1280×720; H.264; constant 60 fps; 5,379 frames; stereo AAC at 48 kHz |
+| `docs/demo/protocol-mirror-final-voiceover.m4a` | `deda8c80e6032b989f9da01250dc3012e91d8a7dba2632faa1908dd6791120c4` | 88.900000 seconds; processed ElevenLabs Chris voice; stereo AAC at 48 kHz |
+| `docs/demo/protocol-mirror-elevenlabs-chris-source.mp3` | `161ac9090cebff12f635137fe6ceb15044f42bc8b15ffe42178c377e7da1f9a7` | 93.753438-second ElevenLabs source; Chris, Multilingual v2, default settings recorded in the voice-direction file |
 | `docs/demo/title-card.png` | `f2c30941c47ae9e920933a7e35a1920165f8fa8224cec63ba2a303b26fa4a7bf` | 1280×720 upload thumbnail |
 
-Automated preview checks found no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer, and no variable-frame-rate cadence at the tested thresholds. These checks do not validate the pending narration or replace the project owner's complete watch with sound.
+Automated candidate checks found no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer, and no variable-frame-rate cadence at the tested thresholds. Audio measured −16.66 LUFS integrated and −4.27 dBTP. These checks do not replace the project owner's complete watch with sound.
 
 ## Screenshot checksums
 
@@ -44,11 +44,9 @@ Automated preview checks found no black segment of 0.4 seconds or longer, no sil
 
 ## Owner-only gates still open
 
-1. Sign in to ElevenLabs in the explicitly selected Codex browser, generate the revised narration, and approve the complete audio.
-2. Render and verify the final 60 fps master; refresh this manifest and `docs/YOUTUBE_METADATA.md` with the final checksums and measurements.
-3. Watch and approve the complete local master with sound; request any voice, timing, or edit changes before upload.
-4. Acknowledge the current official rules and personally confirm age, residence, exclusions, originality, rights, submitter type, and New-versus-Existing project status.
-5. Upload the approved video as a publicly visible YouTube video and watch the processed upload end to end.
-6. Provide the final YouTube URL and required personal Devpost answers.
-7. Create/review the Protocol Mirror Devpost project and inspect the final authenticated preview.
-8. Submit only after the separate explicit `yes, submit` confirmation, then preserve the receipt and keep all judging URLs unrestricted through the judging period.
+1. Watch and approve the complete local candidate with sound; request any voice, timing, or edit changes before upload.
+2. Acknowledge the current official rules and personally confirm age, residence, exclusions, originality, rights, submitter type, and New-versus-Existing project status.
+3. Upload the approved video as a publicly visible YouTube video and watch the processed upload end to end.
+4. Provide the final YouTube URL and required personal Devpost answers.
+5. Create/review the Protocol Mirror Devpost project and inspect the final authenticated preview.
+6. Submit only after the separate explicit `yes, submit` confirmation, then preserve the receipt and keep all judging URLs unrestricted through the judging period.
