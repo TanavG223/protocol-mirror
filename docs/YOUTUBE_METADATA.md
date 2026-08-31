@@ -40,6 +40,7 @@ Built for The WebMCP Challenge.
 ## Upload settings
 
 - Custom thumbnail: `docs/demo/title-card.png`
+- Captions: upload `docs/demo/protocol-mirror-final-captions.srt`, select English, then inspect timing in YouTube's editor
 - Visibility: Public
 - Audience: No, it is not made for kids
 - Category: Science & Technology

@@ -28,6 +28,7 @@ Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs cand
 | `docs/demo/protocol-mirror-final-demo.mp4` | `0ce0b5b4aabaccf1baa5ec6f193b47785bbfff2ef0c4f6ee39a4f689c3f58797` | 89.650000 seconds; 1280×720; H.264; constant 60 fps; 5,379 frames; stereo AAC at 48 kHz |
 | `docs/demo/protocol-mirror-final-voiceover.m4a` | `deda8c80e6032b989f9da01250dc3012e91d8a7dba2632faa1908dd6791120c4` | 88.900000 seconds; processed ElevenLabs Chris voice; stereo AAC at 48 kHz |
 | `docs/demo/protocol-mirror-elevenlabs-chris-source.mp3` | `161ac9090cebff12f635137fe6ceb15044f42bc8b15ffe42178c377e7da1f9a7` | 93.753438-second ElevenLabs source; Chris, Multilingual v2, default settings recorded in the voice-direction file |
+| `docs/demo/protocol-mirror-final-captions.srt` | `99554c275b7862f417f05d70caf6331763b193085b07506853ab0216322f8600` | 19 monotonic English cues; final cue ends at 88.543 seconds; owner must inspect timing against the processed upload |
 | `docs/demo/title-card.png` | `f2c30941c47ae9e920933a7e35a1920165f8fa8224cec63ba2a303b26fa4a7bf` | 1280×720 upload thumbnail |
 
 Automated candidate checks found no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer, and no variable-frame-rate cadence at the tested thresholds. Audio measured −16.66 LUFS integrated and −4.27 dBTP. These checks do not replace the project owner's complete watch with sound.

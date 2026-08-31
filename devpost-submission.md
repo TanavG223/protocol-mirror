@@ -141,6 +141,7 @@ The final local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.65 s
 - [x] Six final screenshots, including a permanent-deployment review proof, and a timed demo script
 - [x] Permanent live URL deployed and fully exercised in the Codex in-app browser
 - [x] Final 60 fps candidate rendered with ElevenLabs narration and automated release checks
+- [x] English caption file prepared and structurally verified; processed YouTube timing review remains pending
 - [ ] Project owner watched and approved the complete local master with sound
 - [ ] Public YouTube upload completed and watched end to end
 - [x] Devpost MCP reports the account registered for The WebMCP Challenge with submissions open

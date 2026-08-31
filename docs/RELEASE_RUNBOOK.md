@@ -44,9 +44,10 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 3. Re-run the codec, frame-cadence, black-segment, silence, loudness, and checksum checks; update `docs/YOUTUBE_METADATA.md` and `docs/FINAL_RELEASE_MANIFEST.md`.
 4. Watch the complete `docs/demo/protocol-mirror-final-demo.mp4` local master with sound and confirm the narration, pacing, overlays, and visible six-to-seven tool sequence.
 5. Use the paste-ready metadata in `docs/YOUTUBE_METADATA.md` and confirm the processed runtime remains under three minutes with clear narration.
-6. Watch the complete upload with sound before making it public; the challenge requires a publicly visible YouTube video.
-7. Put the live app and public repository links in the video description.
-8. Replace the pending demo-video lines in `docs/SUBMISSION_DRAFT.md` and `devpost-submission.md` with the final URL only after watching the uploaded result end to end with sound.
+6. Upload `docs/demo/protocol-mirror-final-captions.srt` as English captions and inspect every cue in YouTube's caption editor against the processed audio.
+7. Watch the complete upload with sound and captions before making it public; the challenge requires a publicly visible YouTube video.
+8. Put the live app and public repository links in the video description.
+9. Replace the pending demo-video lines in `docs/SUBMISSION_DRAFT.md` and `devpost-submission.md` with the final URL only after watching the uploaded result end to end with sound.
 
 ## 4. Complete the Devpost entry
 
