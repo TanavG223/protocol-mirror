@@ -17,9 +17,9 @@ In a 2019 cross-sectional study of 389 trials published in high-impact journals,
 
 Protocol Mirror places registered and reported outcomes side by side in one human-agent workspace. A WebMCP agent can inspect stable outcome IDs, retrieve exact source spans, stage a mapping or non-match, and focus the relevant review card. Every proposal carries a discrepancy category, rationale, evidence IDs, and calibrated confidence.
 
-The agent cannot accept or reject its own proposal. A person reviews the rationale and exact source spans in the same interface and makes the decision. Only reviewed decisions appear in the exportable receipt, and that export capability is registered dynamically after a human decision exists.
+The agent cannot accept or reject its own proposal. A person reviews the rationale and exact source spans in the same interface and makes the decision. Only reviewed decisions appear in the exportable receipt, and that export capability is registered dynamically after a human decision exists. The reviewer can also download that reviewed receipt as JSON directly from the human checkpoint.
 
-The app includes a deterministic fictional case so the complete judging flow remains available without an upstream network dependency. Validated server adapters also retrieve normalized ClinicalTrials.gov outcomes and structured PubMed abstract sections.
+The app includes a deterministic fictional case so the complete judging flow remains available without an upstream network dependency. Validated server adapters also retrieve normalized ClinicalTrials.gov outcomes and structured PubMed abstract sections. Records returned by those agent tools are rendered in a reviewer-visible source-intake area with exact source links and an explicit read-only, untrusted-evidence boundary.
 
 ## Why This Matters
 
@@ -57,6 +57,8 @@ Codex also challenged overbroad claims: the project distinguishes a browser-tool
 - Dynamic capability registration after review state changes
 - Exact evidence drawer with source quotations and locators
 - Reversible decisions and reviewed-only audit receipt export
+- Reviewer-visible live-source intake after agent ClinicalTrials.gov and PubMed calls
+- Human-downloadable reviewed receipt JSON after a decision
 - Deterministic fictional case for reliable judging
 - Bounded ClinicalTrials.gov and PubMed source adapters with safe failures
 - Responsive forensic-editorial interface with visible focus and reduced-motion support
@@ -87,11 +89,12 @@ WebMCP registration and the reviewer UI live in `src/app/workspace.tsx`. Runtime
 
 1. Open the public app in ChatGPT's in-app browser.
 2. Confirm the header says **WebMCP connected · 6 tools** and the browser exposes both live-source tools plus the four case-review tools.
-3. Ask the agent to inspect the audit state and retrieve the exact systolic-blood-pressure evidence spans.
-4. Ask it to stage an uncertain mapping using both evidence spans and request human review.
-5. Confirm focus moves to the visible review checkpoint; accept or reject manually.
-6. Confirm `export_review_receipt` appears as the seventh tool.
-7. Export the receipt and confirm staged proposals are excluded while the accepted mapping's exact evidence locator is included.
+3. Call `get_live_clinical_trial` with `NCT04280705` and `get_live_pubmed_article` with `32445440`; confirm both returned records and exact source links appear in the visible agent-source-intake area.
+4. Ask the agent to inspect the deterministic audit state and retrieve the exact systolic-blood-pressure evidence spans.
+5. Ask it to stage an uncertain mapping using both evidence spans and request human review.
+6. Confirm focus moves to the visible review checkpoint; accept or reject manually.
+7. Confirm `export_review_receipt` appears as the seventh tool and the human JSON download becomes visible.
+8. Export the receipt and confirm staged proposals are excluded while the accepted mapping's exact evidence locator is included.
 
 No login, API key, patient data, or paid service is required.
 
@@ -105,7 +108,7 @@ npm run check
 npm run dev
 ```
 
-Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 34 deterministic tests, TypeScript through the production build, and the optimized Next.js build.
+Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 35 deterministic tests, TypeScript through the production build, and the optimized Next.js build.
 
 ## Public Demo Link
 
@@ -136,7 +139,8 @@ The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.
 
 - [x] Public repository with all source, assets, instructions, and detected MIT license
 - [x] Non-trivial top-level `document.modelContext.registerTool()` implementation
-- [x] 34 deterministic tests, clean lint and TypeScript checks, and a successful production build
+- [x] 35 deterministic tests, clean lint and TypeScript checks, and a successful production build
+- [x] Local release candidate visibly renders agent-retrieved source records and exposes a human JSON receipt download; production deployment approval remains pending
 - [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
 - [x] Six final screenshots, including a permanent-deployment review proof, and a timed demo script
 - [x] Permanent live URL deployed and fully exercised in the Codex in-app browser

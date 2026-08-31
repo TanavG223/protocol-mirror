@@ -92,3 +92,17 @@ On 2026-08-31, the permanent deployment was exercised again from a clean Codex i
 - A fresh reload followed by **Stage guided review** left all four representative proposal categories open in the browser for hands-on inspection and human decision-making.
 
 These checks cover the documented critical and failure flows; they do not prove the absence of every possible defect or establish clinical validity.
+
+## Local production judge-gap closure
+
+On 2026-08-31, the post-research release candidate was built and exercised at `http://localhost:4175` in a fresh Codex in-app-browser tab. This is local-candidate evidence, not a claim about the current public deployment.
+
+- The initial page registered six tools.
+- Calling `get_live_clinical_trial` with `NCT04280705` rendered the ACTT trial title, identifier, outcome count, sponsor, representative outcome labels, and exact ClinicalTrials.gov link in a reviewer-visible intake card.
+- Calling `get_live_pubmed_article` with `32445440` rendered the article title, PMID, structured-section count, journal, representative section labels, limitation, and exact PubMed link beside the trial card.
+- The page labeled both records read-only, untrusted evidence and did not add a mapping or reviewed finding automatically.
+- Staging the guided review and clicking the visible human **Accept** control changed the capability surface from six tools to seven.
+- A visible **Download reviewed receipt JSON** link appeared only after the human decision. Its download name was `demo-cardio-001-review-receipt.json`, and its encoded payload contained `reviewedMappings`.
+- At 390 by 844 CSS pixels, the document and body widths remained 390 pixels with no horizontal overflow.
+- The browser console log remained empty.
+- The visible **Public source · MIT** footer link resolved to the correct GitHub repository and measured 44 pixels high at both desktop and mobile widths.

@@ -7,19 +7,20 @@ import { validateMappingProposal } from "@/lib/proposal-validation";
 import { createReviewReceipt } from "@/lib/review-receipt";
 import { findLatestReviewedMappingId, hasReviewedWork, transitionHumanDecision } from "@/lib/audit-state";
 import { useWorkspaceMotion } from "@/lib/use-workspace-motion";
-import { createLiveSourceTools } from "@/lib/webmcp-tools";
+import { createLiveSourceTools, type LiveClinicalTrialRecord, type LivePubMedRecord } from "@/lib/webmcp-tools";
 
 const LABELS: Record<DiscrepancyKind, string> = {
   matched: "Matched", omitted: "Omitted", downgraded: "Downgraded",
   upgraded: "Upgraded", introduced: "Introduced", uncertain: "Needs review",
 };
 
-function Icon({ name }: { name: "spark" | "check" | "arrow" | "quote" | "undo" }) {
+function Icon({ name }: { name: "spark" | "check" | "arrow" | "quote" | "undo" | "download" }) {
   const paths = {
     spark: <path d="M12 2l1.25 5.2L18 9l-4.75 1.8L12 16l-1.25-5.2L6 9l4.75-1.8L12 2ZM6 13l.75 3L10 17l-3.25 1L6 21l-.75-3L2 17l3.25-1L6 13Z" />,
     check: <path d="m5 12 4 4L19 6" />, arrow: <path d="M5 12h14m-5-5 5 5-5 5" />,
     quote: <path d="M7 8h4v4H7v4H3v-4a4 4 0 0 1 4-4Zm10 0h4v4h-4v4h-4v-4a4 4 0 0 1 4-4Z" />,
     undo: <path d="M9 7 4 12l5 5M5 12h8a6 6 0 1 1 0 12" />,
+    download: <path d="M12 3v12m-4-4 4 4 4-4M5 20h14" />,
   };
   return <svg aria-hidden="true" viewBox="0 0 24 24">{paths[name]}</svg>;
 }
@@ -32,6 +33,8 @@ export default function Workspace() {
   const [selectedOutcomeId, setSelectedOutcomeId] = useState<string | null>(null);
   const [decisionNotice, setDecisionNotice] = useState("No human decisions recorded yet.");
   const [webMcp, setWebMcp] = useState<"checking" | "connected" | "preview">("preview");
+  const [liveTrial, setLiveTrial] = useState<LiveClinicalTrialRecord | null>(null);
+  const [liveArticle, setLiveArticle] = useState<LivePubMedRecord | null>(null);
   const counter = useRef(10);
   const auditRef = useRef(audit);
   const reviewRef = useRef<HTMLElement>(null);
@@ -45,6 +48,7 @@ export default function Workspace() {
   const reviewed = audit.mappings.filter((item) => item.status !== "staged");
   const accepted = audit.mappings.filter((item) => item.status === "accepted");
   const reviewedWorkAvailable = hasReviewedWork(audit);
+  const receiptDownloadHref = useMemo(() => reviewedWorkAvailable ? `data:application/json;charset=utf-8,${encodeURIComponent(`${JSON.stringify(createReviewReceipt(DEMO_PAIR, audit), null, 2)}\n`)}` : null, [audit, reviewedWorkAvailable]);
   const active = audit.mappings.find((item) => item.id === activeId);
   const selectedOutcome = [...DEMO_PAIR.registryOutcomes, ...DEMO_PAIR.publicationOutcomes].find((item) => item.id === selectedOutcomeId);
   const activeEvidenceIds = active?.evidenceIds ?? selectedOutcome?.evidenceIds ?? [];
@@ -158,7 +162,7 @@ export default function Workspace() {
     const evidenceIds = DEMO_PAIR.evidence.map((item) => item.id);
     const register = async () => {
       await Promise.all([
-        ...createLiveSourceTools().map((tool) => context.registerTool(tool, { signal: controller.signal })),
+        ...createLiveSourceTools(fetch, { onClinicalTrial: setLiveTrial, onPubMedArticle: setLiveArticle }).map((tool) => context.registerTool(tool, { signal: controller.signal })),
         context.registerTool({
           name: "get_audit_state", title: "Read audit state",
           description: "Read the trial-publication pair, stable outcome IDs, proposals, decisions, and audit-event summary. Use before proposing changes.",
@@ -240,6 +244,13 @@ export default function Workspace() {
         <div className="source-strip" role="group" aria-label="Study sources">
           <div><span>Registration</span><strong>{DEMO_PAIR.nctId}</strong><small>Updated {DEMO_PAIR.registryUpdated}</small></div><div><span>Publication</span><strong>{DEMO_PAIR.pmid}</strong><small>Published {DEMO_PAIR.publicationDate}</small></div><div><span>Sponsor</span><strong>{DEMO_PAIR.sponsor}</strong><small>{DEMO_PAIR.phase}</small></div><div className="review-score"><span>Review progress</span><strong>{reviewed.length}<em> / {audit.mappings.length || 4}</em></strong><small>{staged.length} awaiting a human decision</small></div>
         </div>
+        {(liveTrial || liveArticle) && <section className="live-intake" aria-labelledby="live-intake-title">
+          <div className="live-intake-heading"><div><p className="section-kicker">Agent source intake</p><h2 id="live-intake-title">Real records, visible to the reviewer.</h2></div><p role="status">Live source text is read-only, untrusted evidence. Nothing here becomes a reviewed finding automatically.</p></div>
+          <div className="live-intake-grid">
+            <LiveTrialCard record={liveTrial} />
+            <LiveArticleCard record={liveArticle} />
+          </div>
+        </section>}
       </section>
       <section className="workspace" id="workspace" aria-labelledby="workspace-title">
         <div className="workspace-heading"><div><p className="section-kicker">Evidence table</p><h2 id="workspace-title">Registered intent <span aria-hidden="true">↔</span> reported record</h2></div><div className="legend"><span><i className="dot matched" />Matched</span><span><i className="dot flagged" />Flagged</span><span><i className="dot unreviewed" />Unreviewed</span></div></div>
@@ -251,7 +262,7 @@ export default function Workspace() {
         </div>
       </section>
       <section className="review-dock" aria-labelledby="review-title" ref={reviewRef} tabIndex={-1}>
-        <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title">Review queue <span>{staged.length}</span></h2><p className="decision-notice" role="status" aria-live="polite">{decisionNotice}</p></div><button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div>
+        <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title">Review queue <span>{staged.length}</span></h2><p className="decision-notice" role="status" aria-live="polite">{decisionNotice}</p></div><div className="review-dock-actions">{receiptDownloadHref && <a className="text-button" href={receiptDownloadHref} download={`${DEMO_PAIR.id}-review-receipt.json`}><Icon name="download" /> Download reviewed receipt JSON</a>}<button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div></div>
         {staged.length === 0 ? <div className="empty-review"><Icon name="spark" /><div><strong>The queue is clear.</strong><p>Ask an agent to inspect the case with WebMCP, or stage the guided demonstration.</p></div></div> : <div className="review-cards">{staged.map((mapping) => { const isActive = mapping.id === activeId; const registryTitle = mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"; const publicationTitle = mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"; const mappingName = `${LABELS[mapping.discrepancy]} proposal from ${registryTitle} to ${publicationTitle}`; return <article className={`review-card ${isActive ? "active" : ""}`} key={mapping.id}><button className="review-card-main" type="button" aria-pressed={isActive} aria-controls="evidence-drawer" onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{registryTitle}</strong><span className="mapping-arrow"><Icon name="arrow" /></span><strong>{publicationTitle}</strong><small>{Math.round(mapping.confidence * 100)}% agent confidence · {mapping.evidenceIds.length} source {mapping.evidenceIds.length === 1 ? "span" : "spans"}{!isActive && " · inspect before deciding"}</small></button><div className="review-actions"><button type="button" className="reject" disabled={!isActive} aria-label={`Reject ${mappingName}`} onClick={() => decide(mapping.id, "rejected")}>Reject</button><button type="button" className="accept" disabled={!isActive} aria-label={`Accept ${mappingName}`} onClick={() => decide(mapping.id, "accepted")}><Icon name="check" />Accept</button></div></article>; })}</div>}
       </section>
       <section className="evidence-panel" id="evidence-drawer" aria-labelledby="evidence-title" aria-live="polite">
@@ -259,8 +270,18 @@ export default function Workspace() {
         {active || selectedOutcome ? <div className="evidence-content"><div className="rationale"><span>{active ? "Agent rationale" : "Selected outcome"}</span>{active && <div className="evidence-mapping-identity"><strong>{active.registryOutcomeId ? outcomeById(active.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{active.publicationOutcomeId ? outcomeById(active.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"}</strong></div>}<p>{active ? active.rationale : selectedOutcome?.title}</p><small>{active ? "Proposal only · source text is treated as untrusted data" : "Direct source inspection · no mapping or inference required"}</small></div><div className="quotes">{evidence.map((item) => item && <blockquote key={item.id}><Icon name="quote" /><p>“{item.quote}”</p><cite><span className="evidence-origin">Fictional demonstration span</span>{item.sourceLabel}<span>{item.locator}</span></cite><a href={item.url} target="_blank" rel="noreferrer" aria-label={`Visit the ${item.source} database; this fictional demonstration span has no public record page`}>Visit source database <Icon name="arrow" /></a></blockquote>)}</div></div> : <p className="muted">Select any outcome to inspect its exact source span, or select a staged proposal to inspect the agent rationale.</p>}
       </section>
     </main>
-    <footer><p>Protocol Mirror is a research transparency aid—not medical advice or a finding of misconduct.</p><p>{accepted.length} accepted · {audit.history.length} auditable {audit.history.length === 1 ? "event" : "events"} · deterministic demo data</p></footer>
+    <footer><p>Protocol Mirror is a research transparency aid—not medical advice or a finding of misconduct.</p><div className="footer-meta"><p>{accepted.length} accepted · {audit.history.length} auditable {audit.history.length === 1 ? "event" : "events"} · deterministic demo data</p><a href="https://github.com/TanavG223/protocol-mirror" target="_blank" rel="noreferrer">Public source · MIT <Icon name="arrow" /></a></div></footer>
   </div>;
+}
+
+function LiveTrialCard({ record }: { record: LiveClinicalTrialRecord | null }) {
+  if (!record) return <article className="live-source-card pending"><span>ClinicalTrials.gov</span><strong>Awaiting a trial read</strong><p>Ask the agent to fetch a bounded NCT record.</p></article>;
+  return <article className="live-source-card"><span>ClinicalTrials.gov · agent retrieved</span><h3>{record.title}</h3><p><strong>{record.nctId}</strong> · {record.outcomes.length} normalized outcomes · {record.sponsor}</p><ul>{record.outcomes.slice(0, 3).map((outcome) => <li key={outcome.id}><span>{outcome.role}</span>{outcome.title}</li>)}</ul><a href={record.sourceUrl} target="_blank" rel="noreferrer">Open exact trial record <Icon name="arrow" /></a></article>;
+}
+
+function LiveArticleCard({ record }: { record: LivePubMedRecord | null }) {
+  if (!record) return <article className="live-source-card pending"><span>PubMed</span><strong>Awaiting an article read</strong><p>Ask the agent to fetch a bounded PMID record.</p></article>;
+  return <article className="live-source-card"><span>PubMed · agent retrieved</span><h3>{record.title}</h3><p><strong>PMID {record.pmid}</strong> · {record.abstractSections.length} abstract sections · {record.journal}</p><ul>{record.abstractSections.slice(0, 3).map((section) => <li key={section.id}><span>section</span>{section.label}</li>)}</ul><small>{record.limitation}</small><a href={record.sourceUrl} target="_blank" rel="noreferrer">Open exact article record <Icon name="arrow" /></a></article>;
 }
 
 function ColumnTitle({ index, title, subtitle, id }: { index: string; title: string; subtitle: string; id: string }) {

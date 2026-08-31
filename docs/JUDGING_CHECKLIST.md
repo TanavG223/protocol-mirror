@@ -13,6 +13,7 @@ This criterion is equal-weight with the other three and is the first tie-break.
 - [x] Agent cannot call the human accept/reject action
 - [x] Codex browser reports the expected six-before/seven-after tools
 - [x] Both live ClinicalTrials.gov and PubMed tools exercised through the real WebMCP surface
+- [x] Agent-retrieved live records appear in the shared reviewer UI with exact source links
 
 ## Execution
 
@@ -29,6 +30,8 @@ This criterion is equal-weight with the other three and is the second tie-break.
 - [x] WCAG AA-oriented structure, semantics, focus styling, and key color-pair contrast checks completed
 - [x] Agent-triggered review focus exercised as an accessibility handoff
 - [x] Final production-mode supported-browser rehearsal completed in the Codex in-app browser
+- [x] Reviewed receipt is available through both the dynamic agent tool and a visible human JSON download
+- [x] Public MIT repository link is visible in the application footer
 
 ## Impact
 
@@ -36,6 +39,7 @@ This criterion is equal-weight with the other three and is the third tie-break.
 
 - [x] Concrete reviewer audience and research-transparency task
 - [x] Exact evidence spans remain visible with proposals
+- [x] Live source intake is visibly separated from the deterministic reviewed case and cannot become a finding automatically
 - [x] Human authority and product limitations are explicit
 - [x] Sourced, bounded impact statement added to the description and demo script
 
@@ -66,5 +70,6 @@ This criterion is equal-weight with the other three and is the fourth tie-break.
 - [ ] Public YouTube upload under three minutes with audio
 - [x] Devpost integration reports hackathon registration complete and submissions open
 - [ ] Devpost form completed and reviewed
-- [x] Application code and local release assets frozen on a green public `main` branch
+- [x] Published baseline remains on a green public `main` branch
+- [x] New judge-gap release candidate passes locally; push, CI, deployment, and permanent-URL recheck remain owner-approved actions
 - [ ] Freeze the final external URLs and Devpost receipt before the deadline

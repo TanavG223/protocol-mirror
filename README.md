@@ -13,11 +13,12 @@ Protocol Mirror is a human–agent clinical-trial transparency workspace. It com
 No account, API key, or setup is required.
 
 1. Open the live application in the Codex/ChatGPT in-app browser with WebMCP site tools enabled and confirm the header reports six tools.
-2. Ask the agent for the audit state and exact evidence spans, then have it stage one evidence-linked proposal and request human review.
-3. Use the visible **Accept** or **Reject** control yourself. There is intentionally no agent-callable decision tool.
-4. Confirm the header now reports seven tools and call `export_review_receipt`; the receipt contains only reviewed work and the exact evidence locators that supported it.
+2. For bounded live-source proof, call `get_live_clinical_trial` with `NCT04280705` and `get_live_pubmed_article` with `32445440`; the retrieved records become visible to the reviewer in the page.
+3. Ask the agent for the deterministic case's audit state and exact evidence spans, then have it stage one evidence-linked proposal and request human review.
+4. Use the visible **Accept** or **Reject** control yourself. There is intentionally no agent-callable decision tool.
+5. Confirm the header now reports seven tools, then either call `export_review_receipt` or use the visible JSON download. Both outputs contain only reviewed work and the exact evidence locators that supported it.
 
-For bounded live-source proof, call `get_live_clinical_trial` with `NCT04280705` and `get_live_pubmed_article` with `32445440`. The deterministic fictional case remains available if either public upstream is unavailable.
+The deterministic fictional case remains available if either public upstream is unavailable; live records are explicitly labeled as untrusted, read-only intake and never become reviewed findings automatically.
 
 ## Why this is a WebMCP project
 
@@ -44,6 +45,8 @@ WebMCP lifecycle is managed with `AbortController` signals. Tool schemas reject 
 - Staged review queue with accept, reject, deterministic focus recovery, and undo
 - Evidence drawer with mapping identity, exact spans, stable locators, and authoritative source links
 - Append-only in-session audit events and reviewed receipt export
+- Reviewer-visible live ClinicalTrials.gov and PubMed intake after agent tool calls
+- Human-downloadable reviewed receipt JSON after a decision unlocks it
 - ClinicalTrials.gov v2 API adapter with validation and normalized outcomes
 - PubMed E-utilities adapter with structured abstract sections
 - Bounded upstream requests, safe failures, and 12-hour fetch caching
@@ -74,7 +77,16 @@ npm run check
 
 This runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
 
-Current verified baseline: 34 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also called both public live-source tools and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
+Current verified baseline: 35 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also called both public live-source tools, displayed their real records in the reviewer UI, and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
+
+| Judge evidence | Verified result |
+| --- | --- |
+| Automated release checks | 35 tests, lint, TypeScript, and optimized build pass |
+| Real WebMCP lifecycle | Six initial tools; human review alone exposes the seventh |
+| Failure behavior | Invalid identifiers, duplicate proposals, and unrelated evidence fail closed |
+| Human authority | No agent accept/reject tool; reviewed JSON is available only after a human decision |
+| Responsive UX | 390×844 viewport verified without horizontal overflow |
+| Security | Zero high-severity production dependency findings; bounded fixed-host adapters |
 
 The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
 The scoped threat model, implemented controls, and residual risks are recorded in [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md) and [`docs/SECURITY_REVIEW.md`](docs/SECURITY_REVIEW.md).
@@ -126,4 +138,4 @@ MIT. See [LICENSE](LICENSE).
 
 ## Public source
 
-The complete challenge source is public at https://github.com/TanavG223/protocol-mirror. The repository link should also appear in the Devpost project description and Try it out section so judges do not need access to hidden submission fields.
+The complete challenge source is public at https://github.com/TanavG223/protocol-mirror. The application footer also links directly to this MIT-licensed repository; the same URL should remain in the Devpost project description and Try it out section.

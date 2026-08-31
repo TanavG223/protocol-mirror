@@ -19,6 +19,21 @@ describe("live source WebMCP tools", () => {
     expect(result).toMatchObject({ ok: true, nctId: "NCT01234567" });
   });
 
+  it("surfaces successful live reads to the shared reviewer workspace", async () => {
+    const clinicalTrial = { nctId: "NCT01234567", title: "Trial title", outcomes: [] };
+    const pubMedArticle = { pmid: "12345678", title: "Article title", abstractSections: [] };
+    const fetcher = vi.fn(async (url: string) => Response.json({ ok: true, data: url.includes("clinical-trials") ? clinicalTrial : pubMedArticle }));
+    const onClinicalTrial = vi.fn();
+    const onPubMedArticle = vi.fn();
+    const [trialTool, pubmedTool] = createLiveSourceTools(fetcher, { onClinicalTrial, onPubMedArticle });
+
+    await trialTool.execute({ nctId: "NCT01234567" }, options);
+    await pubmedTool.execute({ pmid: "12345678" }, options);
+
+    expect(onClinicalTrial).toHaveBeenCalledWith(clinicalTrial);
+    expect(onPubMedArticle).toHaveBeenCalledWith(pubMedArticle);
+  });
+
   it("rejects malformed identifiers before a request is made", async () => {
     const fetcher = vi.fn();
     const [trialTool, pubmedTool] = createLiveSourceTools(fetcher);

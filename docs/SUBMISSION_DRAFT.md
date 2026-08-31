@@ -26,9 +26,9 @@ A 2019 cross-sectional study of 389 trials published in high-impact journals fou
 
 Protocol Mirror places registered and reported outcomes side by side. Through WebMCP, an agent can read stable outcome IDs, retrieve exact evidence spans, stage a mapping or non-match, and focus the relevant review card. The focus request moves keyboard focus to the review region, keeping the agent's handoff perceivable for keyboard and assistive-technology users. Every proposal includes a discrepancy category, rationale, evidence IDs, and confidence.
 
-The agent cannot accept or reject its own conclusion. A person reviews the source spans in the same interface and makes the decision. Only reviewed decisions appear in the exportable audit receipt, and that export capability is registered dynamically after a human decision exists.
+The agent cannot accept or reject its own conclusion. A person reviews the source spans in the same interface and makes the decision. Only reviewed decisions appear in the exportable audit receipt, and that export capability is registered dynamically after a human decision exists. The same reviewed receipt becomes available as a human-downloadable JSON file.
 
-The current app ships with a deterministic fictional case so the core demo never depends on network availability. Validated server adapters also retrieve normalized outcomes from ClinicalTrials.gov and structured abstract sections from PubMed.
+The current app ships with a deterministic fictional case so the core demo never depends on network availability. Validated server adapters also retrieve normalized outcomes from ClinicalTrials.gov and structured abstract sections from PubMed. Agent-retrieved live records are rendered in the shared page with exact source links, making the source read visible to the reviewer without promoting it into an automatic finding.
 
 ## How we built it
 
@@ -59,7 +59,8 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 - Deterministic offline demonstration data plus bounded live-source adapters
 - Evidence-side validation that rejects cross-record IDs, unrelated citations, duplicates, and unknown evidence
 - Restrictive production response headers, bounded upstream payloads, and entity-safe XML parsing
-- 34 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
+- 35 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
+- Reviewer-visible live-source intake and a human-downloadable reviewed JSON receipt
 - A production-mode Codex-browser rehearsal at desktop and 390-pixel mobile widths with no horizontal overflow or browser errors
 
 ## What we learned

@@ -6,21 +6,26 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 - Open `https://protocol-mirror.vercel.app` in a fresh Codex/ChatGPT in-app-browser session with WebMCP site tools enabled.
 - Confirm the header reads **WebMCP connected · 6 tools** and `export_review_receipt` is not yet available.
+- Confirm no live-source intake is visible before the agent calls the source tools.
 - Record at 1280×720 or higher, browser zoom at 100%, notifications hidden, and microphone levels tested.
 - Keep the production URL visible near the beginning. Show the agent tool activity and the page response in the same recording.
 - Speak naturally. Pause after the two hook lines rather than rushing them.
 
-## 0:00–0:16 — The hook
+## 0:00–0:18 — Working product and hook
 
-**On screen:** Start on the hero, with **WebMCP connected · 6 tools** visible.
+**On screen:** Start on the connected production page and immediately show the agent calling both live-source tools.
+
+**Prompt the agent:**
+
+> Retrieve ClinicalTrials.gov record NCT04280705 and PubMed article 32445440. Summarize only the structured data returned by the tools; do not infer a discrepancy or make a review decision.
 
 **Say:**
 
-> Most AI demos ask, “What can an agent do for a person?” Protocol Mirror asks a harder question: how should humans and agents work together when the agent is useful—but should not have final authority?
+> These are real records retrieved through the page's WebMCP tools and made visible to the reviewer. Protocol Mirror asks a harder question: how should humans and agents work together when the agent is useful—but should not have final authority?
 
 > AI assembles evidence. A human decides.
 
-## 0:16–0:37 — The real problem
+## 0:18–0:39 — The real problem
 
 **On screen:** Scroll just enough to show the registered and reported outcome columns. Add a small source caption: “Chen et al., JAMA Network Open (2019) · 389 trials.”
 
@@ -28,7 +33,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 > A clinical-trial registry records what researchers planned to measure. The publication records what readers eventually see. Comparing them is slow, citation-heavy work. A 2019 study of 389 trials found that 130 had at least one primary-outcome change. But a difference is not automatically wrongdoing. Reviewers need evidence and uncertainty—not an AI verdict.
 
-## 0:37–0:55 — Why WebMCP matters
+## 0:39–0:58 — Why WebMCP matters
 
 **On screen:** Keep the six-tool badge visible and open the agent tool surface.
 
@@ -40,7 +45,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 > Protocol Mirror exposes six typed WebMCP tools. The agent reads stable IDs and exact source spans directly from the page instead of guessing from pixels. Registry and publication text is explicitly treated as untrusted evidence.
 
-## 0:55–1:25 — Agent proposes; human authority stays visible
+## 0:58–1:28 — Agent proposes; human authority stays visible
 
 **Prompt the agent:**
 
@@ -52,7 +57,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 > The concepts look similar, but their measurement method and primary time point differ. The agent stages that uncertainty, cites both records, and moves the exact checkpoint into view. It can propose and explain. There is deliberately no agent tool that can accept its own conclusion.
 
-## 1:25–1:43 — The human-only decision
+## 1:28–1:46 — The human-only decision
 
 **On screen:** Pause on the Accept and Reject controls, then personally click **Accept**.
 
@@ -60,32 +65,33 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 > This is the authority boundary. I—not the agent—make the decision. And watch the capability surface: after my review, the page changes from six tools to seven.
 
-## 1:43–2:00 — Dynamic proof, not a black box
+## 1:46–2:04 — Dynamic proof, not a black box
 
 **Prompt the agent:**
 
 > Export the reviewed receipt and summarize only what it actually contains. Confirm whether staged proposals were excluded.
 
-**On screen:** Show the receipt result, exact evidence locators, and reviewed-only event trail.
+**On screen:** Show the receipt result, exact evidence locators, reviewed-only event trail, and the visible **Download reviewed receipt JSON** action.
 
 **Say:**
 
 > The seventh tool exists only when reviewed work exists. Its receipt excludes staged suggestions and preserves the accepted mapping, exact evidence locators, and the audit events that produced it.
 
-## 2:00–2:18 — Reliability and close
+## 2:04–2:22 — Reliability and close
 
 **On screen:** Briefly show **Stage guided review**, the live-source tool names, or the architecture section in the README; finish on the hero or reviewed workspace.
 
 **Say:**
 
-> The deterministic case keeps judging reliable, while bounded adapters can retrieve live ClinicalTrials.gov and PubMed records. This is a research-transparency aid—not medical advice, a misconduct detector, or a clinical decision system.
+> The deterministic case keeps judging reliable, while the agent-retrieved ClinicalTrials.gov and PubMed records remain visible as read-only, untrusted intake. This is a research-transparency aid—not medical advice, a misconduct detector, or a clinical decision system.
 
 > Protocol Mirror makes AI useful precisely where it should not be the final authority.
 
 ## Recording acceptance checklist
 
 - The final processed video is public on YouTube, under three minutes, and audible throughout.
-- The production URL, connected six-tool state, real agent calls, exact evidence, focus handoff, human click, seven-tool state, and reviewed receipt are visibly demonstrated.
+- A real live-source tool call and its visible page result appear in the first 10–15 seconds.
+- The production URL, connected six-tool state, exact evidence, focus handoff, human click, seven-tool state, reviewed receipt, and human JSON download are visibly demonstrated.
 - The agent is never shown accepting or rejecting a proposal.
 - The video makes no clinical-validation, diagnostic-accuracy, or misconduct-detection claim.
 - The YouTube description includes the live application and public MIT repository URLs from `docs/YOUTUBE_METADATA.md`.
