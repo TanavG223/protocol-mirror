@@ -7,8 +7,9 @@ This runbook starts from a clean, CI-verified `main` branch.
 - Permanent application: https://protocol-mirror.vercel.app
 - Public MIT repository: https://github.com/TanavG223/protocol-mirror
 - Permanent WebMCP workflow: verified end to end in the Codex in-app browser
-- Final local demo: `docs/demo/protocol-mirror-final-demo.mp4` (1:29.67, H.264/AAC)
-- Reproducible edit: `scripts/render-final-demo.sh` with narration and kinetic overlays in `docs/demo/`
+- Final local demo: pending owner-approved ElevenLabs narration and 60 fps regeneration; do not upload the tracked superseded 30 fps file
+- Verified visual preview: 89.65 seconds, 1280×720 H.264 at constant 60 fps
+- Reproducible edit: `scripts/render-final-demo.sh`; release mode requires `ELEVENLABS_AUDIO`
 - Upload thumbnail: `docs/demo/title-card.png` (1280×720)
 - Still pending by owner choice: public YouTube upload, explicit rules acknowledgment, Devpost project write, and final `yes, submit`
 
@@ -38,11 +39,14 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 
 ## 3. Record and publish the demo
 
-1. Watch the complete `docs/demo/protocol-mirror-final-demo.mp4` local master with sound and confirm the narration, pacing, overlays, and visible six-to-seven tool sequence.
-2. Use the paste-ready metadata in `docs/YOUTUBE_METADATA.md` and confirm the processed runtime remains under three minutes with clear narration.
-3. Watch the complete upload with sound before making it public; the challenge requires a publicly visible YouTube video.
-4. Put the live app and public repository links in the video description.
-5. Replace the pending demo-video lines in `docs/SUBMISSION_DRAFT.md` and `devpost-submission.md` with the final URL only after watching the uploaded result end to end with sound.
+1. Generate the final narration in ElevenLabs from `docs/demo/FINAL_VIDEO_NARRATION.txt`, following `docs/demo/ELEVENLABS_VOICE_DIRECTION.md`, and have the owner approve the audio.
+2. Render with `ELEVENLABS_AUDIO=/absolute/path/to/approved-audio ./scripts/render-final-demo.sh`; the script refuses a silent system-voice fallback.
+3. Re-run the codec, frame-cadence, black-segment, silence, loudness, and checksum checks; update `docs/YOUTUBE_METADATA.md` and `docs/FINAL_RELEASE_MANIFEST.md`.
+4. Watch the complete `docs/demo/protocol-mirror-final-demo.mp4` local master with sound and confirm the narration, pacing, overlays, and visible six-to-seven tool sequence.
+5. Use the paste-ready metadata in `docs/YOUTUBE_METADATA.md` and confirm the processed runtime remains under three minutes with clear narration.
+6. Watch the complete upload with sound before making it public; the challenge requires a publicly visible YouTube video.
+7. Put the live app and public repository links in the video description.
+8. Replace the pending demo-video lines in `docs/SUBMISSION_DRAFT.md` and `devpost-submission.md` with the final URL only after watching the uploaded result end to end with sound.
 
 ## 4. Complete the Devpost entry
 
