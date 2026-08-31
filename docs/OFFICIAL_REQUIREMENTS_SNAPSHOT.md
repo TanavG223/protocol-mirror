@@ -1,6 +1,6 @@
 # Official WebMCP Challenge requirements snapshot
 
-Checked on 2026-08-30 using the Codex in-app browser and refreshed through the authenticated Devpost connection at 14:29–14:30 UTC.
+Checked on 2026-08-31 through the authenticated Devpost connection at 13:41:25–13:41:29 UTC. Live data reported `complete` for rules, dates, requirements, judging criteria, and prizes.
 
 Sources:
 
@@ -40,6 +40,8 @@ The official rules hosted on Devpost prevail if anything below changes or confli
 - English entry materials, or English translations when another language is used.
 - Testing access and any necessary credentials; Protocol Mirror is intentionally public and requires no credentials.
 
+The live form currently requires Submitter Type, country or countries of residence, App Status (New or Existing), live URL, public repository URL, tested agents or clients, AI tools used, learning level, and whether the entrant gained career-relevant AI value. Organization name, Existing-project extension explanation, and private testing instructions are conditional or optional fields.
+
 The demo must not use copyrighted music, third-party trademarks, or other protected material without permission. The Protocol Mirror recording plan uses spoken narration and the project's own interface only.
 
 ## Judging criteria
@@ -68,7 +70,7 @@ Ten winners receive $3,500 cash each ($35,000 total) plus the sponsor benefits l
 | Screenshots | Six production-mode desktop/mobile assets, including permanent seven-tool reviewed state | Ready |
 | Text description | Root `devpost-submission.md` packet | Ready |
 | Working live URL | `https://protocol-mirror.vercel.app`; six-before/seven-after tool lifecycle and live source reads verified in Codex browser | Ready |
-| Public YouTube demo under three minutes with audio | Edited 1:29.67 local master, natural-style voice, metadata, and thumbnail ready; owner approval and public upload pending | Missing |
+| Public YouTube demo under three minutes with audio | Verified 1:29.65 constant-60-fps local candidate with ElevenLabs narration, thumbnail, metadata, and 19-cue English captions; owner approval and public upload pending | Missing |
 | Devpost registration | Official Devpost integration reports `registered` with submissions open | Ready |
 | Devpost project/form access | No Protocol Mirror Devpost project exists yet; authenticated creation and field review remain | Missing |
 
