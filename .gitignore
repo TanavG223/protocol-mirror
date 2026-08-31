@@ -23,6 +23,8 @@
 # misc
 .DS_Store
 *.pem
+/docs/demo/*-preview.mp4
+/docs/demo/*-draft-voiceover.m4a
 
 # debug
 npm-debug.log*
