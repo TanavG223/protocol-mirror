@@ -76,3 +76,19 @@ Before producing the edited demo on 2026-08-30, the permanent deployment at comm
 - A 390 by 844 viewport had a 390-pixel document width with no horizontal overflow, and no browser warnings or errors were recorded.
 
 After commit `fc3fb52ef4b6d8b34d1ed62d9fb8cb99568eb336` passed GitHub CI and completed its Vercel production deployment, the permanent URL was reloaded and the release-specific authority path was repeated. The page registered six tools with no console errors, displayed the explicit **Fictional demonstration span** provenance label, staged and focused a two-span proposal, accepted it only through the human UI, exposed the seventh receipt tool, exported exactly one accepted mapping with both locators and no staged work, then removed the receipt tool and returned to six tools after undo.
+
+## Final public submission-day walkthrough
+
+On 2026-08-31, the permanent deployment was exercised again from a clean Codex in-app-browser tab before handoff to the participant:
+
+- The initial page visibly reported six WebMCP tools, an empty review queue, the deterministic fictional-case label, and the human-authority workflow.
+- The live adapters returned ClinicalTrials.gov `NCT04280705` with 43 normalized outcomes and PubMed `32445440` with four abstract sections.
+- URL-shaped and path-traversal-shaped identifiers were rejected by the bounded input contracts.
+- An unrelated-evidence proposal and a duplicate valid proposal were both rejected without corrupting the staged state.
+- A valid uncertain proposal cited the registry locator `OutcomesModule.primaryOutcomes[0]` and publication locator `Results · paragraph 2`. `request_human_review` returned `decisionAuthority: human_reviewer_only`, and an attempted agent-side `accept_mapping` call failed because no such tool was available.
+- Clicking the visible human **Accept** control changed the capability surface from six tools to seven. The reviewed receipt contained exactly the accepted mapping, both cited evidence spans, and the pair/stage/accept trail.
+- Clicking **Undo last decision** returned the proposal to the queue, removed `export_review_receipt`, and restored the six-tool capability surface.
+- At 390 by 844 CSS pixels, both the document and body remained 390 pixels wide with no horizontal overflow. The console log was empty throughout the walkthrough.
+- A fresh reload followed by **Stage guided review** left all four representative proposal categories open in the browser for hands-on inspection and human decision-making.
+
+These checks cover the documented critical and failure flows; they do not prove the absence of every possible defect or establish clinical validity.
