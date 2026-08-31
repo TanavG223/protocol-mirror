@@ -74,3 +74,5 @@ Before producing the edited demo on 2026-08-30, the permanent deployment at comm
 - The receipt contained one accepted mapping, both cited locators, and only pair/stage/accept events; staged work was absent.
 - Undo restored the proposal and removed the receipt tool, returning the surface to six tools.
 - A 390 by 844 viewport had a 390-pixel document width with no horizontal overflow, and no browser warnings or errors were recorded.
+
+After commit `fc3fb52ef4b6d8b34d1ed62d9fb8cb99568eb336` passed GitHub CI and completed its Vercel production deployment, the permanent URL was reloaded and the release-specific authority path was repeated. The page registered six tools with no console errors, displayed the explicit **Fictional demonstration span** provenance label, staged and focused a two-span proposal, accepted it only through the human UI, exposed the seventh receipt tool, exported exactly one accepted mapping with both locators and no staged work, then removed the receipt tool and returned to six tools after undo.
