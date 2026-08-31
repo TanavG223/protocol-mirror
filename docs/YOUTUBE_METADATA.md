@@ -3,6 +3,7 @@
 ## Final local candidate
 
 - File: `docs/demo/protocol-mirror-final-demo.mp4`
+- Status: **do not upload** until the ElevenLabs commercial-use gate is resolved and the resulting master is re-verified
 - SHA-256: `0ce0b5b4aabaccf1baa5ec6f193b47785bbfff2ef0c4f6ee39a4f689c3f58797`
 - Duration: 89.650000 seconds
 - Video: H.264, 1280×720, constant 60 fps, 5,379 frames

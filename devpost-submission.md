@@ -121,7 +121,7 @@ The repository is public, GitHub detects its MIT license, all required source an
 
 ## Demo Video
 
-The final local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.65 seconds, 1280×720 H.264 at a verified constant 60 fps, with an 88.9-second natural ElevenLabs narration by `Chris - Charming, Down-to-Earth`. It uses motion-compensated intermediate frames, a substantially higher-quality encode, clean kinetic labels, product-first pacing, smooth transitions, no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer at the tested threshold, and the truthful six-before/seven-after capability sequence. The project owner must still watch and approve the complete candidate with sound before upload. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
+The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.65 seconds, 1280×720 H.264 at a verified constant 60 fps, with an 88.9-second ElevenLabs narration by `Chris - Charming, Down-to-Earth`. It uses motion-compensated intermediate frames, a substantially higher-quality encode, clean kinetic labels, product-first pacing, smooth transitions, no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer at the tested threshold, and the truthful six-before/seven-after capability sequence. Do not upload this candidate yet: the current account evidence matches ElevenLabs Free, whose current terms restrict output to non-commercial use. Regenerate under a plan with a commercial license or replace the narration, then have the owner watch and approve the complete result. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
 
 ## Screenshot Shot List
 
@@ -141,6 +141,7 @@ The final local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.65 s
 - [x] Six final screenshots, including a permanent-deployment review proof, and a timed demo script
 - [x] Permanent live URL deployed and fully exercised in the Codex in-app browser
 - [x] Final 60 fps candidate rendered with ElevenLabs narration and automated release checks
+- [ ] Narration commercial-use rights confirmed or narration replaced and final media re-verified
 - [x] English caption file prepared and structurally verified; processed YouTube timing review remains pending
 - [ ] Project owner watched and approved the complete local master with sound
 - [ ] Public YouTube upload completed and watched end to end

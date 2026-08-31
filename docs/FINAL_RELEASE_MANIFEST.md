@@ -1,6 +1,6 @@
 # Final release manifest
 
-Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs candidate was rendered, automatically verified, and preserved in commit `ba3a1b811e51ab01a0cdd8446a395caad7baa9d3`. This is pre-submission evidence, not evidence of owner editorial approval, a Devpost entry, or a YouTube upload.
+Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs candidate was rendered, automatically verified, and preserved in commit `ba3a1b811e51ab01a0cdd8446a395caad7baa9d3`. The media is a technical candidate only: current account evidence matches ElevenLabs Free, and the current terms restrict Free User output to non-commercial use. This is not evidence of commercial-use clearance, owner editorial approval, a Devpost entry, or a YouTube upload.
 
 ## Authoritative release references
 
@@ -46,9 +46,10 @@ Automated candidate checks found no black segment of 0.4 seconds or longer, no s
 
 ## Owner-only gates still open
 
-1. Watch and approve the complete local candidate with sound; request any voice, timing, or edit changes before upload.
-2. Acknowledge the current official rules and personally confirm age, residence, exclusions, originality, rights, submitter type, and New-versus-Existing project status.
-3. Upload the approved video as a publicly visible YouTube video and watch the processed upload end to end.
-4. Provide the final YouTube URL and required personal Devpost answers.
-5. Create/review the Protocol Mirror Devpost project and inspect the final authenticated preview.
-6. Submit only after the separate explicit `yes, submit` confirmation, then preserve the receipt and keep all judging URLs unrestricted through the judging period.
+1. Resolve the narration rights gate: regenerate after the ElevenLabs account is on a plan that explicitly includes a commercial license, or replace the narration with an owner-recorded track; then re-verify the resulting media.
+2. Watch and approve the complete cleared local candidate with sound; request any voice, timing, or edit changes before upload.
+3. Acknowledge the current official rules and personally confirm age, residence, exclusions, originality, rights, submitter type, and New-versus-Existing project status.
+4. Upload the approved video as a publicly visible YouTube video and watch the processed upload end to end.
+5. Provide the final YouTube URL and required personal Devpost answers.
+6. Create/review the Protocol Mirror Devpost project and inspect the final authenticated preview.
+7. Submit only after the separate explicit `yes, submit` confirmation, then preserve the receipt and keep all judging URLs unrestricted through the judging period.

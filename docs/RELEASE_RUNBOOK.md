@@ -7,7 +7,7 @@ This runbook starts from a clean, CI-verified `main` branch.
 - Permanent application: https://protocol-mirror.vercel.app
 - Public MIT repository: https://github.com/TanavG223/protocol-mirror
 - Permanent WebMCP workflow: verified end to end in the Codex in-app browser
-- Final local candidate: `docs/demo/protocol-mirror-final-demo.mp4`; 89.65 seconds, 1280×720 H.264 at constant 60 fps, ElevenLabs narration
+- Technical local candidate: `docs/demo/protocol-mirror-final-demo.mp4`; 89.65 seconds, 1280×720 H.264 at constant 60 fps, ElevenLabs narration; **not cleared for upload until commercial-use rights are resolved**
 - Candidate verification: 5,379 frames; no tested black/silence discontinuity; no variable cadence; owner watch-and-approve still pending
 - Reproducible edit: `scripts/render-final-demo.sh`; release mode requires `ELEVENLABS_AUDIO`
 - Upload thumbnail: `docs/demo/title-card.png` (1280×720)
@@ -39,15 +39,16 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 
 ## 3. Record and publish the demo
 
-1. Generate the final narration in ElevenLabs from `docs/demo/FINAL_VIDEO_NARRATION.txt`, following `docs/demo/ELEVENLABS_VOICE_DIRECTION.md`, and have the owner approve the audio.
-2. Render with `ELEVENLABS_AUDIO=/absolute/path/to/approved-audio ./scripts/render-final-demo.sh`; the script refuses a silent system-voice fallback.
-3. Re-run the codec, frame-cadence, black-segment, silence, loudness, and checksum checks; update `docs/YOUTUBE_METADATA.md` and `docs/FINAL_RELEASE_MANIFEST.md`.
-4. Watch the complete `docs/demo/protocol-mirror-final-demo.mp4` local master with sound and confirm the narration, pacing, overlays, and visible six-to-seven tool sequence.
-5. Use the paste-ready metadata in `docs/YOUTUBE_METADATA.md` and confirm the processed runtime remains under three minutes with clear narration.
-6. Upload `docs/demo/protocol-mirror-final-captions.srt` as English captions and inspect every cue in YouTube's caption editor against the processed audio.
-7. Watch the complete upload with sound and captions before making it public; the challenge requires a publicly visible YouTube video.
-8. Put the live app and public repository links in the video description.
-9. Replace the pending demo-video lines in `docs/SUBMISSION_DRAFT.md` and `devpost-submission.md` with the final URL only after watching the uploaded result end to end with sound.
+1. Resolve the narration rights gate: regenerate after the ElevenLabs account is on a plan explicitly including a commercial license, or replace the narration with an owner-recorded track. Do not assume a later upgrade retroactively clears the Free-plan generation.
+2. Generate the final narration from `docs/demo/FINAL_VIDEO_NARRATION.txt`, following `docs/demo/ELEVENLABS_VOICE_DIRECTION.md`, and have the owner approve the audio.
+3. Render with `ELEVENLABS_AUDIO=/absolute/path/to/approved-audio ./scripts/render-final-demo.sh`; the script refuses a silent system-voice fallback.
+4. Re-run the codec, frame-cadence, black-segment, silence, loudness, and checksum checks; update `docs/YOUTUBE_METADATA.md` and `docs/FINAL_RELEASE_MANIFEST.md`.
+5. Watch the complete `docs/demo/protocol-mirror-final-demo.mp4` local master with sound and confirm the narration, pacing, overlays, and visible six-to-seven tool sequence.
+6. Use the paste-ready metadata in `docs/YOUTUBE_METADATA.md` and confirm the processed runtime remains under three minutes with clear narration.
+7. Upload `docs/demo/protocol-mirror-final-captions.srt` as English captions and inspect every cue in YouTube's caption editor against the processed audio.
+8. Watch the complete upload with sound and captions before making it public; the challenge requires a publicly visible YouTube video.
+9. Put the live app and public repository links in the video description.
+10. Replace the pending demo-video lines in `docs/SUBMISSION_DRAFT.md` and `devpost-submission.md` with the final URL only after watching the uploaded result end to end with sound.
 
 ## 4. Complete the Devpost entry
 
