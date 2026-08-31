@@ -1,12 +1,13 @@
 # Final release manifest
 
-Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs candidate was rendered and automatically verified. This is pre-submission evidence, not evidence of owner editorial approval, a Devpost entry, or a YouTube upload. Refresh the release commit after the candidate is committed.
+Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs candidate was rendered, automatically verified, and preserved in commit `ba3a1b811e51ab01a0cdd8446a395caad7baa9d3`. This is pre-submission evidence, not evidence of owner editorial approval, a Devpost entry, or a YouTube upload.
 
 ## Authoritative release references
 
 - Product and final-media commit: `fc3fb52ef4b6d8b34d1ed62d9fb8cb99568eb336`
 - Final browser-evidence commit: `a408bdb815344e49407f004b043273a649836da8`
 - 60 fps/ElevenLabs release-pipeline commit: `c39b921cf54bf26d37257990dafb3eab2a7ac4e9`
+- Final 60 fps ElevenLabs candidate commit: `ba3a1b811e51ab01a0cdd8446a395caad7baa9d3`
 - Public repository: https://github.com/TanavG223/protocol-mirror
 - Permanent application: https://protocol-mirror.vercel.app
 - CI verification: https://github.com/TanavG223/protocol-mirror/actions/runs/33346345077
