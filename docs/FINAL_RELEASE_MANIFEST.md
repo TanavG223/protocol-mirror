@@ -16,7 +16,7 @@ Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs cand
 ## Verified engineering state
 
 - Public baseline: `npm run check` passed ESLint, 34 deterministic tests, TypeScript, and the optimized Next.js production build.
-- Current local release candidate: `npm run check` passes ESLint, 35 deterministic tests, TypeScript, and the optimized Next.js production build; agent-retrieved source records, human receipt download, and the visible public-source link are not deployed yet.
+- Current local release candidate: `npm run check` passes ESLint, 35 deterministic tests, TypeScript, and the optimized Next.js production build. The four-step agent investigation → proposal → human adjudication → agent export loop passed through real WebMCP calls at desktop and 390-pixel widths. Agent-retrieved source records, human receipt download, the visible public-source link, and the clarified four-step workflow are not deployed yet.
 - `npm audit --omit=dev --audit-level=high`: zero vulnerabilities.
 - Final public Codex-browser rehearsal: six initial tools; direct pre-mapping evidence; two live-source reads; malformed, duplicate, and unrelated-evidence rejection; agent staging and focus; human-only acceptance; seven-tool reviewed receipt; undo back to six; no browser warnings or errors.
 - Responsive proof: 390 by 844 viewport with a 390-pixel document width and no horizontal overflow.

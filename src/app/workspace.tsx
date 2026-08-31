@@ -234,11 +234,12 @@ export default function Workspace() {
     <main id="top">
       <section className="case-header" aria-labelledby="case-title">
         <div className="eyebrow case-reveal"><span>Case 04</span><span aria-hidden="true">/</span><span>Outcome integrity review</span></div>
-        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>AI assembles evidence.</span><span>A human decides.</span></h1><p className="case-subtitle">A WebMCP workspace for registry-to-publication review—built to make agent reasoning inspectable without giving the agent final authority.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={loadDemo}><Icon name="spark" /> Stage guided review</button><p><strong>{reviewedWorkAvailable ? "7 tools" : "6 tools"}</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Receipt unlocked by review" : "Human decision unlocks receipt"}</p></div></div>
+        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>AI assembles evidence.</span><span>A human decides.</span></h1><p className="case-subtitle">A WebMCP collaboration loop where an agent retrieves, compares, cites, and stages evidence—then packages the reviewed result after a human adjudicates it.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={loadDemo}><Icon name="spark" /> Stage guided review</button><p><strong>{reviewedWorkAvailable ? "7 tools" : "6 tools"}</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Agent export unlocked" : "Human decision unlocks export"}</p></div></div>
         <ol className="agent-rail case-reveal" aria-label="Accountable WebMCP workflow">
           <li><span>01</span><strong>Inspect exact spans</strong><small>Source text stays untrusted</small></li>
           <li><span>02</span><strong>Stage a proposal</strong><small>Schema-bound and evidence-linked</small></li>
-          <li><span>03</span><strong>Human decides</strong><small>Only review unlocks the receipt</small></li>
+          <li><span>03</span><strong>Human adjudicates</strong><small>The consequential decision stays human</small></li>
+          <li><span>04</span><strong>Agent packages proof</strong><small>Only reviewed work enters the receipt</small></li>
         </ol>
         <div className="case-passport case-reveal"><span>Active demonstration case</span><h2>{DEMO_PAIR.title}</h2><p>Deterministic fictional record · no clinical claim</p></div>
         <div className="source-strip" role="group" aria-label="Study sources">

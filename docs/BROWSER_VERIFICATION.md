@@ -106,3 +106,14 @@ On 2026-08-31, the post-research release candidate was built and exercised at `h
 - At 390 by 844 CSS pixels, the document and body widths remained 390 pixels with no horizontal overflow.
 - The browser console log remained empty.
 - The visible **Public source · MIT** footer link resolved to the correct GitHub repository and measured 44 pixels high at both desktop and mobile widths.
+
+## Four-step agent collaboration regression
+
+After the agent-role positioning was clarified on 2026-08-31, the local production candidate was reloaded and the complete workflow was repeated through real WebMCP calls rather than the guided fallback:
+
+- Step 1: the agent called `get_audit_state` and retrieved two exact evidence spans.
+- Step 2: the agent called `propose_outcome_mapping`, created `map-11`, and called `request_human_review`; the page focused the review region, showed one queued proposal, and still exposed six tools.
+- Step 3: a human clicked the visible **Accept** action. No agent accept/reject capability existed.
+- Step 4: the page exposed seven tools, and the agent called `export_review_receipt`. The receipt contained one accepted mapping and the `pair_loaded`, `mapping_staged`, and `mapping_accepted` event trail.
+- The visible workflow read **Inspect exact spans → Stage a proposal → Human adjudicates → Agent packages proof**.
+- At 390 by 844 CSS pixels, all four steps stacked without horizontal overflow. The browser recorded no warnings or errors.

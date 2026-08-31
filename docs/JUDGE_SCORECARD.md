@@ -16,9 +16,9 @@ The local increase reflects two concrete changes: agent-retrieved ClinicalTrials
 
 ## Defensible differentiation
 
-**Others use WebMCP to let agents act. Protocol Mirror uses it to let agents assemble auditable evidence while preserving human authority.**
+**Protocol Mirror uses WebMCP for a complete collaboration loop: the agent investigates, cites, proposes, and packages proof; the human adjudicates the consequential claim.**
 
-The strongest precise distinction is not simply “human in the loop.” Protocol Mirror gives the agent no accept or reject capability at all. The agent can read exact evidence, stage a proposal, and request attention; a visible human action alone changes the application state and exposes the seventh reviewed-receipt tool. Live-source text is visible but cannot silently become a reviewed finding.
+The strongest precise distinction is not simply “human in the loop,” nor is it an agent reduced to passive summarization. The agent performs the investigation through six typed capabilities: it retrieves live records, reads structured case state, inspects exact evidence, stages a proposal, and requests attention. A visible human action adjudicates the proposal and changes the application state; the agent then receives a seventh capability that exports the reviewed receipt. Live-source text is visible but cannot silently become a reviewed finding.
 
 Among the public entries reviewed, Protocol Mirror was the only clinical-trial registry-versus-publication transparency workspace. It combines exact source locators, bounded public-source adapters, a deterministic offline judging path, dynamic tool availability, a reviewed-only receipt, and undo without requiring an account, hardware, or external setup.
 

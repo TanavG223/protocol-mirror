@@ -21,7 +21,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 **Say:**
 
-> These are real records retrieved through the page's WebMCP tools and made visible to the reviewer. Protocol Mirror asks a harder question: how should humans and agents work together when the agent is useful—but should not have final authority?
+> These are real records retrieved by the agent through the page's WebMCP tools and made visible to the reviewer. This is a complete collaboration loop: the agent investigates, cites, proposes, and packages proof; a human adjudicates the consequential claim.
 
 > AI assembles evidence. A human decides.
 
@@ -85,7 +85,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 > The deterministic case keeps judging reliable, while the agent-retrieved ClinicalTrials.gov and PubMed records remain visible as read-only, untrusted intake. This is a research-transparency aid—not medical advice, a misconduct detector, or a clinical decision system.
 
-> Protocol Mirror makes AI useful precisely where it should not be the final authority.
+> Protocol Mirror does not make the agent passive. It gives the agent the investigation and evidence work—while keeping the consequential judgment accountable to a person.
 
 ## Recording acceptance checklist
 
@@ -105,7 +105,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 **Opening paragraph:**
 
-> Most agent experiences are designed around delegation: tell the agent what you want, and it performs an action. Protocol Mirror explores a harder WebMCP question—how should humans and agents work together when the agent is useful but should not have final authority? It turns clinical-trial reporting review into a shared, evidence-linked workspace where an agent investigates and proposes while a human retains every consequential decision.
+> Protocol Mirror turns clinical-trial reporting review into a complete WebMCP collaboration loop. The agent retrieves records, compares outcomes, cites exact evidence, stages a proposal, and focuses the reviewer. A human adjudicates the consequential claim, then the agent packages only the reviewed result.
 
 **Closing line:**
 

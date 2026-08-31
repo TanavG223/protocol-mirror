@@ -65,7 +65,7 @@ Briefly show the architecture section in the repository README or the validated 
 
 ## 2:40–2:45 — Close
 
-“Protocol Mirror makes AI useful precisely where it should not be the final authority.”
+“The agent performs the investigation and evidence work. The human remains accountable for the consequential judgment.”
 
 ## Recording acceptance checks
 

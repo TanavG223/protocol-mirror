@@ -24,7 +24,7 @@ Protocol Mirror — Human-Agent Clinical-Trial Transparency with WebMCP
 
 AI assembles evidence. A human decides.
 
-Protocol Mirror explores a harder WebMCP question: how should humans and agents work together when the agent is useful but should not have final authority? It is a WebMCP-native clinical-trial transparency workspace where an agent reads exact source evidence, stages a structured comparison, and hands the final decision to a human reviewer.
+Protocol Mirror uses WebMCP for a complete collaboration loop: an agent retrieves records, compares outcomes, cites exact evidence, stages a structured proposal, and focuses the reviewer. A human adjudicates the consequential claim, then the agent can export only the reviewed result.
 
 Live app: https://protocol-mirror.vercel.app
 

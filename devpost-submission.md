@@ -5,7 +5,7 @@ Nothing has been sent to Devpost.
 
 ## One-line Summary
 
-AI assembles evidence. A human decides. Protocol Mirror is a WebMCP-native clinical-trial transparency workspace where an agent compares registered outcomes with published reports, stages evidence-linked discrepancies, and hands every conclusion to a human reviewer.
+AI assembles evidence. A human decides. Protocol Mirror is a WebMCP-native clinical-trial transparency workspace where an agent retrieves records, compares outcomes, cites exact spans, stages discrepancies, focuses the reviewer, and packages the reviewed result after a human adjudicates it.
 
 ## Problem
 
@@ -23,9 +23,9 @@ The app includes a deterministic fictional case so the complete judging flow rem
 
 ## Why This Matters
 
-Most agent experiences are designed around delegation: tell the agent what you want, and it performs an action. Protocol Mirror explores a harder WebMCP question—how should humans and agents work together when the agent is useful but should not have final authority?
+Protocol Mirror is not less agentic because the final judgment stays human. The agent performs the time-consuming investigation: it retrieves live records, reads typed case state, compares stable outcome IDs, cites exact spans, stages a structured proposal, and moves the reviewer to the right checkpoint. After the person adjudicates, the page exposes a new tool so the agent can package the reviewed result.
 
-Protocol Mirror demonstrates a reason to build for people and agents together rather than adding a chatbot beside an existing interface. The agent handles structured inspection and evidence assembly; the human retains the domain judgment. The shared page makes the agent's limits, citations, uncertainty, and authority boundary visible.
+That complete loop is why WebMCP is essential rather than decorative: agent investigation → agent proposal → human adjudication → agent export. The shared page makes the agent's actions, limits, citations, uncertainty, and authority boundary visible.
 
 This is a research-transparency aid, not medical advice, a clinical decision system, a finding of misconduct, or a clinically validated detector.
 
@@ -128,7 +128,7 @@ The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.
 
 ## Screenshot Shot List
 
-1. `docs/screenshots/01-hero.jpg` — case context, connected WebMCP state, and the three-step authority model
+1. `docs/screenshots/01-hero.jpg` — case context, connected WebMCP state, and the human-agent authority model
 2. `docs/screenshots/02-comparison.jpg` — registered and reported source columns with state-backed relationship status
 3. `docs/screenshots/03-review-queue.jpg` — four staged proposals and the human-only checkpoint
 4. `docs/screenshots/04-evidence-drawer.jpg` — rationale beside exact quotations and source locators

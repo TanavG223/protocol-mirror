@@ -79,6 +79,8 @@ This runs ESLint, the deterministic adapter contract tests, TypeScript, and a pr
 
 Current verified baseline: 35 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also called both public live-source tools, displayed their real records in the reviewer UI, and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
 
+After committing a release candidate, run `npm run preflight:product` from a clean working tree. It fails closed unless the required source, license, screenshots, media assets, WebMCP registrations, four-step collaboration copy, dependency audit, tests, and production build all map to one commit. `npm run preflight:submission` adds explicit owner-controlled gates for current-rules acknowledgment, narration/media approval, personal Devpost answers, and the watched public YouTube URL; it is expected to fail until those external gates are truthfully complete.
+
 | Judge evidence | Verified result |
 | --- | --- |
 | Automated release checks | 35 tests, lint, TypeScript, and optimized build pass |

@@ -14,6 +14,7 @@ This criterion is equal-weight with the other three and is the first tie-break.
 - [x] Codex browser reports the expected six-before/seven-after tools
 - [x] Both live ClinicalTrials.gov and PubMed tools exercised through the real WebMCP surface
 - [x] Agent-retrieved live records appear in the shared reviewer UI with exact source links
+- [x] Complete agent investigation → proposal → human adjudication → agent export loop exercised through real WebMCP calls
 
 ## Execution
 
@@ -72,4 +73,5 @@ This criterion is equal-weight with the other three and is the fourth tie-break.
 - [ ] Devpost form completed and reviewed
 - [x] Published baseline remains on a green public `main` branch
 - [x] New judge-gap release candidate passes locally; push, CI, deployment, and permanent-URL recheck remain owner-approved actions
+- [x] Fail-closed product and submission preflight commands added; product preflight must map all evidence to one clean commit
 - [ ] Freeze the final external URLs and Devpost receipt before the deadline

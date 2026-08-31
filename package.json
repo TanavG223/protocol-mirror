@@ -2,13 +2,18 @@
   "name": "protocol-mirror",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "check": "npm run lint && npm run test && npm run build"
+    "check": "npm run lint && npm run test && npm run build",
+    "preflight:product": "bash scripts/release-preflight.sh product",
+    "preflight:submission": "bash scripts/release-preflight.sh submission"
   },
   "dependencies": {
     "fast-xml-parser": "^5.11.1",

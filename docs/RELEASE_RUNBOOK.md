@@ -19,6 +19,8 @@ The steps below are the reproducible release procedure and final external-action
 
 This step changes external state and requires the project owner's explicit confirmation at action time.
 
+Before any push or deployment, commit the candidate and run `npm run preflight:product`. The command requires a clean tree and prints the exact commit SHA after the dependency audit, 35-test contract, TypeScript check, and production build pass.
+
 1. Import `https://github.com/TanavG223/protocol-mirror` into Vercel.
 2. Keep the detected Next.js defaults. The current application requires no environment variables.
 3. Deploy the `main` branch and record the permanent HTTPS URL.
@@ -51,6 +53,8 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 10. Replace the pending demo-video lines in `docs/SUBMISSION_DRAFT.md` and `devpost-submission.md` with the final URL only after watching the uploaded result end to end with sound.
 
 ## 4. Complete the Devpost entry
+
+Run `npm run preflight:submission` only after the owner has completed every personal and media gate. The command deliberately requires the four `PROTOCOL_MIRROR_*` confirmation variables documented by its error messages; never set them merely to make the command pass.
 
 - Paste the narrative from `docs/SUBMISSION_DRAFT.md` and preserve its truthful-claim guardrail.
 - Add the six files from `docs/screenshots/` in narrative order; use `06-agent-reviewed.png` as direct proof of the public seven-tool reviewed state.

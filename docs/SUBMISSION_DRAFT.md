@@ -12,7 +12,7 @@ AI can surface the discrepancy. Only a human can decide what it means.
 
 ## One-sentence summary
 
-Protocol Mirror is a WebMCP-native review workspace where an agent compares registered clinical-trial outcomes with published reports, stages evidence-linked discrepancies, and hands every conclusion to a human reviewer.
+Protocol Mirror is a WebMCP-native review workspace where an agent retrieves records, compares registered outcomes with published reports, cites exact evidence, stages discrepancies, focuses the reviewer, and packages the reviewed result after a human adjudicates it.
 
 ## Inspiration
 
@@ -65,7 +65,7 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 
 ## What we learned
 
-Agent-native interfaces become more useful when tools reflect the authority model of the domain. “Can call a function” should not mean “can make the final decision.” WebMCP lets the page publish exactly the capabilities that are safe and relevant at each moment while keeping the human and agent grounded in the same evidence.
+Agent-native interfaces become more useful when tools reflect the authority model of the domain. Protocol Mirror gives the agent the substantial work—retrieval, structured inspection, comparison, evidence citation, proposal, focus handoff, and reviewed export—without confusing action with unchecked authority. WebMCP lets the page publish exactly the capability needed at each moment while keeping the human and agent grounded in the same evidence.
 
 ## What’s next
 
