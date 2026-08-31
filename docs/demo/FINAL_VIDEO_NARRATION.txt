@@ -1,0 +1,15 @@
+Most AI demos ask what an agent can do. Protocol Mirror asks a harder question: what should an agent never decide?
+
+AI assembles evidence. A human decides. This is a live Web M C P workspace for clinical-trial transparency.
+
+Registries show what researchers planned. Publications show what readers eventually see. Protocol Mirror places both records side by side and gives an agent typed access to stable outcome identifiers and exact source spans.
+
+The agent can inspect evidence, stage a structured mapping, and move the relevant human checkpoint into view. It cites both sides, labels uncertainty, and explains the mismatch.
+
+But it cannot accept or reject its own proposal. That control exists only in the interface for a human reviewer.
+
+After the reviewer decides, the capability surface changes from six tools to seven. The new receipt tool exports only reviewed work, exact evidence locators, and the event trail. Staged suggestions stay out.
+
+Two additional tools retrieve current Clinical Trials dot gov and Pub Med records through bounded, validated adapters. The fictional case keeps judging reliable even if a public source is unavailable.
+
+Protocol Mirror makes AI useful precisely where it should not have final authority.

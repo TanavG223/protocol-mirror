@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#101716" stop-opacity="0"/><stop offset="1" stop-color="#101716" stop-opacity=".84"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-opacity=".42"/></filter>
+  </defs>
+  <rect y="360" width="1280" height="360" fill="url(#shade)"/>
+  <rect x="70" y="476" width="230" height="36" rx="18" fill="#174f9a"/>
+  <circle cx="92" cy="494" r="6" fill="#72d69a"/>
+  <text x="108" y="501" font-family="Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="2" fill="white">LIVE WEBMCP APP</text>
+  <text x="66" y="578" font-family="Arial, sans-serif" font-size="58" font-weight="700" fill="white" filter="url(#shadow)">AI assembles evidence.</text>
+  <text x="66" y="646" font-family="Georgia, serif" font-size="60" font-style="italic" fill="#b9d1ff" filter="url(#shadow)">A human decides.</text>
+</svg>

@@ -59,3 +59,18 @@ After the final visual and interaction refinement, a fresh local Codex in-app-br
 - No browser console warnings or errors appeared during these checks.
 
 The same release candidate was then observed at the permanent HTTPS URL after Vercel built commit `fde24fa710a6f7a7ac8e2de194a83acf3e3c8540`. The public page exposed direct pre-mapping evidence inspection, rejected duplicate evidence IDs, staged and focused an omitted proposal, kept the human decision controls evidence-bound, and returned focus to the review region after the human click. The header and hero gate changed from six tools to seven, and the public `export_review_receipt` result contained exactly the accepted mapping, its cited locator, and the pair/stage/accept events. Both public live adapters also returned records, and the console remained free of warnings and errors.
+
+## Final public pre-video rehearsal
+
+Before producing the edited demo on 2026-08-30, the permanent deployment at commit `6421e984a9ebc1e28fac4061f9a9151b4720d2d8` was visibly exercised again in the Codex in-app browser:
+
+- Six initial tools registered and `get_audit_state` returned zero mappings.
+- Direct outcome selection exposed source evidence before any proposal existed.
+- `NCT04280705` returned 43 normalized ClinicalTrials.gov outcomes and PubMed `32445440` returned four structured abstract sections.
+- URL-shaped and path-traversal-shaped source identifiers were rejected before upstream access.
+- Duplicate mapping and unrelated-evidence proposals were rejected without changing the review state.
+- An uncertain two-span proposal was staged and focused with `decisionAuthority: human_reviewer_only`; no agent accept or reject tool existed.
+- A human click accepted the active proposal, moved focus to the stable review region, announced the exact result, and changed the capability surface from six tools to seven.
+- The receipt contained one accepted mapping, both cited locators, and only pair/stage/accept events; staged work was absent.
+- Undo restored the proposal and removed the receipt tool, returning the surface to six tools.
+- A 390 by 844 viewport had a 390-pixel document width with no horizontal overflow, and no browser warnings or errors were recorded.

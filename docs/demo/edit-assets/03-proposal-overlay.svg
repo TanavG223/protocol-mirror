@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs><filter id="shadow"><feDropShadow dx="0" dy="3" stdDeviation="6" flood-opacity=".36"/></filter></defs>
+  <rect x="58" y="526" width="614" height="132" rx="12" fill="#17201f" fill-opacity=".95" filter="url(#shadow)"/>
+  <text x="88" y="566" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2.4" fill="#f0b37a">AGENT ACTION</text>
+  <text x="88" y="607" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="white">Stage evidence. Request review.</text>
+  <text x="88" y="637" font-family="Arial, sans-serif" font-size="17" fill="#cdd6d2">A proposal—not a verdict.</text>
+</svg>

@@ -105,7 +105,7 @@ npm run check
 npm run dev
 ```
 
-Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 30 deterministic tests, TypeScript through the production build, and the optimized Next.js build.
+Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 34 deterministic tests, TypeScript through the production build, and the optimized Next.js build.
 
 ## Public Demo Link
 
@@ -121,7 +121,7 @@ The repository is public, GitHub detects its MIT license, all required source an
 
 ## Demo Video
 
-The project owner will record and upload the final demo using `docs/FINAL_OWNER_DEMO_SCRIPT.md`. It is timed for 2:10–2:25 and demonstrates the permanent deployment, six initial WebMCP tools, exact evidence retrieval, an agent-staged proposal, the human-only decision, the dynamic seventh tool, and the reviewed-only receipt. A prior generated video in `docs/demo/` is reference material only and is not the submission video. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
+The edited local master is `docs/demo/protocol-mirror-final-demo.mp4`: 1:29.67, 1280×720 H.264 at 30 fps with 48 kHz stereo AAC narration. It uses a new natural-style synthetic voice, clean kinetic labels, product-first pacing, smooth transitions, no music, and a truthful six-before/seven-after capability sequence. Automated checks found no black segment of 0.4 seconds or longer and no silence of 1.5 seconds or longer at the tested thresholds. The project owner must still watch and approve the complete video with sound before upload. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
 
 ## Screenshot Shot List
 
@@ -136,12 +136,12 @@ The project owner will record and upload the final demo using `docs/FINAL_OWNER_
 
 - [x] Public repository with all source, assets, instructions, and detected MIT license
 - [x] Non-trivial top-level `document.modelContext.registerTool()` implementation
-- [x] 30 deterministic tests, clean lint and TypeScript checks, and a successful production build
+- [x] 34 deterministic tests, clean lint and TypeScript checks, and a successful production build
 - [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
 - [x] Six final screenshots, including a permanent-deployment review proof, and a timed demo script
 - [x] Permanent live URL deployed and fully exercised in the Codex in-app browser
-- [x] Final owner-recording script, shot sequence, narration, and acceptance checklist prepared
-- [ ] Owner-recorded demo completed, reviewed end to end, and confirmed under three minutes with clear audio
+- [x] Final edited 1:29.67 local master, natural-style voiceover, kinetic overlays, and reproducible render script prepared
+- [ ] Project owner watched and approved the complete local master with sound
 - [ ] Public YouTube upload completed and watched end to end
 - [x] Devpost MCP reports the account registered for The WebMCP Challenge with submissions open
 - [ ] Authenticated Devpost project form fields and final preview verified
@@ -164,19 +164,19 @@ Authenticated Devpost preflight on 2026-08-30 returned these exact project field
 | Submitter Type | **Confirm:** Individual, Team of Individuals, or Organization |
 | Country of residence of yourself and team members if applicable | **Confirm:** required multi-country selection |
 | Organization name | Leave blank unless the selected submitter type requires it |
-| App Status | New |
-| Existing-app update explanation | Not applicable for a new project |
+| App Status | **Confirm:** New or Existing; repository creation date alone does not establish project status |
+| Existing-app update explanation | Complete only if the owner selects Existing; describe the WebMCP work added during the challenge period |
 | Live URL | https://protocol-mirror.vercel.app |
 | Testing instructions/credentials | No credentials required. Open the live URL in the Codex/ChatGPT in-app browser with WebMCP enabled; use the deterministic case or call the bounded live-source tools, stage a proposal, complete the visible human review, then export the reviewed receipt. |
 | Public repository | https://github.com/TanavG223/protocol-mirror |
-| Tested agents/clients | Codex desktop in-app browser with WebMCP site tools enabled. Manual non-WebMCP fallback was also verified. |
+| Tested agents/clients | Codex desktop in-app browser with WebMCP site tools enabled. |
 | AI tools leveraged | OpenAI Codex for research, scoping, implementation, debugging, deterministic tests, security review, accessibility inspection, browser verification, deployment, and submission preparation. Protocol Mirror itself uses page-native typed WebMCP tools and does not require a hosted model API at runtime. |
 | Learning level | **Confirm:** None, Moderate, or Significant |
 | Career AI value | **Confirm:** Yes or No |
 
 Still required before the form can be finalized:
 
-- Public YouTube demo URL after the project owner records, reviews, and uploads the final video
+- Public YouTube demo URL after the project owner watches, approves, and uploads the edited local master
 - Explicit rules acknowledgment in the local hackathon workflow
 - Final authenticated Devpost preview and the separate literal `yes, submit` confirmation
 

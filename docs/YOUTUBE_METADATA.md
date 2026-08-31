@@ -1,16 +1,18 @@
 # YouTube upload metadata
 
-## Reference media only
+## Final local master
 
-- Reference file, not for submission: `docs/demo/protocol-mirror-demo.mp4`
-- SHA-256: `03f6258bb34316c37aeb290873ff64c5ee2b64addd5a4ef2302d191abb28f9b8`
-- Duration: 79.607664 seconds
-- Video: H.264, 1280×720, 15 fps
-- Audio: AAC mono, 22.05 kHz, mean −15.8 dB, peak −1.6 dB
-- Automated continuity checks: no black segment of 0.5 seconds or longer at the tested threshold; no silence of 2 seconds or longer below −40 dB
+- File: `docs/demo/protocol-mirror-final-demo.mp4`
+- SHA-256: `8ae535d46e05cf245ab006505ed7c9b7673bbdcbd22af24b9b442b417cddc88f`
+- Duration: 89.666667 seconds
+- Video: H.264, 1280×720, 30 fps
+- Audio: AAC stereo, 48 kHz, mean −19.1 dB, peak −4.3 dB
+- Narration: synthetic `Reed (English (US))` system voice, processed for consistent speech loudness
+- Music: none
+- Automated continuity checks: no black segment of 0.4 seconds or longer at the tested threshold; no silence of 1.5 seconds or longer below −40 dB
 - Thumbnail SHA-256: `f2c30941c47ae9e920933a7e35a1920165f8fa8224cec63ba2a303b26fa4a7bf`
 
-These checks describe the older generated reference file only. They do not validate the final owner-recorded submission video. After recording, the project owner must confirm the actual final file is under three minutes, audible throughout, visually complete, and watch the processed YouTube upload end to end before using its URL in the entry.
+These checks confirm timing, codec, level, and continuity properties; they do not replace human editorial review. The project owner must watch and approve the complete local master with sound, then watch the processed public YouTube upload end to end before using its URL in the entry.
 
 ## Title
 
@@ -41,5 +43,5 @@ Built for The WebMCP Challenge.
 - Audience: No, it is not made for kids
 - Category: Science & Technology
 - Language: English
-- Synthetic media disclosure: follow YouTube's current disclosure prompt truthfully based on the final owner-recorded video's actual contents
+- Synthetic media disclosure: narration uses a synthetic system voice; answer YouTube's current disclosure prompt truthfully
 - Music: none

@@ -99,7 +99,7 @@ main { max-width: 1480px; margin: auto; }
 .role { font-weight: 800; color: var(--blue); }
 .outcome-card h4 { font-family: var(--font-serif); font-size: 21px; font-weight: 550; line-height: 1.15; letter-spacing: -.02em; }
 .outcome-card p { margin: 9px 0 15px; color: var(--muted); font-size: 14px; line-height: 1.5; }
-.outcome-status { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+.outcome-status { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .045em; }
 .status-line { width: 18px; height: 2px; background: #aaa; } .status-line.accepted { background: var(--green); } .status-line.staged { background: var(--amber); } .status-line.rejected { background: var(--red); }
 .confidence { margin-left: auto; font-weight: 800; color: var(--ink); }
 .evidence-spine { border-left: 1px solid var(--line); border-right: 1px solid var(--line); padding: 30px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; background: repeating-linear-gradient(135deg,transparent,transparent 7px,rgba(31,84,164,.045) 7px,rgba(31,84,164,.045) 8px); }
@@ -123,13 +123,13 @@ main { max-width: 1480px; margin: auto; }
 .review-card-main { display: grid; grid-template-columns: 100px minmax(150px,1fr) 24px minmax(150px,1fr); align-items: center; gap: 14px; padding: 18px; border: 0; background: transparent; text-align: left; cursor: pointer; }
 .review-card-main strong { font-family: var(--font-serif); font-size: 16px; font-weight: 550; line-height: 1.2; }
 .review-card-main small { grid-column: 2/-1; color: var(--muted); font-size: 13px; }
-.classification { width: max-content; padding: 6px 8px; border-radius: 2px; background: #e3e3df; color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
+.classification { width: max-content; padding: 6px 8px; border-radius: 2px; background: #e3e3df; color: var(--muted); font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .055em; }
 .classification.matched { background: var(--green-soft); color: var(--green); }
 .classification.omitted, .classification.introduced, .classification.downgraded, .classification.upgraded { background: var(--amber-soft); color: var(--amber); }
 .classification.uncertain { background: var(--blue-soft); color: var(--blue); }
 .mapping-arrow { display: grid; place-items: center; color: var(--blue); }
 .review-actions { display: flex; border-left: 1px solid var(--line); }
-.review-actions button { width: 82px; min-height: 48px; border: 0; background: transparent; font-size: 12px; font-weight: 750; cursor: pointer; }
+.review-actions button { width: 86px; min-height: 48px; border: 0; background: transparent; font-size: 14px; font-weight: 750; cursor: pointer; }
 .review-actions button:disabled { color: #8b8e89; background: #ecebe5; cursor: not-allowed; opacity: .72; }
 .review-actions button:active { filter: brightness(.88); }
 .review-actions .reject { color: var(--red); }
@@ -149,6 +149,7 @@ main { max-width: 1480px; margin: auto; }
 .quotes blockquote p { font-family: var(--font-serif); font-size: 16px; line-height: 1.4; }
 .quotes cite { display: flex; flex-direction: column; gap: 3px; margin-top: 16px; font-style: normal; color: var(--blue); font-size: 13px; font-weight: 700; }
 .quotes cite span { color: var(--muted); font-weight: 400; }
+.quotes cite .evidence-origin { color: var(--amber); font-size: 12px; font-weight: 800; letter-spacing: .045em; text-transform: uppercase; }
 .quotes a { width: max-content; min-height: 44px; margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; color: var(--blue); font-size: 13px; font-weight: 750; text-underline-offset: 3px; }
 .muted { color: var(--muted); }
 footer { max-width: 1480px; margin: auto; padding: 24px clamp(20px,4vw,64px); border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 13px; }

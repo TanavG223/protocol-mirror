@@ -59,7 +59,7 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 - Deterministic offline demonstration data plus bounded live-source adapters
 - Evidence-side validation that rejects cross-record IDs, unrelated citations, duplicates, and unknown evidence
 - Restrictive production response headers, bounded upstream payloads, and entity-safe XML parsing
-- 30 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
+- 34 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
 - A production-mode Codex-browser rehearsal at desktop and 390-pixel mobile widths with no horizontal overflow or browser errors
 
 ## What we learned
@@ -79,7 +79,7 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 - Public repository mirror for the Try it out field: https://github.com/TanavG223/protocol-mirror
 - License: https://github.com/TanavG223/protocol-mirror/blob/main/LICENSE
 - Live app: https://protocol-mirror.vercel.app
-- Demo video: owner-recording script complete; final recording and public YouTube upload pending
+- Demo video: edited 1:29.67 local master complete; owner approval and public YouTube upload pending
 
 ## Screenshot assets
 

@@ -5,7 +5,7 @@ import { DEMO_PAIR, INITIAL_AUDIT } from "@/lib/demo-data";
 import type { AuditEvent, AuditState, DiscrepancyKind, Mapping, Outcome } from "@/lib/contracts";
 import { validateMappingProposal } from "@/lib/proposal-validation";
 import { createReviewReceipt } from "@/lib/review-receipt";
-import { findLatestReviewedMappingId } from "@/lib/audit-state";
+import { findLatestReviewedMappingId, hasReviewedWork, transitionHumanDecision } from "@/lib/audit-state";
 import { useWorkspaceMotion } from "@/lib/use-workspace-motion";
 import { createLiveSourceTools } from "@/lib/webmcp-tools";
 
@@ -44,6 +44,7 @@ export default function Workspace() {
   const staged = audit.mappings.filter((item) => item.status === "staged");
   const reviewed = audit.mappings.filter((item) => item.status !== "staged");
   const accepted = audit.mappings.filter((item) => item.status === "accepted");
+  const reviewedWorkAvailable = hasReviewedWork(audit);
   const active = audit.mappings.find((item) => item.id === activeId);
   const selectedOutcome = [...DEMO_PAIR.registryOutcomes, ...DEMO_PAIR.publicationOutcomes].find((item) => item.id === selectedOutcomeId);
   const activeEvidenceIds = active?.evidenceIds ?? selectedOutcome?.evidenceIds ?? [];
@@ -72,18 +73,17 @@ export default function Workspace() {
   }, [event]);
 
   const decide = useCallback((id: string, status: "accepted" | "rejected") => {
-    if (id !== activeId) return;
     let nextActiveId: string | null = null;
     let notice = "";
     flushSync(() => {
       setAudit((current) => {
-        const target = current.mappings.find((item) => item.id === id);
-        if (!target || target.status !== "staged") return current;
-        nextActiveId = current.mappings.find((item) => item.status === "staged" && item.id !== id)?.id ?? null;
-        notice = `${LABELS[target.discrepancy]} proposal ${status}. ${nextActiveId ? "The next proposal is ready for inspection." : "The human review queue is clear."}`;
+        const transition = transitionHumanDecision(current, activeId, id, status);
+        if (!transition) return current;
+        nextActiveId = transition.nextActiveId;
+        notice = `${LABELS[transition.target.discrepancy]} proposal ${status}. ${nextActiveId ? "The next proposal is ready for inspection." : "The human review queue is clear."}`;
         const next: AuditState = {
-          mappings: current.mappings.map((item) => item.id === id ? { ...item, status } : item),
-          history: [...current.history, event(`mapping_${status}`, `${LABELS[target.discrepancy]} proposal ${status} by reviewer.`, "reviewer", target.id)],
+          mappings: transition.mappings,
+          history: [...current.history, event(`mapping_${status}`, `${LABELS[transition.target.discrepancy]} proposal ${status} by reviewer.`, "reviewer", transition.target.id)],
         };
         auditRef.current = next;
         return next;
@@ -206,7 +206,7 @@ export default function Workspace() {
 
   useEffect(() => {
     const context = document.modelContext;
-    if (!context || reviewed.length === 0) return;
+    if (!context || !reviewedWorkAvailable) return;
     const controller = new AbortController();
     context.registerTool({
       name: "export_review_receipt", title: "Export reviewed audit receipt",
@@ -216,7 +216,7 @@ export default function Workspace() {
       execute: () => createReviewReceipt(DEMO_PAIR, auditRef.current),
     }, { signal: controller.signal }).catch(() => undefined);
     return () => controller.abort();
-  }, [reviewed.length]);
+  }, [reviewedWorkAvailable]);
 
   const registryMapped = useMemo(() => new Set(audit.mappings.map((item) => item.registryOutcomeId)), [audit.mappings]);
   const publicationMapped = useMemo(() => new Set(audit.mappings.map((item) => item.publicationOutcomeId)), [audit.mappings]);
@@ -225,12 +225,12 @@ export default function Workspace() {
     <a className="skip-link" href="#workspace">Skip to comparison workspace</a>
     <header className="site-header">
       <a className="brand" href="#top" aria-label="Protocol Mirror home"><span className="brand-mark" aria-hidden="true"><span>P</span><span>M</span></span><span>Protocol Mirror</span></a>
-      <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? `WebMCP connected · ${reviewed.length > 0 ? 7 : 6} tools` : webMcp === "checking" ? "Checking WebMCP" : "WebMCP preview"}</span><span className="avatar" aria-hidden="true">TG</span></div>
+      <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? `WebMCP connected · ${reviewedWorkAvailable ? 7 : 6} tools` : webMcp === "checking" ? "Checking WebMCP" : "WebMCP preview"}</span><span className="avatar" aria-hidden="true">TG</span></div>
     </header>
     <main id="top">
       <section className="case-header" aria-labelledby="case-title">
         <div className="eyebrow case-reveal"><span>Case 04</span><span aria-hidden="true">/</span><span>Outcome integrity review</span></div>
-        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>AI assembles evidence.</span><span>A human decides.</span></h1><p className="case-subtitle">A WebMCP workspace for registry-to-publication review—built to make agent reasoning inspectable without giving the agent final authority.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={loadDemo}><Icon name="spark" /> Stage guided review</button><p><strong>{reviewed.length > 0 ? "7 tools" : "6 tools"}</strong><span aria-hidden="true">→</span>{reviewed.length > 0 ? "Receipt unlocked by review" : "Human decision unlocks receipt"}</p></div></div>
+        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>AI assembles evidence.</span><span>A human decides.</span></h1><p className="case-subtitle">A WebMCP workspace for registry-to-publication review—built to make agent reasoning inspectable without giving the agent final authority.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={loadDemo}><Icon name="spark" /> Stage guided review</button><p><strong>{reviewedWorkAvailable ? "7 tools" : "6 tools"}</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Receipt unlocked by review" : "Human decision unlocks receipt"}</p></div></div>
         <ol className="agent-rail case-reveal" aria-label="Accountable WebMCP workflow">
           <li><span>01</span><strong>Inspect exact spans</strong><small>Source text stays untrusted</small></li>
           <li><span>02</span><strong>Stage a proposal</strong><small>Schema-bound and evidence-linked</small></li>
@@ -256,7 +256,7 @@ export default function Workspace() {
       </section>
       <section className="evidence-panel" id="evidence-drawer" aria-labelledby="evidence-title" aria-live="polite">
         <div className="evidence-heading"><div><p className="section-kicker">Inspectable reasoning</p><h2 id="evidence-title">{active ? "Proposal evidence" : selectedOutcome ? "Source evidence" : "Evidence drawer"}</h2></div>{active && <span className={`classification ${active.discrepancy}`}>{LABELS[active.discrepancy]}</span>}</div>
-        {active || selectedOutcome ? <div className="evidence-content"><div className="rationale"><span>{active ? "Agent rationale" : "Selected outcome"}</span>{active && <div className="evidence-mapping-identity"><strong>{active.registryOutcomeId ? outcomeById(active.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{active.publicationOutcomeId ? outcomeById(active.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"}</strong></div>}<p>{active ? active.rationale : selectedOutcome?.title}</p><small>{active ? "Proposal only · source text is treated as untrusted data" : "Direct source inspection · no mapping or inference required"}</small></div><div className="quotes">{evidence.map((item) => item && <blockquote key={item.id}><Icon name="quote" /><p>“{item.quote}”</p><cite>{item.sourceLabel}<span>{item.locator}</span></cite><a href={item.url} target="_blank" rel="noreferrer" aria-label={`Open the ${item.source} source database for ${item.sourceLabel}`}>Open source database <Icon name="arrow" /></a></blockquote>)}</div></div> : <p className="muted">Select any outcome to inspect its exact source span, or select a staged proposal to inspect the agent rationale.</p>}
+        {active || selectedOutcome ? <div className="evidence-content"><div className="rationale"><span>{active ? "Agent rationale" : "Selected outcome"}</span>{active && <div className="evidence-mapping-identity"><strong>{active.registryOutcomeId ? outcomeById(active.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{active.publicationOutcomeId ? outcomeById(active.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"}</strong></div>}<p>{active ? active.rationale : selectedOutcome?.title}</p><small>{active ? "Proposal only · source text is treated as untrusted data" : "Direct source inspection · no mapping or inference required"}</small></div><div className="quotes">{evidence.map((item) => item && <blockquote key={item.id}><Icon name="quote" /><p>“{item.quote}”</p><cite><span className="evidence-origin">Fictional demonstration span</span>{item.sourceLabel}<span>{item.locator}</span></cite><a href={item.url} target="_blank" rel="noreferrer" aria-label={`Visit the ${item.source} database; this fictional demonstration span has no public record page`}>Visit source database <Icon name="arrow" /></a></blockquote>)}</div></div> : <p className="muted">Select any outcome to inspect its exact source span, or select a staged proposal to inspect the agent rationale.</p>}
       </section>
     </main>
     <footer><p>Protocol Mirror is a research transparency aid—not medical advice or a finding of misconduct.</p><p>{accepted.length} accepted · {audit.history.length} auditable {audit.history.length === 1 ? "event" : "events"} · deterministic demo data</p></footer>

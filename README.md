@@ -74,12 +74,12 @@ npm run check
 
 This runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
 
-Current verified baseline: 30 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also called both public live-source tools and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
+Current verified baseline: 34 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also called both public live-source tools and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
 
 The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
 The scoped threat model, implemented controls, and residual risks are recorded in [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md) and [`docs/SECURITY_REVIEW.md`](docs/SECURITY_REVIEW.md).
 The exact recording sequence and final external-action checklist are in [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) and [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.md).
-The owner-recording script is [`docs/FINAL_OWNER_DEMO_SCRIPT.md`](docs/FINAL_OWNER_DEMO_SCRIPT.md). Draft media assets remain in [`docs/demo/`](docs/demo/), but the owner will record and upload the final submission video.
+The edited local demo master is [`docs/demo/protocol-mirror-final-demo.mp4`](docs/demo/protocol-mirror-final-demo.mp4), with reproducible narration and render assets in [`docs/demo/`](docs/demo/) and [`scripts/render-final-demo.sh`](scripts/render-final-demo.sh). The owner must still watch, approve, and upload the final submission video.
 The canonical Devpost-ready field packet is [`devpost-submission.md`](devpost-submission.md); it clearly separates the verified live application from the pending public video URL.
 The dated challenge-page evidence and requirement-to-artifact audit are in [`docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md`](docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md).
 

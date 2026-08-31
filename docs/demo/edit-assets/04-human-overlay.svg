@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs><filter id="shadow"><feDropShadow dx="0" dy="3" stdDeviation="6" flood-opacity=".38"/></filter></defs>
+  <rect x="58" y="62" width="468" height="128" rx="12" fill="#174f9a" fill-opacity=".96" filter="url(#shadow)"/>
+  <text x="88" y="104" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2.4" fill="#d9e7ff">AUTHORITY BOUNDARY</text>
+  <text x="88" y="153" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="white">Only the human decides.</text>
+</svg>

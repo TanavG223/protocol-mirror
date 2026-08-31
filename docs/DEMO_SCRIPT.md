@@ -1,8 +1,8 @@
 # Demo recording plan
 
-For the final owner-recorded, hook-first version, use `docs/FINAL_OWNER_DEMO_SCRIPT.md`. The plan below remains an expanded reproducible fallback.
+The primary edited master is `docs/demo/protocol-mirror-final-demo.mp4`. The plan below and `docs/FINAL_OWNER_DEMO_SCRIPT.md` remain reproducible live-recording fallbacks if the owner chooses to replace that master.
 
-The older generated file in `docs/demo/` is reference material only and must not be submitted as the final demo. This expanded 2:45–2:55 sequence remains the reproducible fallback recording plan. Record at 1280 by 720 or higher with browser zoom at 100%, notifications hidden, and the production URL visible at least once. Keep the pointer still while the agent-controlled focus handoff occurs.
+This expanded 2:45–2:55 sequence remains a fallback recording plan. Record at 1280 by 720 or higher with browser zoom at 100%, notifications hidden, and the production URL visible at least once. Keep the pointer still while the agent-controlled focus handoff occurs.
 
 ## Before recording
 

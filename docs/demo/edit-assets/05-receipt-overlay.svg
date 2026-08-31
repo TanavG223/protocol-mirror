@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs><filter id="shadow"><feDropShadow dx="0" dy="3" stdDeviation="6" flood-opacity=".34"/></filter></defs>
+  <rect x="58" y="512" width="690" height="146" rx="12" fill="#17201f" fill-opacity=".95" filter="url(#shadow)"/>
+  <rect x="88" y="542" width="124" height="34" rx="17" fill="#2d704d"/>
+  <text x="150" y="565" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="white">6 → 7 TOOLS</text>
+  <text x="88" y="613" font-family="Arial, sans-serif" font-size="29" font-weight="700" fill="white">Reviewed work unlocks the receipt.</text>
+  <text x="88" y="641" font-family="Arial, sans-serif" font-size="16" fill="#cdd6d2">Exact locators in. Staged suggestions out.</text>
+</svg>

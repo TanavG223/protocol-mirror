@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { AuditState } from "./contracts";
-import { findLatestReviewedMappingId } from "./audit-state";
+import { findLatestReviewedMappingId, hasReviewedWork, transitionHumanDecision } from "./audit-state";
 
 const mapping = (id: string, status: "staged" | "accepted" | "rejected") => ({
   id,
@@ -38,5 +38,33 @@ describe("findLatestReviewedMappingId", () => {
     };
 
     expect(findLatestReviewedMappingId(audit)).toBe("still-reviewed");
+  });
+});
+
+describe("human decision authority", () => {
+  const audit: AuditState = {
+    mappings: [mapping("active", "staged"), mapping("next", "staged"), mapping("reviewed", "accepted")],
+    history: [],
+  };
+
+  it("refuses a decision for a proposal that is not the inspected active proposal", () => {
+    expect(transitionHumanDecision(audit, "active", "next", "accepted")).toBeNull();
+  });
+
+  it("refuses to re-decide a proposal that has already been reviewed", () => {
+    expect(transitionHumanDecision(audit, "reviewed", "reviewed", "rejected")).toBeNull();
+  });
+
+  it("records only the active staged proposal and selects the next staged proposal", () => {
+    const result = transitionHumanDecision(audit, "active", "active", "accepted");
+    expect(result?.mappings.find((item) => item.id === "active")?.status).toBe("accepted");
+    expect(result?.mappings.find((item) => item.id === "next")?.status).toBe("staged");
+    expect(result?.nextActiveId).toBe("next");
+  });
+
+  it("exposes reviewed work only after an accepted or rejected decision exists", () => {
+    expect(hasReviewedWork({ mappings: [mapping("staged", "staged")], history: [] })).toBe(false);
+    expect(hasReviewedWork({ mappings: [mapping("accepted", "accepted")], history: [] })).toBe(true);
+    expect(hasReviewedWork({ mappings: [mapping("rejected", "rejected")], history: [] })).toBe(true);
   });
 });

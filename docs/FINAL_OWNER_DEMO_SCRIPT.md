@@ -1,6 +1,6 @@
-# Final owner demo script
+# Fallback live owner demo script
 
-Target runtime: 2:10–2:25. Hard limit: under three minutes. This is the final owner-recording plan; any older generated media in `docs/demo/` is reference material only.
+Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited local master is now `docs/demo/protocol-mirror-final-demo.mp4`; use this longer live-recording plan only if the owner chooses to replace that master.
 
 ## Before recording
 

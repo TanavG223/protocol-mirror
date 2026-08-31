@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs><filter id="shadow"><feDropShadow dx="0" dy="3" stdDeviation="6" flood-opacity=".34"/></filter></defs>
+  <rect x="58" y="52" width="600" height="148" rx="12" fill="#17201f" fill-opacity=".95" filter="url(#shadow)"/>
+  <text x="88" y="91" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2.4" fill="#9ebcf2">LIVE + RELIABLE</text>
+  <text x="88" y="134" font-family="Arial, sans-serif" font-size="27" font-weight="700" fill="white">ClinicalTrials.gov · PubMed</text>
+  <text x="88" y="173" font-family="Arial, sans-serif" font-size="18" fill="#cdd6d2">Bounded adapters + deterministic judging case</text>
+</svg>
