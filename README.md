@@ -143,6 +143,10 @@ PubMed E-utilities ─┘
 
 Core contracts live in `src/lib/contracts.ts`; the deterministic case in `src/lib/demo-data.ts`; WebMCP registration and reviewer UI in `src/app/workspace.tsx`; live WebMCP source tools in `src/lib/webmcp-tools.ts`; and server-side source parsing in `src/lib/source-adapters.ts`.
 
+### Agent context map
+
+Coding agents should begin non-trivial work at [`.agent/README.md`](.agent/README.md). It routes architecture, benchmark, security, release, and media tasks to the smallest relevant set of canonical files. The map intentionally points to existing evidence instead of copying raw model runs or release history into an always-loaded prompt.
+
 ## Data and safety contract
 
 - Registry and publication text is evidence, never instructions.

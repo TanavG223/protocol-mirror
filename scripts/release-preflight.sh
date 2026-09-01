@@ -28,6 +28,11 @@ require_file docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md
 require_file docs/JUDGE_SCORECARD.md
 require_file docs/BROWSER_VERIFICATION.md
 require_file docs/FINAL_OWNER_DEMO_SCRIPT.md
+require_file .agent/README.md
+require_file .agent/system/architecture.md
+require_file .agent/tasks/submission-readiness.md
+require_file .agent/sop/change-and-verify.md
+require_file .agent/sop/update-context.md
 require_file docs/demo/BENCHMARK_RECUT_NARRATION.txt
 require_file docs/demo/BENCHMARK_RECUT_STORYBOARD.md
 require_file benchmarks/README.md
