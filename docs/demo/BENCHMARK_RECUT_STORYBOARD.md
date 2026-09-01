@@ -1,8 +1,8 @@
 # Benchmark recut storyboard
 
-Target runtime: 1:45–1:55. Hard limit: under three minutes. This plan supersedes the current 1:29 technical candidate for submission because it shows the real-world stress test added after that candidate was rendered without rushing the evidence or authority-boundary explanation.
+Target runtime: 1:45–1:55. Hard limit: under three minutes. This plan produced the current 1:53.30 local candidate and supersedes the preserved 1:29 technical master because it shows the real-world stress test without rushing the evidence or authority-boundary explanation.
 
-Do not upload a render made from the existing Free-plan ElevenLabs audio. Release rendering requires an owner-approved voice track with confirmed commercial-use rights, followed by a complete watch with sound.
+The current render uses locally generated Kokoro-82M narration with Apache-2.0 model-card provenance recorded in `KOKORO_NARRATION_PROVENANCE.md`. The owner must still complete a full watch with sound before upload. Do not substitute the preserved Free-plan ElevenLabs track.
 
 ## 0:00–0:10 — Hook
 

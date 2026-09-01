@@ -2,7 +2,13 @@
 
 Checked on 2026-08-31 in the Codex in-app browser. This is a practical release gate, not legal advice.
 
-## ElevenLabs narration
+## Current Kokoro narration
+
+The benchmark-forward candidate replaces the unresolved ElevenLabs Free-plan output with a locally generated `af_heart` voice from [`hexgrad/Kokoro-82M`](https://huggingface.co/hexgrad/Kokoro-82M). The official model card was checked on 2026-09-01 and labels the model and weights Apache-2.0, explicitly describes production deployment, and states that its training audio was permissive or non-copyrighted. Exact model identity, displayed model hash, package version, voice, rates, and processing are recorded in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`.
+
+This resolves the identified ElevenLabs account-tier problem for the current local candidate. It does not replace the project owner's duty to listen to and approve the complete output, answer YouTube's synthetic-media prompt truthfully, or obtain legal advice if desired.
+
+## Preserved ElevenLabs technical candidate
 
 Current official sources:
 
@@ -14,7 +20,7 @@ The Terms state that a Free User “may only use the Services for non-commercial
 
 The hackathon offers cash prizes and requires entrants to grant promotional usage rights. Whether that particular use is legally “commercial” is not determined here. The conservative release decision is therefore:
 
-- Do not upload or submit the current ElevenLabs candidate as rights-cleared.
+- Do not upload or submit the preserved ElevenLabs candidate as rights-cleared.
 - If using ElevenLabs, move to a plan explicitly including a commercial license and regenerate the narration after the paid plan becomes active. Do not assume an upgrade retroactively licenses an earlier Free-plan output.
 - Alternatively, replace the narration with an owner-recorded track whose rights are unambiguous.
 - Re-run every media checksum and continuity check after replacement.

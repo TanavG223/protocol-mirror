@@ -13,6 +13,7 @@
     "test": "vitest run",
     "check:webmcp": "node scripts/check-webmcp-conformance.mjs",
     "check:submission": "node scripts/check-submission-packet.mjs",
+    "check:media": "bash scripts/check-demo-media.sh",
     "check": "npm run check:webmcp && npm run check:submission && npm run lint && npm run test && npm run build",
     "benchmark:grounding": "node scripts/run-grounding-benchmark.mjs",
     "benchmark:score": "node scripts/score-grounding-run.mjs",

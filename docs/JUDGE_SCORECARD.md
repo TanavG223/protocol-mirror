@@ -41,7 +41,7 @@ This table compares visible public artifacts only. It does not establish that an
 2. Recut the demo so a real live-source tool call and the resulting reviewer-visible record appear in the first 10–15 seconds.
 3. Show the attempted authority boundary explicitly: no agent accept/reject tool exists; only the human click changes the capability surface.
 4. Show the seventh tool and the human JSON download, then inspect the reviewed-only evidence locators.
-5. Resolve narration commercial-use rights, watch the processed public YouTube version with sound and captions, and only then add its URL to Devpost.
+5. Have the owner watch the new rights-documented benchmark-forward master, then watch the processed public YouTube version with sound and captions before adding its URL to Devpost.
 6. Complete the owner-only eligibility, project-status, country, learning, career-value, rules, preview, and final-submit confirmations before the official deadline.
 
 ## Remaining honest gaps
@@ -50,7 +50,7 @@ This table compares visible public artifacts only. It does not establish that an
 - No user study, task-time comparison, preregistered study, or full-publication reviewer-agreement benchmark has been run. The current 24-pair benchmark uses PubMed abstracts against labels derived from full publications and reports only named-run grounding metrics.
 - Audit state is in-session and the receipt is not persisted or cryptographically signed.
 - The critical lifecycle is contract-tested and repeatedly exercised in clean Codex browser tabs, but is not yet encoded as a committed repeatable browser suite.
-- The current edited video is not upload-cleared until narration rights are resolved and the owner watches the final master with sound.
+- The benchmark-forward video now uses documented Apache-2.0 Kokoro-82M narration and passes automated media checks, but is not upload-approved until the owner watches the complete master with sound.
 - The local improvements are not yet on the public URL.
 
 These limitations should remain explicit. A credible 17.9/20 submission is stronger than an unsupported “perfect” claim.

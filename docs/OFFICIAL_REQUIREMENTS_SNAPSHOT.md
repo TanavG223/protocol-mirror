@@ -73,7 +73,7 @@ Ten winners receive $3,500 cash each ($35,000 total) plus the sponsor benefits l
 | Screenshots | Seven production-mode desktop/mobile assets, including permanent seven-tool reviewed state and the benchmark panel | Ready |
 | Text description | Root `devpost-submission.md` packet | Ready |
 | Working live URL | `https://protocol-mirror.vercel.app`; six-before/seven-after tool lifecycle and live source reads verified in Codex browser | Ready |
-| Public YouTube demo under three minutes with audio | Verified 1:29.65 constant-60-fps technical candidate exists but predates the benchmark panel and is not commercial-use cleared; benchmark-forward narration/storyboard, thumbnail, metadata, and captions are prepared; cleared render, owner watch, and public upload remain | Missing |
+| Public YouTube demo under three minutes with audio | Verified 1:53.30 benchmark-forward constant-60-fps local candidate uses documented Apache-2.0 Kokoro-82M narration and has aligned captions; owner watch and public upload remain | Missing |
 | Devpost registration | Authenticated integration reported `registered` and `submissions_open` on 2026-09-01 at 13:54 UTC | Ready |
 | Devpost project/form access | Authenticated list contained three unrelated projects and no Protocol Mirror project; creation and final field review remain | Missing |
 

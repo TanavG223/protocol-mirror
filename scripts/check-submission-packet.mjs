@@ -105,9 +105,9 @@ requireAll(combinedJudgeCopy, [
   "ornith-1.5:9b",
 ], "judge-facing benchmark claims");
 
-requireAll(packet, ["predates the real-world benchmark panel", "Do not upload the existing candidate", "final public YouTube URL remains pending"], `${paths.packet} media boundary`);
-requireAll(requirements, ["cleared render, owner watch, and public upload remain", "Missing"], `${paths.requirements} media status`);
-requireAll(manifest, ["not evidence of commercial-use clearance", "not evidence of commercial-use clearance, owner editorial approval, a Devpost entry, or a YouTube upload"], `${paths.manifest} external-state boundary`);
+requireAll(packet, ["113.30 seconds", "Kokoro-82M", "project owner must still watch and approve", "final public YouTube URL remains pending"], `${paths.packet} media boundary`);
+requireAll(requirements, ["owner watch and public upload remain", "Missing"], `${paths.requirements} media status`);
+requireAll(manifest, ["not evidence of owner editorial approval, a Devpost entry, or a YouTube upload", "Owner-only gates still open"], `${paths.manifest} external-state boundary`);
 
 console.log("SUBMISSION_PACKET=PASS");
 console.log("OFFICIAL_CRITERIA=4/4");

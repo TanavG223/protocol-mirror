@@ -1,8 +1,8 @@
 # Demo recording plan
 
-The current local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: constant 60 fps with an ElevenLabs narration. It predates the real-world benchmark and is therefore a technical candidate, not the preferred submission cut. The benchmark-forward narration and shot plan are `docs/demo/BENCHMARK_RECUT_NARRATION.txt` and `docs/demo/BENCHMARK_RECUT_STORYBOARD.md`.
+The current local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`: a 1:53.30 constant-60-fps benchmark-forward cut with locally generated Kokoro-82M narration. The narration and shot plan are `docs/demo/BENCHMARK_RECUT_NARRATION.txt` and `docs/demo/BENCHMARK_RECUT_STORYBOARD.md`; exact license provenance and generation settings are in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`.
 
-The plan below and `docs/FINAL_OWNER_DEMO_SCRIPT.md` remain reproducible live-recording fallbacks. No video is upload-cleared until the narration rights gate and complete owner watch are both resolved.
+The plan below and `docs/FINAL_OWNER_DEMO_SCRIPT.md` remain reproducible live-recording fallbacks. No video is upload-approved until the project owner completes the full watch with sound.
 
 This expanded 2:45–2:55 sequence remains a fallback recording plan. Record at 1280 by 720 or higher with browser zoom at 100%, notifications hidden, and the production URL visible at least once. Keep the pointer still while the agent-controlled focus handoff occurs.
 

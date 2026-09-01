@@ -7,9 +7,9 @@ This runbook starts from a clean, CI-verified `main` branch.
 - Permanent application: https://protocol-mirror.vercel.app
 - Public MIT repository: https://github.com/TanavG223/protocol-mirror
 - Permanent WebMCP workflow: verified end to end in the Codex in-app browser
-- Technical local candidate: `docs/demo/protocol-mirror-final-demo.mp4`; 89.65 seconds, 1280×720 H.264 at constant 60 fps, ElevenLabs narration; it predates the benchmark panel and is **not cleared for upload until commercial-use rights are resolved and the benchmark-forward recut is verified**
-- Candidate verification: 5,379 frames; no tested black/silence discontinuity; no variable cadence; owner watch-and-approve still pending
-- Reproducible edit: `scripts/render-final-demo.sh`; release mode requires `ELEVENLABS_AUDIO`
+- Benchmark-forward local candidate: `docs/demo/protocol-mirror-submission-demo.mp4`; 113.30 seconds, 1280×720 H.264 at constant 60 fps, rights-documented Kokoro-82M narration
+- Candidate verification: 6,798 frames; no tested black/silence discontinuity; no variable cadence; −16.4 LUFS and −4.2 dBTP; owner watch-and-approve still pending
+- Reproducible edit: `scripts/render-benchmark-demo.sh`; release mode requires an explicit rights-cleared `NARRATION_AUDIO`
 - Upload thumbnail: `docs/demo/title-card.png` (1280×720)
 - Still pending by owner choice: public YouTube upload, explicit rules acknowledgment, Devpost project write, and final `yes, submit`
 
@@ -41,13 +41,13 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 
 ## 3. Record and publish the demo
 
-1. Resolve the narration rights gate: regenerate after the ElevenLabs account is on a plan explicitly including a commercial license, or replace the narration with an owner-recorded track. Do not assume a later upgrade retroactively clears the Free-plan generation.
-2. Generate the final narration from `docs/demo/BENCHMARK_RECUT_NARRATION.txt`, following `docs/demo/ELEVENLABS_VOICE_DIRECTION.md`, and have the owner approve the audio.
-3. Edit to `docs/demo/BENCHMARK_RECUT_STORYBOARD.md`, preserving constant 60 fps and the visible run-specific disclaimer. The existing render script remains a reproducible reference for codec, audio processing, and release refusal behavior; do not treat the pre-benchmark visual sequence as the final cut.
-4. Re-run the codec, frame-cadence, black-segment, silence, loudness, and checksum checks; update `docs/YOUTUBE_METADATA.md` and `docs/FINAL_RELEASE_MANIFEST.md`.
-5. Watch the complete `docs/demo/protocol-mirror-final-demo.mp4` local master with sound and confirm the narration, pacing, overlays, and visible six-to-seven tool sequence.
+1. Review `docs/demo/KOKORO_NARRATION_PROVENANCE.md`; the current candidate replaces the unresolved ElevenLabs Free-plan path with locally generated Apache-2.0 Kokoro-82M narration.
+2. Watch the complete `docs/demo/protocol-mirror-submission-demo.mp4` local master with sound and confirm the narration, pacing, benchmark panel, overlays, and visible six-to-seven tool sequence.
+3. If the owner requests a voice or timing change, regenerate from `docs/demo/BENCHMARK_RECUT_NARRATION.txt` and render with `scripts/render-benchmark-demo.sh`, passing the approved track as `NARRATION_AUDIO`.
+4. Re-run the codec, frame-cadence, black-segment, silence, loudness, caption, and checksum checks after any change; update `docs/YOUTUBE_METADATA.md` and `docs/FINAL_RELEASE_MANIFEST.md`.
+5. Do not upload until the project owner explicitly approves the complete master with sound.
 6. Use the paste-ready metadata in `docs/YOUTUBE_METADATA.md` and confirm the processed runtime remains under three minutes with clear narration.
-7. Upload `docs/demo/protocol-mirror-final-captions.srt` as English captions and inspect every cue in YouTube's caption editor against the processed audio.
+7. Upload `docs/demo/protocol-mirror-submission-captions.srt` as English captions and inspect every cue in YouTube's caption editor against the processed audio.
 8. Watch the complete upload with sound and captions before making it public; the challenge requires a publicly visible YouTube video.
 9. Put the live app and public repository links in the video description.
 10. Replace the pending demo-video lines in `docs/SUBMISSION_DRAFT.md` and `devpost-submission.md` with the final URL only after watching the uploaded result end to end with sound.

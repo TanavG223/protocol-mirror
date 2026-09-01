@@ -18,6 +18,8 @@ require_file() {
 command -v git >/dev/null || fail "git is required"
 command -v node >/dev/null || fail "Node.js is required"
 command -v npm >/dev/null || fail "npm is required"
+command -v ffmpeg >/dev/null || fail "ffmpeg is required for exact media verification"
+command -v ffprobe >/dev/null || fail "ffprobe is required for exact media verification"
 
 require_file package.json
 require_file package-lock.json
@@ -44,8 +46,13 @@ require_file benchmarks/runs/qwen3-4b-2026-08-31.json
 require_file benchmarks/runs/ornith-1-5-9b-2026-08-31.json
 require_file scripts/check-webmcp-conformance.mjs
 require_file scripts/check-submission-packet.mjs
-require_file docs/demo/protocol-mirror-final-demo.mp4
-require_file docs/demo/protocol-mirror-final-captions.srt
+require_file docs/demo/protocol-mirror-submission-demo.mp4
+require_file docs/demo/protocol-mirror-submission-captions.srt
+require_file docs/demo/protocol-mirror-kokoro-source.wav
+require_file docs/demo/protocol-mirror-submission-voiceover.m4a
+require_file docs/demo/KOKORO_NARRATION_PROVENANCE.md
+require_file scripts/render-benchmark-demo.sh
+require_file scripts/check-demo-media.sh
 require_file docs/demo/title-card.png
 
 for screenshot in docs/screenshots/01-hero.jpg docs/screenshots/02-comparison.jpg docs/screenshots/03-review-queue.jpg docs/screenshots/04-evidence-drawer.jpg docs/screenshots/05-mobile.jpg docs/screenshots/06-agent-reviewed.png docs/screenshots/07-real-world-benchmark.png; do
@@ -79,11 +86,12 @@ grep -q 'MIT' LICENSE || fail "detectable MIT license text is missing"
 npm ci
 npm audit --omit=dev --audit-level=high
 npm run check
+npm run check:media
 
 commit_sha="$(git rev-parse HEAD)"
 echo "PRODUCT_PREFLIGHT=PASS"
 echo "COMMIT_SHA=$commit_sha"
-echo "TEST_CONTRACT=webmcp-conformance+submission-consistency+clean-install+lint+tests+typescript+production-build+high-severity-audit"
+echo "TEST_CONTRACT=webmcp-conformance+submission-consistency+media-integrity+clean-install+lint+tests+typescript+production-build+high-severity-audit"
 
 if [[ "$preflight_mode" == "submission" ]]; then
   [[ "${PROTOCOL_MIRROR_RULES_ACKNOWLEDGED:-}" == "yes" ]] || fail "set PROTOCOL_MIRROR_RULES_ACKNOWLEDGED=yes only after the owner accepts the current official rules"

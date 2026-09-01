@@ -66,10 +66,10 @@ This criterion is equal-weight with the other three and is the fourth tie-break.
 - [x] Constant-60-fps visual preview, kinetic overlays, and fail-closed release renderer prepared
 - [x] Pre-benchmark technical candidate rendered with ElevenLabs narration and re-verified as media-pipeline evidence
 - [x] Benchmark-forward narration and 1:45–1:55 storyboard prepared
-- [ ] Commercially cleared benchmark-forward master rendered and re-verified
-- [ ] Commercial-use rights confirmed for the final narration, or narration replaced and candidate re-rendered
+- [x] Rights-documented benchmark-forward master rendered with Apache-2.0 Kokoro-82M narration and re-verified
+- [x] ElevenLabs Free-plan output replaced; model-card license provenance and generation settings recorded
 - [x] Branded 1280×720 upload thumbnail and exact YouTube metadata prepared
-- [x] Structurally validated 19-cue English caption file prepared; processed-upload timing review remains an owner gate
+- [x] Structurally validated 23-cue English caption file prepared; owner listening and processed-upload timing review remain owner gates
 - [x] Judge-facing 60-second no-credentials test path added to the public README
 - [ ] Project owner watched and approved the complete local master with sound
 - [ ] Public YouTube upload under three minutes with audio

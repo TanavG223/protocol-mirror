@@ -128,7 +128,7 @@ The repository is public, GitHub detects its MIT license, all required source an
 
 ## Demo Video
 
-The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.65 seconds, 1280×720 H.264 at a verified constant 60 fps, with an 88.9-second ElevenLabs narration by `Chris - Charming, Down-to-Earth`. It uses motion-compensated intermediate frames, a high-quality encode, clean kinetic labels, smooth transitions, no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer at the tested threshold, and the truthful six-before/seven-after capability sequence. It predates the real-world benchmark panel, so the preferred submission edit is now specified by `docs/demo/BENCHMARK_RECUT_NARRATION.txt` and `docs/demo/BENCHMARK_RECUT_STORYBOARD.md`. Do not upload the existing candidate: current account evidence matches ElevenLabs Free, whose current terms restrict output to non-commercial use. Regenerate under a plan with a commercial license or replace the narration, render the benchmark-forward sequence, then have the owner watch and approve the complete result. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
+The benchmark-forward local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`: 113.30 seconds, 1280×720 H.264 at a verified constant 60 fps, with locally generated Kokoro-82M `af_heart` narration. It shows the 24-pair reality check, the agent evidence and proposal path, the human-only decision, the six-to-seven capability change, reviewed receipt proof, and live-source intake. Automated checks found no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer at the tested threshold, no variable cadence, −16.4 LUFS integrated loudness, and −4.2 dBTP true peak. The model card labels the weights Apache-2.0; provenance and exact settings are in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`. The project owner must still watch and approve the complete result with sound. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
 
 ## Screenshot Shot List
 
@@ -150,9 +150,9 @@ The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.
 - [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
 - [x] Seven final screenshots, including a permanent-deployment review proof, the real-world benchmark panel, and a timed demo script
 - [x] Permanent live URL deployed and fully exercised in the Codex in-app browser
-- [x] Final 60 fps candidate rendered with ElevenLabs narration and automated release checks
-- [ ] Narration commercial-use rights confirmed or narration replaced and final media re-verified
-- [x] English caption file prepared and structurally verified; processed YouTube timing review remains pending
+- [x] Benchmark-forward 60 fps candidate rendered with Apache-2.0 Kokoro-82M narration and automated release checks
+- [x] ElevenLabs Free-plan narration replaced; model-card license provenance and generation settings recorded
+- [x] New 23-cue English caption file prepared and structurally verified; owner and processed-YouTube timing review remain pending
 - [ ] Project owner watched and approved the complete local master with sound
 - [ ] Public YouTube upload completed and watched end to end
 - [x] Devpost MCP reports the account registered for The WebMCP Challenge with submissions open
