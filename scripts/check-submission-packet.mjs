@@ -7,6 +7,7 @@ const paths = {
   scorecard: "docs/JUDGE_SCORECARD.md",
   requirements: "docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md",
   manifest: "docs/FINAL_RELEASE_MANIFEST.md",
+  handoff: "docs/SUBMISSION_HANDOFF.md",
   pairs: "benchmarks/real-world-pairs.json",
   sources: "benchmarks/runs/live-source-webmcp-2026-08-31.json",
   qwen: "benchmarks/runs/qwen3-4b-2026-08-31.json",
@@ -33,13 +34,14 @@ function requireAll(content, expected, label) {
   for (const item of expected) requireText(content, item, label);
 }
 
-const [readme, packet, draft, scorecard, requirements, manifest, pairs, sources, qwen, ornith] = await Promise.all([
+const [readme, packet, draft, scorecard, requirements, manifest, handoff, pairs, sources, qwen, ornith] = await Promise.all([
   text(paths.readme),
   text(paths.packet),
   text(paths.draft),
   text(paths.scorecard),
   text(paths.requirements),
   text(paths.manifest),
+  text(paths.handoff),
   json(paths.pairs),
   json(paths.sources),
   json(paths.qwen),
@@ -73,6 +75,7 @@ requireAll(packet, [publicApp, publicRepo, "### ⏳ Not submitted yet", "not med
 requireAll(draft, [publicApp, publicRepo, "Truthful-claim guardrail"], paths.draft);
 requireAll(readme, [publicApp, publicRepo, "42 passing tests"], paths.readme);
 requireAll(manifest, ["Owner-only gates still open", "without establishing universal hallucination or clinical-accuracy claims"], paths.manifest);
+requireAll(handoff, ["Complete video watch and explicit approval", "Current official-rules acknowledgment", "Separate literal authorization before final submission", "External-state warning"], paths.handoff);
 
 for (let fieldId = 28249; fieldId <= 28260; fieldId += 1) {
   requireText(packet, `\`${fieldId}\``, `${paths.packet} official form map`);

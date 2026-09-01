@@ -17,6 +17,7 @@
     "check": "npm run check:webmcp && npm run check:submission && npm run lint && npm run test && npm run build",
     "benchmark:grounding": "node scripts/run-grounding-benchmark.mjs",
     "benchmark:score": "node scripts/score-grounding-run.mjs",
+    "bundle:submission": "bash scripts/build-submission-bundle.sh",
     "preflight:product": "bash scripts/release-preflight.sh product",
     "preflight:submission": "bash scripts/release-preflight.sh submission"
   },

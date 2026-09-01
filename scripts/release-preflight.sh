@@ -32,6 +32,7 @@ require_file docs/BROWSER_VERIFICATION.md
 require_file docs/WEBMCP_CONFORMANCE.md
 require_file docs/FINAL_RELEASE_MANIFEST.md
 require_file docs/FINAL_OWNER_DEMO_SCRIPT.md
+require_file docs/SUBMISSION_HANDOFF.md
 require_file .agent/README.md
 require_file .agent/system/architecture.md
 require_file .agent/tasks/submission-readiness.md
@@ -53,6 +54,7 @@ require_file docs/demo/protocol-mirror-submission-voiceover.m4a
 require_file docs/demo/KOKORO_NARRATION_PROVENANCE.md
 require_file scripts/render-benchmark-demo.sh
 require_file scripts/check-demo-media.sh
+require_file scripts/build-submission-bundle.sh
 require_file docs/demo/title-card.png
 
 for screenshot in docs/screenshots/01-hero.jpg docs/screenshots/02-comparison.jpg docs/screenshots/03-review-queue.jpg docs/screenshots/04-evidence-drawer.jpg docs/screenshots/05-mobile.jpg docs/screenshots/06-agent-reviewed.png docs/screenshots/07-real-world-benchmark.png; do
