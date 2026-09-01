@@ -63,7 +63,7 @@ This is a focused application review, not an external penetration test, clinical
 
 - 17 runtime and privileged-tool files fully read.
 - Five targeted security/control files: 29 tests passed during validation.
-- Full release candidate: 38 deterministic tests passed.
+- Full benchmark-forward release candidate: 42 deterministic tests passed. The 38-test security closure remained green, and four later scorer/artifact-integrity tests passed with it.
 - `npm audit --omit=dev --audit-level=high`: zero vulnerabilities.
 - Secret-pattern and tracked credential-shaped-file scans: no candidates.
 - Real production response: CSP, frame denial, nosniff, strict-origin referrer, and restrictive permissions policy present.

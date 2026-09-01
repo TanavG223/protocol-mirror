@@ -1,0 +1,19 @@
+Most AI demos ask what an agent can do. Protocol Mirror asks a harder question: what happens when models disagree on consequential evidence?
+
+We stress-tested twenty-four real clinical-trial and publication pairs. The page completed forty-eight out of forty-eight live Web M C P source reads, returning one hundred seventy-two registry outcomes and one hundred six abstract sections.
+
+Then two local models received the same blinded, exact-evidence task. The four-billion-parameter run called every decided no-change case a change. The nine-billion-parameter run missed ninety point nine percent of the decided change cases. Those are run-specific grounding results, not a universal hallucination or clinical-accuracy claim. Their opposite bias is the product argument.
+
+Protocol Mirror turns the page into a typed evidence workspace. The agent can inspect stable outcome identifiers, retrieve exact quotations, stage a structured comparison, explain uncertainty, and move the right checkpoint into view.
+
+But there is no agent-callable accept or reject action. A human reviews both source spans and makes the consequential decision here, in the interface.
+
+After that human decision, the capability surface changes from six tools to seven. The new receipt tool packages only reviewed work, exact evidence locators, and the decision trail. Staged suggestions stay out.
+
+The deterministic case keeps the judging flow reliable. Bounded live adapters bring current Clinical Trials dot gov and Pub Med evidence into the same visible workspace without silently turning it into a finding.
+
+Protocol Mirror is a research-transparency aid, not medical advice, a misconduct detector, or a clinically validated decision system.
+
+The agent investigates, cites, proposes, and packages proof. The human remains accountable for what the evidence means.
+
+AI assembles evidence. A human decides.

@@ -28,6 +28,8 @@ require_file docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md
 require_file docs/JUDGE_SCORECARD.md
 require_file docs/BROWSER_VERIFICATION.md
 require_file docs/FINAL_OWNER_DEMO_SCRIPT.md
+require_file docs/demo/BENCHMARK_RECUT_NARRATION.txt
+require_file docs/demo/BENCHMARK_RECUT_STORYBOARD.md
 require_file benchmarks/README.md
 require_file benchmarks/real-world-pairs.json
 require_file benchmarks/runs/live-source-webmcp-2026-08-31.json
@@ -37,7 +39,7 @@ require_file docs/demo/protocol-mirror-final-demo.mp4
 require_file docs/demo/protocol-mirror-final-captions.srt
 require_file docs/demo/title-card.png
 
-for screenshot in docs/screenshots/01-hero.jpg docs/screenshots/02-comparison.jpg docs/screenshots/03-review-queue.jpg docs/screenshots/04-evidence-drawer.jpg docs/screenshots/05-mobile.jpg docs/screenshots/06-agent-reviewed.png; do
+for screenshot in docs/screenshots/01-hero.jpg docs/screenshots/02-comparison.jpg docs/screenshots/03-review-queue.jpg docs/screenshots/04-evidence-drawer.jpg docs/screenshots/05-mobile.jpg docs/screenshots/06-agent-reviewed.png docs/screenshots/07-real-world-benchmark.png; do
   require_file "$screenshot"
 done
 

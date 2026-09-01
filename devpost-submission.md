@@ -128,7 +128,7 @@ The repository is public, GitHub detects its MIT license, all required source an
 
 ## Demo Video
 
-The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.65 seconds, 1280×720 H.264 at a verified constant 60 fps, with an 88.9-second ElevenLabs narration by `Chris - Charming, Down-to-Earth`. It uses motion-compensated intermediate frames, a substantially higher-quality encode, clean kinetic labels, product-first pacing, smooth transitions, no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer at the tested threshold, and the truthful six-before/seven-after capability sequence. Do not upload this candidate yet: the current account evidence matches ElevenLabs Free, whose current terms restrict output to non-commercial use. Regenerate under a plan with a commercial license or replace the narration, then have the owner watch and approve the complete result. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
+The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.65 seconds, 1280×720 H.264 at a verified constant 60 fps, with an 88.9-second ElevenLabs narration by `Chris - Charming, Down-to-Earth`. It uses motion-compensated intermediate frames, a high-quality encode, clean kinetic labels, smooth transitions, no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer at the tested threshold, and the truthful six-before/seven-after capability sequence. It predates the real-world benchmark panel, so the preferred submission edit is now specified by `docs/demo/BENCHMARK_RECUT_NARRATION.txt` and `docs/demo/BENCHMARK_RECUT_STORYBOARD.md`. Do not upload the existing candidate: current account evidence matches ElevenLabs Free, whose current terms restrict output to non-commercial use. Regenerate under a plan with a commercial license or replace the narration, render the benchmark-forward sequence, then have the owner watch and approve the complete result. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
 
 ## Screenshot Shot List
 
@@ -138,6 +138,7 @@ The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.
 4. `docs/screenshots/04-evidence-drawer.jpg` — rationale beside exact quotations and source locators
 5. `docs/screenshots/05-mobile.jpg` — responsive 390 by 844 layout without horizontal overflow
 6. `docs/screenshots/06-agent-reviewed.png` — permanent deployment after the agent-to-human handoff, showing the dynamic seven-tool state and exact evidence drawer
+7. `docs/screenshots/07-real-world-benchmark.png` — verified local benchmark panel showing 24 real pairs, 48/48 live reads, opposite model bias, and the explicit run-specific disclaimer
 
 ## Submission Readiness Notes
 
@@ -147,7 +148,7 @@ The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.
 - [x] 24-pair, 48-call real-world source stress test plus two raw, reproducible model-grounding runs
 - [x] Local release candidate visibly renders agent-retrieved source records and exposes a human JSON receipt download; production deployment approval remains pending
 - [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
-- [x] Six final screenshots, including a permanent-deployment review proof, and a timed demo script
+- [x] Seven final screenshots, including a permanent-deployment review proof, the real-world benchmark panel, and a timed demo script
 - [x] Permanent live URL deployed and fully exercised in the Codex in-app browser
 - [x] Final 60 fps candidate rendered with ElevenLabs narration and automated release checks
 - [ ] Narration commercial-use rights confirmed or narration replaced and final media re-verified

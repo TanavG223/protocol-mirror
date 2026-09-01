@@ -1,6 +1,6 @@
 # Final release manifest
 
-Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs candidate was rendered, automatically verified, and preserved in commit `ba3a1b811e51ab01a0cdd8446a395caad7baa9d3`. The media is a technical candidate only: current account evidence matches ElevenLabs Free, and the current terms restrict Free User output to non-commercial use. This is not evidence of commercial-use clearance, owner editorial approval, a Devpost entry, or a YouTube upload.
+Updated on 2026-09-01 America/New_York after the benchmark-forward submission assets were prepared on top of exact product commit `61422b01eb3564a5cd49fd3bb11ee9b03c3acdc1`. The existing constant-60-fps media is a technical candidate only: it predates the real-world benchmark panel, current account evidence matches ElevenLabs Free, and the current terms restrict Free User output to non-commercial use. This is not evidence of commercial-use clearance, owner editorial approval, a Devpost entry, or a YouTube upload.
 
 ## Authoritative release references
 
@@ -18,8 +18,8 @@ Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs cand
 ## Verified engineering state
 
 - Public baseline: `npm run check` passed ESLint, 34 deterministic tests, TypeScript, and the optimized Next.js production build.
-- Current local release candidate: `npm run check` passes ESLint, 38 deterministic tests, TypeScript, and the optimized Next.js production build. The four-step agent investigation → proposal → human adjudication → agent export loop passed through real WebMCP calls in a clean Codex tab. Live-source failure/recovery, reviewer-visible records, the human receipt download, accessible skip-link focus, 320-pixel target sizing, the visible public-source link, and the clarified workflow are not deployed yet.
-- `npm run preflight:product` passed on clean commit `0775f17de106b4917b121c8345335e295e567ffb` after a clean dependency install, high-severity production audit, lint, all 38 tests, TypeScript, and the production build.
+- Current local release candidate: `npm run check` passes ESLint, 42 deterministic tests, TypeScript, and the optimized Next.js production build. The four-step agent investigation → proposal → human adjudication → agent export loop passed through real WebMCP calls in a clean Codex tab. The 24-pair source benchmark completed 48/48 live tool reads, and the exact product commit was visually checked at desktop and 320-pixel widths without overflow or browser errors. These additions are not deployed yet.
+- `npm run preflight:product` passed on clean commit `61422b01eb3564a5cd49fd3bb11ee9b03c3acdc1` after a clean dependency install, high-severity production audit, lint, all 42 tests, TypeScript, and the production build.
 - `npm run preflight:submission` repeated the product checks and then failed closed at the first truthful owner gate: official-rules acknowledgment remains unset. Media approval, personal fields, and the public YouTube URL remain gated behind it.
 - Repository-wide security closure: 17 runtime/tool files fully read, real malformed-route and XML-entity probes, zero reportable findings, zero dependency vulnerabilities at the enforced threshold, and two documented defense-in-depth recommendations.
 - `npm audit --omit=dev --audit-level=high`: zero vulnerabilities.
@@ -49,6 +49,7 @@ Automated candidate checks found no black segment of 0.4 seconds or longer, no s
 | `docs/screenshots/04-evidence-drawer.jpg` | `f3ecd4ccb67fe0300a4f0deec95d00b3cfc3f1bce4ca9dad68b4da40b976a883` |
 | `docs/screenshots/05-mobile.jpg` | `04675215c9dab8c583d0ea64b44e6fcf35171cb37c11fa334ba3d7b747131671` |
 | `docs/screenshots/06-agent-reviewed.png` | `928ff0ac3317bd9dad43067267b188250a0d4a99fbe18da2907acf4e1dfbb425` |
+| `docs/screenshots/07-real-world-benchmark.png` | `e206663c203b5a12d04497baca384cd6de4bc9c80efb2e03164abda50ccaf227` |
 
 ## Owner-only gates still open
 

@@ -7,7 +7,7 @@ This runbook starts from a clean, CI-verified `main` branch.
 - Permanent application: https://protocol-mirror.vercel.app
 - Public MIT repository: https://github.com/TanavG223/protocol-mirror
 - Permanent WebMCP workflow: verified end to end in the Codex in-app browser
-- Technical local candidate: `docs/demo/protocol-mirror-final-demo.mp4`; 89.65 seconds, 1280×720 H.264 at constant 60 fps, ElevenLabs narration; **not cleared for upload until commercial-use rights are resolved**
+- Technical local candidate: `docs/demo/protocol-mirror-final-demo.mp4`; 89.65 seconds, 1280×720 H.264 at constant 60 fps, ElevenLabs narration; it predates the benchmark panel and is **not cleared for upload until commercial-use rights are resolved and the benchmark-forward recut is verified**
 - Candidate verification: 5,379 frames; no tested black/silence discontinuity; no variable cadence; owner watch-and-approve still pending
 - Reproducible edit: `scripts/render-final-demo.sh`; release mode requires `ELEVENLABS_AUDIO`
 - Upload thumbnail: `docs/demo/title-card.png` (1280×720)
@@ -19,7 +19,7 @@ The steps below are the reproducible release procedure and final external-action
 
 This step changes external state and requires the project owner's explicit confirmation at action time.
 
-Before any push or deployment, commit the candidate and run `npm run preflight:product`. The command requires a clean tree and prints the exact commit SHA after the dependency audit, 38-test contract, TypeScript check, and production build pass.
+Before any push or deployment, commit the candidate and run `npm run preflight:product`. The command requires a clean tree and prints the exact commit SHA after the dependency audit, 42-test contract, TypeScript check, and production build pass.
 
 1. Import `https://github.com/TanavG223/protocol-mirror` into Vercel.
 2. Keep the detected Next.js defaults. The current application requires no environment variables.
@@ -42,8 +42,8 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 ## 3. Record and publish the demo
 
 1. Resolve the narration rights gate: regenerate after the ElevenLabs account is on a plan explicitly including a commercial license, or replace the narration with an owner-recorded track. Do not assume a later upgrade retroactively clears the Free-plan generation.
-2. Generate the final narration from `docs/demo/FINAL_VIDEO_NARRATION.txt`, following `docs/demo/ELEVENLABS_VOICE_DIRECTION.md`, and have the owner approve the audio.
-3. Render with `ELEVENLABS_AUDIO=/absolute/path/to/approved-audio ./scripts/render-final-demo.sh`; the script refuses a silent system-voice fallback.
+2. Generate the final narration from `docs/demo/BENCHMARK_RECUT_NARRATION.txt`, following `docs/demo/ELEVENLABS_VOICE_DIRECTION.md`, and have the owner approve the audio.
+3. Edit to `docs/demo/BENCHMARK_RECUT_STORYBOARD.md`, preserving constant 60 fps and the visible run-specific disclaimer. The existing render script remains a reproducible reference for codec, audio processing, and release refusal behavior; do not treat the pre-benchmark visual sequence as the final cut.
 4. Re-run the codec, frame-cadence, black-segment, silence, loudness, and checksum checks; update `docs/YOUTUBE_METADATA.md` and `docs/FINAL_RELEASE_MANIFEST.md`.
 5. Watch the complete `docs/demo/protocol-mirror-final-demo.mp4` local master with sound and confirm the narration, pacing, overlays, and visible six-to-seven tool sequence.
 6. Use the paste-ready metadata in `docs/YOUTUBE_METADATA.md` and confirm the processed runtime remains under three minutes with clear narration.
@@ -57,7 +57,7 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 Run `npm run preflight:submission` only after the owner has completed every personal and media gate. The command deliberately requires the four `PROTOCOL_MIRROR_*` confirmation variables documented by its error messages; never set them merely to make the command pass.
 
 - Paste the narrative from `docs/SUBMISSION_DRAFT.md` and preserve its truthful-claim guardrail.
-- Add the six files from `docs/screenshots/` in narrative order; use `06-agent-reviewed.png` as direct proof of the public seven-tool reviewed state.
+- Add the seven files from `docs/screenshots/` in narrative order; use `06-agent-reviewed.png` as direct proof of the public seven-tool reviewed state and `07-real-world-benchmark.png` as the reality-check differentiator.
 - Put the permanent app URL in **Try it out** and repeat the public source URL in the description.
 - Add the public video URL and repository license URL.
 - Re-open the official rules immediately before submission and verify the displayed deadline, eligibility, required fields, public-access requirements, and video limit.

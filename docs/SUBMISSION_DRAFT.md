@@ -83,7 +83,7 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 - Public repository mirror for the Try it out field: https://github.com/TanavG223/protocol-mirror
 - License: https://github.com/TanavG223/protocol-mirror/blob/main/LICENSE
 - Live app: https://protocol-mirror.vercel.app
-- Demo video: edited 1:29.67 local master complete; owner approval and public YouTube upload pending
+- Demo video: 1:29.65 constant-60-fps technical master preserved; benchmark-forward recut, cleared narration, owner approval, and public YouTube upload pending
 
 ## Screenshot assets
 
@@ -93,6 +93,7 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 - `docs/screenshots/04-evidence-drawer.jpg` — agent rationale beside exact source spans and locators
 - `docs/screenshots/05-mobile.jpg` — mobile hero, connected WebMCP state, and stacked case metadata
 - `docs/screenshots/06-agent-reviewed.png` — public deployment after agent staging and human acceptance, with the seven-tool badge and exact evidence visible
+- `docs/screenshots/07-real-world-benchmark.png` — exact local build showing 24 real pairs, 48/48 live reads, opposite model bias, and the run-specific claim boundary
 
 ## Truthful-claim guardrail
 

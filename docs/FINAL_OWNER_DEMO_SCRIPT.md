@@ -1,6 +1,6 @@
 # Fallback live owner demo script
 
-Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited local master is now `docs/demo/protocol-mirror-final-demo.mp4`; use this longer live-recording plan only if the owner chooses to replace that master.
+Target runtime: 2:30–2:45. Hard limit: under three minutes. The current edited local master predates the real-world benchmark; use this live plan or the shorter benchmark recut plan when replacing it.
 
 ## Before recording
 
@@ -33,7 +33,15 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 > A clinical-trial registry records what researchers planned to measure. The publication records what readers eventually see. Comparing them is slow, citation-heavy work. A 2019 study of 389 trials found that 130 had at least one primary-outcome change. But a difference is not automatically wrongdoing. Reviewers need evidence and uncertainty—not an AI verdict.
 
-## 0:39–0:58 — Why WebMCP matters
+## 0:39–0:58 — Real-world stress test
+
+**On screen:** Show the live **Real-world stress test** panel or `docs/screenshots/07-real-world-benchmark.png`.
+
+**Say:**
+
+> We tested 24 real trial-publication pairs and completed 48 out of 48 live WebMCP source reads. Under the same blinded evidence task, a 4B model overcalled changes while a 9B model frequently missed them. These are run-specific grounding results, not a universal hallucination or clinical-accuracy claim. Their opposite bias is why an agent should assemble evidence without becoming the final authority.
+
+## 0:58–1:17 — Why WebMCP matters
 
 **On screen:** Keep the six-tool badge visible and open the agent tool surface.
 
@@ -45,7 +53,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 > Protocol Mirror exposes six typed WebMCP tools. The agent reads stable IDs and exact source spans directly from the page instead of guessing from pixels. Registry and publication text is explicitly treated as untrusted evidence.
 
-## 0:58–1:28 — Agent proposes; human authority stays visible
+## 1:17–1:47 — Agent proposes; human authority stays visible
 
 **Prompt the agent:**
 
@@ -57,7 +65,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 > The concepts look similar, but their measurement method and primary time point differ. The agent stages that uncertainty, cites both records, and moves the exact checkpoint into view. It can propose and explain. There is deliberately no agent tool that can accept its own conclusion.
 
-## 1:28–1:46 — The human-only decision
+## 1:47–2:05 — The human-only decision
 
 **On screen:** Pause on the Accept and Reject controls, then personally click **Accept**.
 
@@ -65,7 +73,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 > This is the authority boundary. I—not the agent—make the decision. And watch the capability surface: after my review, the page changes from six tools to seven.
 
-## 1:46–2:04 — Dynamic proof, not a black box
+## 2:05–2:23 — Dynamic proof, not a black box
 
 **Prompt the agent:**
 
@@ -77,7 +85,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 > The seventh tool exists only when reviewed work exists. Its receipt excludes staged suggestions and preserves the accepted mapping, exact evidence locators, and the audit events that produced it.
 
-## 2:04–2:22 — Reliability and close
+## 2:23–2:43 — Reliability and close
 
 **On screen:** Briefly show **Stage guided review**, the live-source tool names, or the architecture section in the README; finish on the hero or reviewed workspace.
 
@@ -91,7 +99,7 @@ Target runtime: 2:10–2:25. Hard limit: under three minutes. The primary edited
 
 - The final processed video is public on YouTube, under three minutes, and audible throughout.
 - A real live-source tool call and its visible page result appear in the first 10–15 seconds.
-- The production URL, connected six-tool state, exact evidence, focus handoff, human click, seven-tool state, reviewed receipt, and human JSON download are visibly demonstrated.
+- The production URL, connected six-tool state, real-world stress test and disclaimer, exact evidence, focus handoff, human click, seven-tool state, reviewed receipt, and human JSON download are visibly demonstrated.
 - The agent is never shown accepting or rejecting a proposal.
 - The video makes no clinical-validation, diagnostic-accuracy, or misconduct-detection claim.
 - The YouTube description includes the live application and public MIT repository URLs from `docs/YOUTUBE_METADATA.md`.
