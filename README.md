@@ -77,7 +77,7 @@ Open `http://localhost:3000` in a WebMCP-capable browser. The primary supported 
 npm run check
 ```
 
-This runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
+This runs the WebMCP metadata/lifecycle conformance check, ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
 
 Current local release candidate: 42 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also tested live-source failure and recovery, called both public source tools, displayed their real records in the reviewer UI, and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
 
@@ -86,6 +86,7 @@ After committing a release candidate, run `npm run preflight:product` from a cle
 | Judge evidence | Verified result |
 | --- | --- |
 | Automated release checks | 42 tests, lint, TypeScript, and optimized build pass |
+| WebMCP metadata contract | Seven unique tools, six registration call sites, signal cleanup, same-origin exposure, annotations, and official character budgets enforced |
 | Real WebMCP lifecycle | Six initial tools; human review alone exposes the seventh |
 | Real-world source stress test | 24 NCT/PMID pairs; 48/48 WebMCP source calls; 172 outcomes and 106 abstract sections |
 | Failure behavior | Invalid identifiers, malformed/oversized/entity-shaped source data, missing records, duplicate proposals, and unrelated evidence fail closed |
@@ -94,6 +95,7 @@ After committing a release candidate, run `npm run preflight:product` from a cle
 | Security | Zero reportable repository-scan findings and zero dependency vulnerabilities at the enforced threshold; bounded fixed-host adapters |
 
 The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
+The current specification and security-guidance mapping is recorded in [`docs/WEBMCP_CONFORMANCE.md`](docs/WEBMCP_CONFORMANCE.md).
 The scoped threat model, implemented controls, and residual risks are recorded in [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md) and [`docs/SECURITY_REVIEW.md`](docs/SECURITY_REVIEW.md).
 The exact recording sequence and final external-action checklist are in [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) and [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.md).
 The final local candidate is [`docs/demo/protocol-mirror-final-demo.mp4`](docs/demo/protocol-mirror-final-demo.mp4): 89.65 seconds, 1280×720 H.264 at constant 60 fps with an ElevenLabs narration. It has passed cadence, continuity, loudness, codec, and representative-frame checks. It is not cleared for upload yet: the current ElevenLabs account state appears to be Free, whose terms restrict output to non-commercial use, while this prize submission grants promotional rights. The owner must resolve that rights gate and then watch and approve the resulting master with sound. Voice direction, narration, source audio, and reproducible render assets live in [`docs/demo/`](docs/demo/) and [`scripts/render-final-demo.sh`](scripts/render-final-demo.sh).

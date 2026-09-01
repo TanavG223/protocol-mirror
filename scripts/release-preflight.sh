@@ -27,6 +27,7 @@ require_file devpost-submission.md
 require_file docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md
 require_file docs/JUDGE_SCORECARD.md
 require_file docs/BROWSER_VERIFICATION.md
+require_file docs/WEBMCP_CONFORMANCE.md
 require_file docs/FINAL_OWNER_DEMO_SCRIPT.md
 require_file .agent/README.md
 require_file .agent/system/architecture.md
@@ -40,6 +41,7 @@ require_file benchmarks/real-world-pairs.json
 require_file benchmarks/runs/live-source-webmcp-2026-08-31.json
 require_file benchmarks/runs/qwen3-4b-2026-08-31.json
 require_file benchmarks/runs/ornith-1-5-9b-2026-08-31.json
+require_file scripts/check-webmcp-conformance.mjs
 require_file docs/demo/protocol-mirror-final-demo.mp4
 require_file docs/demo/protocol-mirror-final-captions.srt
 require_file docs/demo/title-card.png
@@ -79,7 +81,7 @@ npm run check
 commit_sha="$(git rev-parse HEAD)"
 echo "PRODUCT_PREFLIGHT=PASS"
 echo "COMMIT_SHA=$commit_sha"
-echo "TEST_CONTRACT=clean-install+lint+tests+typescript+production-build+high-severity-audit"
+echo "TEST_CONTRACT=webmcp-conformance+clean-install+lint+tests+typescript+production-build+high-severity-audit"
 
 if [[ "$preflight_mode" == "submission" ]]; then
   [[ "${PROTOCOL_MIRROR_RULES_ACKNOWLEDGED:-}" == "yes" ]] || fail "set PROTOCOL_MIRROR_RULES_ACKNOWLEDGED=yes only after the owner accepts the current official rules"

@@ -7,7 +7,7 @@ This directory is a selective context router for coding agents. It keeps stable 
 | Task | Read first | Then inspect |
 | --- | --- | --- |
 | Product behavior or architecture | `system/architecture.md` | The specific files under `src/` named there |
-| WebMCP tool or authority-boundary change | `system/architecture.md` | `src/app/workspace.tsx`, `src/lib/webmcp-tools.ts`, `src/lib/proposal-validation.ts`, and their tests |
+| WebMCP tool or authority-boundary change | `system/architecture.md` | `../docs/WEBMCP_CONFORMANCE.md`, `../src/app/workspace.tsx`, `../src/lib/webmcp-tools.ts`, `../src/lib/proposal-validation.ts`, and their tests |
 | Bug fix, dependency, or refactor | `sop/change-and-verify.md` | The failing path and its nearest tests |
 | Real-world benchmark work | `../benchmarks/README.md` | Manifest, scorer, runner, then only the necessary raw run |
 | Security change or review | `../docs/SECURITY_MODEL.md` | `../docs/SECURITY_REVIEW.md`, headers, adapters, and validation code |
