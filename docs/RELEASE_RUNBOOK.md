@@ -19,7 +19,7 @@ The steps below are the reproducible release procedure and final external-action
 
 This step changes external state and requires the project owner's explicit confirmation at action time.
 
-Before any push or deployment, commit the candidate and run `npm run preflight:product`. The command requires a clean tree and prints the exact commit SHA after the dependency audit, 35-test contract, TypeScript check, and production build pass.
+Before any push or deployment, commit the candidate and run `npm run preflight:product`. The command requires a clean tree and prints the exact commit SHA after the dependency audit, 38-test contract, TypeScript check, and production build pass.
 
 1. Import `https://github.com/TanavG223/protocol-mirror` into Vercel.
 2. Keep the detected Next.js defaults. The current application requires no environment variables.

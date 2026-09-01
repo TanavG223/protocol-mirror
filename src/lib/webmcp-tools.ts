@@ -26,9 +26,17 @@ export interface LivePubMedRecord {
 }
 
 interface LiveSourceCallbacks {
+  onClinicalTrialStart?: () => void;
   onClinicalTrial?: (record: LiveClinicalTrialRecord) => void;
+  onClinicalTrialError?: (message: string) => void;
+  onPubMedArticleStart?: () => void;
   onPubMedArticle?: (record: LivePubMedRecord) => void;
+  onPubMedArticleError?: (message: string) => void;
 }
+
+const errorMessage = (error: unknown) => error instanceof Error && error.message
+  ? error.message
+  : "The source adapter could not retrieve this record.";
 
 async function readSourceResponse<T>(response: Response): Promise<Record<string, unknown> & { data?: T }> {
   const payload = await response.json() as Record<string, unknown>;
@@ -54,10 +62,17 @@ export function createLiveSourceTools(fetcher: Fetcher = fetch, callbacks: LiveS
       annotations: { readOnlyHint: true, untrustedContentHint: true },
       execute: async (input, options) => {
         if (typeof input.nctId !== "string" || !NCT_PATTERN.test(input.nctId)) throw new Error("nctId must match NCT followed by exactly eight digits.");
-        const response = await fetcher(`/api/clinical-trials/${encodeURIComponent(input.nctId.toUpperCase())}`, { headers: { Accept: "application/json" }, signal: options.signal });
-        const result = await readSourceResponse<LiveClinicalTrialRecord>(response);
-        if (result.data) callbacks.onClinicalTrial?.(result.data);
-        return result;
+        callbacks.onClinicalTrialStart?.();
+        try {
+          const response = await fetcher(`/api/clinical-trials/${encodeURIComponent(input.nctId.toUpperCase())}`, { headers: { Accept: "application/json" }, signal: options.signal });
+          const result = await readSourceResponse<LiveClinicalTrialRecord>(response);
+          if (!result.data) throw new Error("The source adapter returned no trial record.");
+          callbacks.onClinicalTrial?.(result.data);
+          return result;
+        } catch (error) {
+          callbacks.onClinicalTrialError?.(errorMessage(error));
+          throw error;
+        }
       },
     },
     {
@@ -73,10 +88,17 @@ export function createLiveSourceTools(fetcher: Fetcher = fetch, callbacks: LiveS
       annotations: { readOnlyHint: true, untrustedContentHint: true },
       execute: async (input, options) => {
         if (typeof input.pmid !== "string" || !PMID_PATTERN.test(input.pmid)) throw new Error("pmid must contain one to nine digits.");
-        const response = await fetcher(`/api/pubmed/${encodeURIComponent(input.pmid)}`, { headers: { Accept: "application/json" }, signal: options.signal });
-        const result = await readSourceResponse<LivePubMedRecord>(response);
-        if (result.data) callbacks.onPubMedArticle?.(result.data);
-        return result;
+        callbacks.onPubMedArticleStart?.();
+        try {
+          const response = await fetcher(`/api/pubmed/${encodeURIComponent(input.pmid)}`, { headers: { Accept: "application/json" }, signal: options.signal });
+          const result = await readSourceResponse<LivePubMedRecord>(response);
+          if (!result.data) throw new Error("The source adapter returned no article record.");
+          callbacks.onPubMedArticle?.(result.data);
+          return result;
+        } catch (error) {
+          callbacks.onPubMedArticleError?.(errorMessage(error));
+          throw error;
+        }
       },
     },
   ];

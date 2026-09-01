@@ -1,12 +1,12 @@
 # Scoped security review
 
-Review date: 2026-08-30
+Review date: 2026-08-31
 
 ## Executive summary
 
-The review covered the Next.js browser application, WebMCP argument and authority boundaries, public-source adapters, response headers, and production dependency state. No critical or high-severity findings remain in this scope. Three concrete hardening findings were fixed and covered by deterministic tests.
+The review covered the complete deployed Next.js runtime, WebMCP argument and authority boundaries, both public-source adapters, rendering and receipt sinks, response headers, dependencies, secrets, and privileged release/demo scripts. A separate threat-model → discovery → validation → attack-path pass fully read 17 runtime/tool files and promoted zero reportable findings. Three earlier hardening findings remain fixed and covered by deterministic tests.
 
-The public CI pipeline runs `npm audit --omit=dev --audit-level=high` before lint, deterministic tests, TypeScript validation, and the production build. The 2026-08-30 release audit reported zero vulnerabilities.
+The public CI pipeline runs `npm audit --omit=dev --audit-level=high` before lint, deterministic tests, TypeScript validation, and the production build. The 2026-08-31 repository scan and release audit reported zero vulnerabilities. Crafted URL-, path-, and query-shaped identifiers returned structured 400 responses through the real HTTP interface, and an external XML entity probe failed closed.
 
 This is a focused application review, not an external penetration test, clinical-system assessment, or compliance certification.
 
@@ -52,3 +52,20 @@ This is a focused application review, not an external penetration test, clinical
 - Severity: Informational
 - Model-focused scanners such as promptfoo, PyRIT, and garak do not have a model or inference API to probe in the current architecture.
 - Recommendation: add those suites if a future version introduces model inference, model-controlled retrieval, or a remote agent endpoint.
+
+### SEC-R4 — Distributed abuse throttling is deployment-owned
+
+- Severity: Informational
+- The public adapters accept high-cardinality valid NCT/PMID identifiers, so many distinct requests can create cache misses. Each request remains fixed-host, read-only, capped at one or two megabytes, aborted after eight seconds, safely parsed, and cached for twelve hours.
+- Recommendation: configure hosting-layer rate and abuse controls if public traffic becomes material. No SSRF, protected-data, state-change, or concrete outage/billing impact was validated in the reviewed repository.
+
+## Final validation evidence
+
+- 17 runtime and privileged-tool files fully read.
+- Five targeted security/control files: 29 tests passed during validation.
+- Full release candidate: 38 deterministic tests passed.
+- `npm audit --omit=dev --audit-level=high`: zero vulnerabilities.
+- Secret-pattern and tracked credential-shaped-file scans: no candidates.
+- Real production response: CSP, frame denial, nosniff, strict-origin referrer, and restrictive permissions policy present.
+
+This is an evidence-backed repository scan, not a penetration test, compliance certification, or guarantee that no defect exists.

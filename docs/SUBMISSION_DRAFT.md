@@ -30,6 +30,8 @@ The agent cannot accept or reject its own conclusion. A person reviews the sourc
 
 The current app ships with a deterministic fictional case so the core demo never depends on network availability. Validated server adapters also retrieve normalized outcomes from ClinicalTrials.gov and structured abstract sections from PubMed. Agent-retrieved live records are rendered in the shared page with exact source links, making the source read visible to the reviewer without promoting it into an automatic finding.
 
+The same shared intake exposes loading, safe failure, and recovery states. If a public source is unavailable or returns an incomplete envelope, the human sees that the record was not added and can continue with the deterministic case.
+
 ## How we built it
 
 - Next.js 16 and React 19 for the application and server routes
@@ -59,7 +61,7 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 - Deterministic offline demonstration data plus bounded live-source adapters
 - Evidence-side validation that rejects cross-record IDs, unrelated citations, duplicates, and unknown evidence
 - Restrictive production response headers, bounded upstream payloads, and entity-safe XML parsing
-- 35 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
+- 38 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
 - Reviewer-visible live-source intake and a human-downloadable reviewed JSON receipt
 - A production-mode Codex-browser rehearsal at desktop and 390-pixel mobile widths with no horizontal overflow or browser errors
 

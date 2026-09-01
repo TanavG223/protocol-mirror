@@ -7,12 +7,12 @@ Research and scoring snapshot: 2026-08-31. This is an internal preflight against
 | Official criterion | Verified public baseline | Local release candidate | Why it is not 5/5 yet |
 | --- | ---: | ---: | --- |
 | WebMCP Leverage | 4.5 / 5 | 4.6 / 5 | Strong typed lifecycle and authority boundary; live records are not yet transformed into a human-reviewed real-case comparison |
-| Execution | 4.2 / 5 | 4.4 / 5 | Working, tested, responsive product; persistence, signatures, and repeatable end-to-end browser automation remain future work |
+| Execution | 4.2 / 5 | 4.5 / 5 | Working, resilient, accessible product; persistence, signatures, and a committed repeatable browser suite remain future work |
 | Potential Impact | 3.7 / 5 | 3.9 / 5 | Specific research-transparency need and audience; no user study, task-time result, or public benchmark yet |
 | Creativity & Ambition | 4.35 / 5 | 4.4 / 5 | Distinct clinical-trial evidence workspace and constrained authority model; approval gates and receipts also appear in some other projects |
-| **Total** | **16.75 / 20** | **17.3 / 20** | The local score assumes the tested candidate is deployed and demonstrated truthfully |
+| **Total** | **16.75 / 20** | **17.4 / 20** | The local score assumes the tested candidate is deployed and demonstrated truthfully |
 
-The local increase reflects two concrete changes: agent-retrieved ClinicalTrials.gov and PubMed records now appear in the shared reviewer UI, and a reviewed JSON receipt becomes directly downloadable after the human decision. Those changes do not count as public submission evidence until they are pushed and deployed.
+The local increase reflects four concrete changes: agent-retrieved ClinicalTrials.gov and PubMed records appear in the shared reviewer UI; safe loading, error, and recovery states keep failures visible to the human; a reviewed JSON receipt becomes directly downloadable after the human decision; and keyboard/responsive accessibility defects found during final QA were repaired. Those changes do not count as public submission evidence until they are pushed and deployed.
 
 ## Defensible differentiation
 
@@ -49,8 +49,8 @@ This table compares visible public artifacts only. It does not establish that an
 - The reviewed comparison uses a deterministic fictional case; live reads are visible intake, not an automatic real-record outcome extraction pipeline.
 - No user study, task-time comparison, or preregistered accuracy/agreement benchmark has been run.
 - Audit state is in-session and the receipt is not persisted or cryptographically signed.
-- The critical lifecycle is contract-tested and manually browser-tested, but not yet encoded as a repeatable browser suite.
+- The critical lifecycle is contract-tested and repeatedly exercised in clean Codex browser tabs, but is not yet encoded as a committed repeatable browser suite.
 - The current edited video is not upload-cleared until narration rights are resolved and the owner watches the final master with sound.
 - The local improvements are not yet on the public URL.
 
-These limitations should remain explicit. A credible 17.3/20 submission is stronger than an unsupported “perfect” claim.
+These limitations should remain explicit. A credible 17.4/20 submission is stronger than an unsupported “perfect” claim.

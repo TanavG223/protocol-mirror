@@ -1,6 +1,6 @@
 # Official WebMCP Challenge requirements snapshot
 
-Checked on 2026-08-31 through the authenticated Devpost connection at 13:41:25–13:41:29 UTC. Live data reported `complete` for rules, dates, requirements, judging criteria, and prizes.
+Checked again on 2026-09-01 UTC through the authenticated Devpost pages in the Codex in-app browser. The overview and official rules were read directly; the project gallery still reported that it had not been published.
 
 Sources:
 
@@ -54,6 +54,8 @@ The four Stage 2 criteria are equally weighted on a five-point scale:
 4. **Creativity & Ambition** — a novel concept that differs meaningfully from existing ideas.
 
 The tie-break begins with WebMCP Leverage, then proceeds through the remaining criteria in the listed order. Stage 1 is a pass/fail check for theme viability and reasonable use of the required capability.
+
+The live recheck showed 5,097 registered participants. Participant count is not a submission count, and the unpublished gallery prevents a complete comparison against unreleased entries.
 
 ## Prize snapshot
 

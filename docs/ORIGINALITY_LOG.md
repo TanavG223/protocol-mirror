@@ -25,9 +25,10 @@ No source code from another hackathon entry was copied. The fictional demonstrat
 Claims allowed now:
 
 - The production build compiles.
-- The current deterministic contract suite contains 35 passing tests.
+- The current deterministic contract suite contains 38 passing tests.
 - The page registers WebMCP tools when `document.modelContext` is available; the Codex in-app browser exposed the expected six initial tools, both live adapters returned public source records, and the reviewed decision exposed the seventh receipt tool during live verification.
 - Agent writes create staged proposals only.
+- Live-source reads expose loading, success, failure, and recovery to the human reviewer without converting source data or errors into reviewed findings.
 - The public challenge source is available at `https://github.com/TanavG223/protocol-mirror` under MIT terms.
 
 Claims not yet allowed:

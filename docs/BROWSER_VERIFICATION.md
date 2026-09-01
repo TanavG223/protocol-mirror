@@ -117,3 +117,18 @@ After the agent-role positioning was clarified on 2026-08-31, the local producti
 - Step 4: the page exposed seven tools, and the agent called `export_review_receipt`. The receipt contained one accepted mapping and the `pair_loaded`, `mapping_staged`, and `mapping_accepted` event trail.
 - The visible workflow read **Inspect exact spans → Stage a proposal → Human adjudicates → Agent packages proof**.
 - At 390 by 844 CSS pixels, all four steps stacked without horizontal overflow. The browser recorded no warnings or errors.
+
+## Final resilience, accessibility, and clean-tab closure
+
+On 2026-08-31, the final local release candidate was rebuilt and verified in the Codex in-app browser after repository-wide security and accessibility review:
+
+- A valid-but-unavailable ClinicalTrials.gov read exposed a visible reviewer error card, kept the deterministic case available, and returned the safe tool error. A later valid read for `NCT04280705` replaced the error with the live ACTT record; PubMed `32445440` rendered beside it.
+- Live-source tools now surface explicit loading, success, failure, and recovery states. A successful adapter envelope without its required record fails visibly instead of leaving an indefinite loading state.
+- A fresh isolated Codex tab began with six tools, zero mappings, and only `pair_loaded`. The agent retrieved two exact locators, staged `map-11`, and focused review with `decisionAuthority: human_reviewer_only`.
+- The visible human **Accept** control changed the surface to seven tools. `export_review_receipt` returned only the accepted mapping, both locators, and `pair_loaded`, `mapping_staged`, and `mapping_accepted`; the reviewer UI also exposed the JSON download.
+- The post-decision keyboard focus was the stable review region. A repaired skip-link activation moved focus to `workspace-title` with an opaque 3-pixel dark-blue outline.
+- At 320 CSS pixels, document and body widths remained 320 pixels, all four workflow steps stacked, the hero remained three visual lines, and no visible enabled link or button measured below 44 by 44 pixels.
+- At 1,440 CSS pixels, the document had one H1, six labelled regions, no unnamed interactive control, and no horizontal overflow.
+- Browser debugger logging recorded zero console warnings or exceptions after a clean production reload.
+
+The full deterministic suite contained 38 passing tests, including a new external-entity fail-closed case and visible live-source failure/recovery contracts.

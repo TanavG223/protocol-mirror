@@ -46,6 +46,7 @@ WebMCP lifecycle is managed with `AbortController` signals. Tool schemas reject 
 - Evidence drawer with mapping identity, exact spans, stable locators, and authoritative source links
 - Append-only in-session audit events and reviewed receipt export
 - Reviewer-visible live ClinicalTrials.gov and PubMed intake after agent tool calls
+- Visible live-source loading, failure, and recovery states that preserve the deterministic review path
 - Human-downloadable reviewed receipt JSON after a decision unlocks it
 - ClinicalTrials.gov v2 API adapter with validation and normalized outcomes
 - PubMed E-utilities adapter with structured abstract sections
@@ -77,18 +78,18 @@ npm run check
 
 This runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
 
-Current verified baseline: 35 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also called both public live-source tools, displayed their real records in the reviewer UI, and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
+Current local release candidate: 38 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also tested live-source failure and recovery, called both public source tools, displayed their real records in the reviewer UI, and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
 
 After committing a release candidate, run `npm run preflight:product` from a clean working tree. It fails closed unless the required source, license, screenshots, media assets, WebMCP registrations, four-step collaboration copy, dependency audit, tests, and production build all map to one commit. `npm run preflight:submission` adds explicit owner-controlled gates for current-rules acknowledgment, narration/media approval, personal Devpost answers, and the watched public YouTube URL; it is expected to fail until those external gates are truthfully complete.
 
 | Judge evidence | Verified result |
 | --- | --- |
-| Automated release checks | 35 tests, lint, TypeScript, and optimized build pass |
+| Automated release checks | 38 tests, lint, TypeScript, and optimized build pass |
 | Real WebMCP lifecycle | Six initial tools; human review alone exposes the seventh |
-| Failure behavior | Invalid identifiers, duplicate proposals, and unrelated evidence fail closed |
+| Failure behavior | Invalid identifiers, malformed/oversized/entity-shaped source data, missing records, duplicate proposals, and unrelated evidence fail closed |
 | Human authority | No agent accept/reject tool; reviewed JSON is available only after a human decision |
-| Responsive UX | 390×844 viewport verified without horizontal overflow |
-| Security | Zero high-severity production dependency findings; bounded fixed-host adapters |
+| Responsive UX | 320- and 390-pixel layouts verified without horizontal overflow; visible enabled targets are at least 44×44 pixels |
+| Security | Zero reportable repository-scan findings and zero dependency vulnerabilities at the enforced threshold; bounded fixed-host adapters |
 
 The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
 The scoped threat model, implemented controls, and residual risks are recorded in [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md) and [`docs/SECURITY_REVIEW.md`](docs/SECURITY_REVIEW.md).

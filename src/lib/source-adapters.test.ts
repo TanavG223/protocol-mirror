@@ -95,6 +95,13 @@ describe("PubMed adapter", () => {
 
     await expect(fetchPubMedArticle("12345678")).rejects.toMatchObject({ code: "invalid_upstream_data" });
   });
+
+  it("fails closed on an external XML entity declaration", async () => {
+    const xml = `<!DOCTYPE x [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><PubmedArticleSet><PubmedArticle><MedlineCitation><Article><ArticleTitle>&xxe;</ArticleTitle></Article></MedlineCitation></PubmedArticle></PubmedArticleSet>`;
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(xml, { status: 200 })));
+
+    await expect(fetchPubMedArticle("12345678")).rejects.toThrow("External entities are not supported");
+  });
 });
 
 describe("safe error responses", () => {

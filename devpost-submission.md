@@ -19,7 +19,7 @@ Protocol Mirror places registered and reported outcomes side by side in one huma
 
 The agent cannot accept or reject its own proposal. A person reviews the rationale and exact source spans in the same interface and makes the decision. Only reviewed decisions appear in the exportable receipt, and that export capability is registered dynamically after a human decision exists. The reviewer can also download that reviewed receipt as JSON directly from the human checkpoint.
 
-The app includes a deterministic fictional case so the complete judging flow remains available without an upstream network dependency. Validated server adapters also retrieve normalized ClinicalTrials.gov outcomes and structured PubMed abstract sections. Records returned by those agent tools are rendered in a reviewer-visible source-intake area with exact source links and an explicit read-only, untrusted-evidence boundary.
+The app includes a deterministic fictional case so the complete judging flow remains available without an upstream network dependency. Validated server adapters also retrieve normalized ClinicalTrials.gov outcomes and structured PubMed abstract sections. Records returned by those agent tools are rendered in a reviewer-visible source-intake area with exact source links and an explicit read-only, untrusted-evidence boundary. Loading, failure, and recovery remain visible to the reviewer; an unavailable source never silently becomes a finding or blocks the deterministic judging path.
 
 ## Why This Matters
 
@@ -61,6 +61,7 @@ Codex also challenged overbroad claims: the project distinguishes a browser-tool
 - Human-downloadable reviewed receipt JSON after a decision
 - Deterministic fictional case for reliable judging
 - Bounded ClinicalTrials.gov and PubMed source adapters with safe failures
+- Human-visible loading, failure, and recovery for live agent reads
 - Responsive forensic-editorial interface with visible focus and reduced-motion support
 - Restrictive production response headers and duplicate/cross-record evidence rejection
 
@@ -108,7 +109,7 @@ npm run check
 npm run dev
 ```
 
-Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 35 deterministic tests, TypeScript through the production build, and the optimized Next.js build.
+Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 38 deterministic tests, TypeScript through the production build, and the optimized Next.js build.
 
 ## Public Demo Link
 
@@ -139,7 +140,7 @@ The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.
 
 - [x] Public repository with all source, assets, instructions, and detected MIT license
 - [x] Non-trivial top-level `document.modelContext.registerTool()` implementation
-- [x] 35 deterministic tests, clean lint and TypeScript checks, and a successful production build
+- [x] 38 deterministic tests, clean lint and TypeScript checks, and a successful production build
 - [x] Local release candidate visibly renders agent-retrieved source records and exposes a human JSON receipt download; production deployment approval remains pending
 - [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
 - [x] Six final screenshots, including a permanent-deployment review proof, and a timed demo script
@@ -186,4 +187,4 @@ Still required before the form can be finalized:
 - Explicit rules acknowledgment in the local hackathon workflow
 - Final authenticated Devpost preview and the separate literal `yes, submit` confirmation
 
-Official page snapshot checked in the Codex browser on 2026-08-30. The Devpost website and official rules prevail if any requirement changes.
+Official overview and rules checked again in the Codex browser on 2026-09-01 UTC. The Devpost website and official rules prevail if any requirement changes.

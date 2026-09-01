@@ -35,6 +35,10 @@ export default function Workspace() {
   const [webMcp, setWebMcp] = useState<"checking" | "connected" | "preview">("preview");
   const [liveTrial, setLiveTrial] = useState<LiveClinicalTrialRecord | null>(null);
   const [liveArticle, setLiveArticle] = useState<LivePubMedRecord | null>(null);
+  const [liveTrialStatus, setLiveTrialStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [liveArticleStatus, setLiveArticleStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [liveTrialError, setLiveTrialError] = useState<string | null>(null);
+  const [liveArticleError, setLiveArticleError] = useState<string | null>(null);
   const counter = useRef(10);
   const auditRef = useRef(audit);
   const reviewRef = useRef<HTMLElement>(null);
@@ -162,7 +166,14 @@ export default function Workspace() {
     const evidenceIds = DEMO_PAIR.evidence.map((item) => item.id);
     const register = async () => {
       await Promise.all([
-        ...createLiveSourceTools(fetch, { onClinicalTrial: setLiveTrial, onPubMedArticle: setLiveArticle }).map((tool) => context.registerTool(tool, { signal: controller.signal })),
+        ...createLiveSourceTools(fetch, {
+          onClinicalTrialStart: () => { setLiveTrial(null); setLiveTrialError(null); setLiveTrialStatus("loading"); },
+          onClinicalTrial: (record) => { setLiveTrial(record); setLiveTrialStatus("success"); },
+          onClinicalTrialError: (message) => { setLiveTrialError(message); setLiveTrialStatus("error"); },
+          onPubMedArticleStart: () => { setLiveArticle(null); setLiveArticleError(null); setLiveArticleStatus("loading"); },
+          onPubMedArticle: (record) => { setLiveArticle(record); setLiveArticleStatus("success"); },
+          onPubMedArticleError: (message) => { setLiveArticleError(message); setLiveArticleStatus("error"); },
+        }).map((tool) => context.registerTool(tool, { signal: controller.signal })),
         context.registerTool({
           name: "get_audit_state", title: "Read audit state",
           description: "Read the trial-publication pair, stable outcome IDs, proposals, decisions, and audit-event summary. Use before proposing changes.",
@@ -226,7 +237,12 @@ export default function Workspace() {
   const publicationMapped = useMemo(() => new Set(audit.mappings.map((item) => item.publicationOutcomeId)), [audit.mappings]);
 
   return <div className="app-shell" ref={shellRef}>
-    <a className="skip-link" href="#workspace">Skip to comparison workspace</a>
+    <a className="skip-link" href="#workspace-title" onClick={(clickEvent) => {
+      clickEvent.preventDefault();
+      const workspaceTitle = document.getElementById("workspace-title");
+      workspaceTitle?.focus({ preventScroll: true });
+      workspaceTitle?.scrollIntoView({ block: "start" });
+    }}>Skip to comparison workspace</a>
     <header className="site-header">
       <a className="brand" href="#top" aria-label="Protocol Mirror home"><span className="brand-mark" aria-hidden="true"><span>P</span><span>M</span></span><span>Protocol Mirror</span></a>
       <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? `WebMCP connected · ${reviewedWorkAvailable ? 7 : 6} tools` : webMcp === "checking" ? "Checking WebMCP" : "WebMCP preview"}</span><span className="avatar" aria-hidden="true">TG</span></div>
@@ -245,16 +261,16 @@ export default function Workspace() {
         <div className="source-strip" role="group" aria-label="Study sources">
           <div><span>Registration</span><strong>{DEMO_PAIR.nctId}</strong><small>Updated {DEMO_PAIR.registryUpdated}</small></div><div><span>Publication</span><strong>{DEMO_PAIR.pmid}</strong><small>Published {DEMO_PAIR.publicationDate}</small></div><div><span>Sponsor</span><strong>{DEMO_PAIR.sponsor}</strong><small>{DEMO_PAIR.phase}</small></div><div className="review-score"><span>Review progress</span><strong>{reviewed.length}<em> / {audit.mappings.length || 4}</em></strong><small>{staged.length} awaiting a human decision</small></div>
         </div>
-        {(liveTrial || liveArticle) && <section className="live-intake" aria-labelledby="live-intake-title">
+        {(liveTrialStatus !== "idle" || liveArticleStatus !== "idle") && <section className="live-intake" aria-labelledby="live-intake-title">
           <div className="live-intake-heading"><div><p className="section-kicker">Agent source intake</p><h2 id="live-intake-title">Real records, visible to the reviewer.</h2></div><p role="status">Live source text is read-only, untrusted evidence. Nothing here becomes a reviewed finding automatically.</p></div>
           <div className="live-intake-grid">
-            <LiveTrialCard record={liveTrial} />
-            <LiveArticleCard record={liveArticle} />
+            <LiveTrialCard record={liveTrial} status={liveTrialStatus} error={liveTrialError} />
+            <LiveArticleCard record={liveArticle} status={liveArticleStatus} error={liveArticleError} />
           </div>
         </section>}
       </section>
       <section className="workspace" id="workspace" aria-labelledby="workspace-title">
-        <div className="workspace-heading"><div><p className="section-kicker">Evidence table</p><h2 id="workspace-title">Registered intent <span aria-hidden="true">↔</span> reported record</h2></div><div className="legend"><span><i className="dot matched" />Matched</span><span><i className="dot flagged" />Flagged</span><span><i className="dot unreviewed" />Unreviewed</span></div></div>
+        <div className="workspace-heading"><div><p className="section-kicker">Evidence table</p><h2 id="workspace-title" tabIndex={-1}>Registered intent <span aria-hidden="true">↔</span> reported record</h2></div><div className="legend"><span><i className="dot matched" />Matched</span><span><i className="dot flagged" />Flagged</span><span><i className="dot unreviewed" />Unreviewed</span></div></div>
         {audit.mappings.length > 0 && <div className="mobile-mapping-summary" aria-label="Proposed outcome relationships">{audit.mappings.map((mapping) => <button type="button" key={mapping.id} className={mapping.id === activeId ? "active" : ""} onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"}</strong></button>)}</div>}
         <div className="comparison-grid">
           <section className="outcome-column" aria-labelledby="registered-title"><ColumnTitle index="01" title="Registered outcomes" subtitle="ClinicalTrials.gov protocol record" id="registered-title" /><div className="outcome-list">{DEMO_PAIR.registryOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="registry" isMapped={registryMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} selectedOutcomeId={selectedOutcomeId} onSelect={inspectOutcome} />)}</div></section>
@@ -275,13 +291,17 @@ export default function Workspace() {
   </div>;
 }
 
-function LiveTrialCard({ record }: { record: LiveClinicalTrialRecord | null }) {
-  if (!record) return <article className="live-source-card pending"><span>ClinicalTrials.gov</span><strong>Awaiting a trial read</strong><p>Ask the agent to fetch a bounded NCT record.</p></article>;
+type LiveSourceStatus = "idle" | "loading" | "success" | "error";
+
+function LiveTrialCard({ record, status, error }: { record: LiveClinicalTrialRecord | null; status: LiveSourceStatus; error: string | null }) {
+  if (status === "error") return <article className="live-source-card error" role="alert"><span>ClinicalTrials.gov · read unavailable</span><strong>The trial record was not added.</strong><p>{error}</p><small>The deterministic review case remains available.</small></article>;
+  if (!record) return <article className="live-source-card pending" aria-busy={status === "loading"}><span>ClinicalTrials.gov</span><strong>{status === "loading" ? "Retrieving the bounded trial record…" : "Awaiting a trial read"}</strong><p>{status === "loading" ? "The agent is waiting for the fixed-host adapter." : "Ask the agent to fetch a bounded NCT record."}</p></article>;
   return <article className="live-source-card"><span>ClinicalTrials.gov · agent retrieved</span><h3>{record.title}</h3><p><strong>{record.nctId}</strong> · {record.outcomes.length} normalized outcomes · {record.sponsor}</p><ul>{record.outcomes.slice(0, 3).map((outcome) => <li key={outcome.id}><span>{outcome.role}</span>{outcome.title}</li>)}</ul><a href={record.sourceUrl} target="_blank" rel="noreferrer">Open exact trial record <Icon name="arrow" /></a></article>;
 }
 
-function LiveArticleCard({ record }: { record: LivePubMedRecord | null }) {
-  if (!record) return <article className="live-source-card pending"><span>PubMed</span><strong>Awaiting an article read</strong><p>Ask the agent to fetch a bounded PMID record.</p></article>;
+function LiveArticleCard({ record, status, error }: { record: LivePubMedRecord | null; status: LiveSourceStatus; error: string | null }) {
+  if (status === "error") return <article className="live-source-card error" role="alert"><span>PubMed · read unavailable</span><strong>The article record was not added.</strong><p>{error}</p><small>The deterministic review case remains available.</small></article>;
+  if (!record) return <article className="live-source-card pending" aria-busy={status === "loading"}><span>PubMed</span><strong>{status === "loading" ? "Retrieving the bounded article record…" : "Awaiting an article read"}</strong><p>{status === "loading" ? "The agent is waiting for the fixed-host adapter." : "Ask the agent to fetch a bounded PMID record."}</p></article>;
   return <article className="live-source-card"><span>PubMed · agent retrieved</span><h3>{record.title}</h3><p><strong>PMID {record.pmid}</strong> · {record.abstractSections.length} abstract sections · {record.journal}</p><ul>{record.abstractSections.slice(0, 3).map((section) => <li key={section.id}><span>section</span>{section.label}</li>)}</ul><small>{record.limitation}</small><a href={record.sourceUrl} target="_blank" rel="noreferrer">Open exact article record <Icon name="arrow" /></a></article>;
 }
 
