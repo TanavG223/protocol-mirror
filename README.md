@@ -77,7 +77,7 @@ Open `http://localhost:3000` in a WebMCP-capable browser. The primary supported 
 npm run check
 ```
 
-This runs the WebMCP metadata/lifecycle conformance check, ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
+This runs the WebMCP metadata/lifecycle conformance check, validates the judge-facing submission packet against the tracked benchmark artifacts and official field map, then runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
 
 Current local release candidate: 42 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also tested live-source failure and recovery, called both public source tools, displayed their real records in the reviewer UI, and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
 

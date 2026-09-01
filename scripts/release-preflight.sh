@@ -43,6 +43,7 @@ require_file benchmarks/runs/live-source-webmcp-2026-08-31.json
 require_file benchmarks/runs/qwen3-4b-2026-08-31.json
 require_file benchmarks/runs/ornith-1-5-9b-2026-08-31.json
 require_file scripts/check-webmcp-conformance.mjs
+require_file scripts/check-submission-packet.mjs
 require_file docs/demo/protocol-mirror-final-demo.mp4
 require_file docs/demo/protocol-mirror-final-captions.srt
 require_file docs/demo/title-card.png
@@ -82,7 +83,7 @@ npm run check
 commit_sha="$(git rev-parse HEAD)"
 echo "PRODUCT_PREFLIGHT=PASS"
 echo "COMMIT_SHA=$commit_sha"
-echo "TEST_CONTRACT=webmcp-conformance+clean-install+lint+tests+typescript+production-build+high-severity-audit"
+echo "TEST_CONTRACT=webmcp-conformance+submission-consistency+clean-install+lint+tests+typescript+production-build+high-severity-audit"
 
 if [[ "$preflight_mode" == "submission" ]]; then
   [[ "${PROTOCOL_MIRROR_RULES_ACKNOWLEDGED:-}" == "yes" ]] || fail "set PROTOCOL_MIRROR_RULES_ACKNOWLEDGED=yes only after the owner accepts the current official rules"
