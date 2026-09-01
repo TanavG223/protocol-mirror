@@ -43,6 +43,7 @@ This criterion is equal-weight with the other three and is the third tie-break.
 - [x] Live source intake is visibly separated from the deterministic reviewed case and cannot become a finding automatically
 - [x] Human authority and product limitations are explicit
 - [x] Sourced, bounded impact statement added to the description and demo script
+- [x] Balanced 24-pair reality check separates 48/48 WebMCP source fidelity from two named models' opposite decision bias
 
 ## Creativity and ambition
 
@@ -52,6 +53,7 @@ This criterion is equal-weight with the other three and is the fourth tie-break.
 - [x] State-dependent capability model
 - [x] Reversible, auditable review decisions
 - [x] Honest online/offline source architecture
+- [x] Judge-visible opposite-model-bias result turns the authority boundary into tested product evidence rather than a slogan
 
 ## Submission assets
 
@@ -60,9 +62,11 @@ This criterion is equal-weight with the other three and is the fourth tie-break.
 - [x] Three-minute demo spine
 - [x] Devpost narrative draft
 - [x] Canonical plugin-shaped `devpost-submission.md` packet with testing instructions, AI/Codex usage, limitations, and explicit placeholders
-- [x] Six final Codex-browser screenshots captured and visually reviewed, including mobile and the permanent seven-tool reviewed state
+- [x] Seven final Codex-browser screenshots captured and visually reviewed, including mobile, the permanent seven-tool reviewed state, and the real-world benchmark panel
 - [x] Constant-60-fps visual preview, kinetic overlays, and fail-closed release renderer prepared
-- [x] Final candidate rendered with ElevenLabs narration and re-verified
+- [x] Pre-benchmark technical candidate rendered with ElevenLabs narration and re-verified as media-pipeline evidence
+- [x] Benchmark-forward narration and 1:45–1:55 storyboard prepared
+- [ ] Commercially cleared benchmark-forward master rendered and re-verified
 - [ ] Commercial-use rights confirmed for the final narration, or narration replaced and candidate re-rendered
 - [x] Branded 1280×720 upload thumbnail and exact YouTube metadata prepared
 - [x] Structurally validated 19-cue English caption file prepared; processed-upload timing review remains an owner gate

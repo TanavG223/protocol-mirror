@@ -1,19 +1,20 @@
 # Official WebMCP Challenge requirements snapshot
 
-Checked again on 2026-09-01 UTC through the authenticated Devpost pages in the Codex in-app browser. The overview and official rules were read directly; the project gallery still reported that it had not been published.
+Checked again on 2026-09-01 at 13:54 UTC through the authenticated Devpost Hackathons integration. The live overview, formal rules, submission requirements and field schema, judging criteria, key dates, prizes, and both host announcements were retrieved with `data_completeness: complete`. The account is registered for The WebMCP Challenge, submissions are open, and the authenticated project list contains no Protocol Mirror project.
 
 Sources:
 
 - Challenge overview: https://webmcp.devpost.com/
 - Official rules: https://webmcp.devpost.com/rules
+- Submission resources and FAQs: https://webmcp.devpost.com/resources
 
 The official rules hosted on Devpost prevail if anything below changes or conflicts with this snapshot or other event-page copy.
 
 ## Current schedule
 
 - Registration and submission close September 3, 2026 at 1:00 PM Pacific Time, displayed by Devpost as 4:00 PM EDT for this account locale.
-- Judging is scheduled for September 4 through September 21, 2026.
-- Winners are scheduled to be announced on or around September 23, 2026.
+- Judging is scheduled from September 4, 2026 at 10:00 AM Pacific Time through September 21, 2026 at 5:00 PM Pacific Time.
+- Winners are scheduled to be announced on or around September 23, 2026 at 2:00 PM Pacific Time.
 
 ## Eligibility snapshot
 
@@ -40,7 +41,7 @@ The official rules hosted on Devpost prevail if anything below changes or confli
 - English entry materials, or English translations when another language is used.
 - Testing access and any necessary credentials; Protocol Mirror is intentionally public and requires no credentials.
 
-The live form currently requires Submitter Type, country or countries of residence, App Status (New or Existing), live URL, public repository URL, tested agents or clients, AI tools used, learning level, and whether the entrant gained career-relevant AI value. Organization name, Existing-project extension explanation, and private testing instructions are conditional or optional fields.
+The live form currently requires Submitter Type (`28249`), country or countries of residence (`28250`), App Status (`28252`), live URL (`28254`), public repository URL (`28256`), tested agents or clients (`28257`), AI tools used (`28258`), learning level (`28259`), and whether the entrant gained career-relevant AI value (`28260`). Organization name (`28251`), Existing-project extension explanation (`28253`), and private testing instructions (`28255`) are conditional or optional fields.
 
 The demo must not use copyrighted music, third-party trademarks, or other protected material without permission. The Protocol Mirror recording plan uses spoken narration and the project's own interface only.
 
@@ -55,7 +56,7 @@ The four Stage 2 criteria are equally weighted on a five-point scale:
 
 The tie-break begins with WebMCP Leverage, then proceeds through the remaining criteria in the listed order. Stage 1 is a pass/fail check for theme viability and reasonable use of the required capability.
 
-The live recheck showed 5,097 registered participants. Participant count is not a submission count, and the unpublished gallery prevents a complete comparison against unreleased entries.
+Participant count is not a submission count, and unreleased entries cannot be evaluated. The official integration reports no competition tracks.
 
 ## Prize snapshot
 
@@ -69,14 +70,14 @@ Ten winners receive $3,500 cash each ($35,000 total) plus the sponsor benefits l
 | Non-trivial WebMCP implementation | Six initial state-aware tools, dynamic seventh receipt tool, schemas, authority boundary, live public-source and review rehearsal | Ready |
 | Public source and functional instructions | Public repository, README, lockfile, CI | Ready |
 | Detectable open-source license | GitHub API reports MIT; top-level `LICENSE` is tracked | Ready |
-| Screenshots | Six production-mode desktop/mobile assets, including permanent seven-tool reviewed state | Ready |
+| Screenshots | Seven production-mode desktop/mobile assets, including permanent seven-tool reviewed state and the benchmark panel | Ready |
 | Text description | Root `devpost-submission.md` packet | Ready |
 | Working live URL | `https://protocol-mirror.vercel.app`; six-before/seven-after tool lifecycle and live source reads verified in Codex browser | Ready |
-| Public YouTube demo under three minutes with audio | Verified 1:29.65 constant-60-fps local candidate with ElevenLabs narration, thumbnail, metadata, and 19-cue English captions; owner approval and public upload pending | Missing |
-| Devpost registration | Official Devpost integration reports `registered` with submissions open | Ready |
-| Devpost project/form access | No Protocol Mirror Devpost project exists yet; authenticated creation and field review remain | Missing |
+| Public YouTube demo under three minutes with audio | Verified 1:29.65 constant-60-fps technical candidate exists but predates the benchmark panel and is not commercial-use cleared; benchmark-forward narration/storyboard, thumbnail, metadata, and captions are prepared; cleared render, owner watch, and public upload remain | Missing |
+| Devpost registration | Authenticated integration reported `registered` and `submissions_open` on 2026-09-01 at 13:54 UTC | Ready |
+| Devpost project/form access | Authenticated list contained three unrelated projects and no Protocol Mirror project; creation and final field review remain | Missing |
 
-The entry is locked at the submission deadline except for narrowly permitted corrections described by the official rules. Final text, images, URLs, and the processed YouTube video therefore need end-to-end review before the deadline.
+The latest host announcement warns that the project, video, repository, team, and entry should be treated as frozen at the deadline. The official rules permit only narrowly authorized corrections after the period. Final text, images, URLs, teammate membership, and the processed YouTube video therefore need end-to-end review before the deadline.
 
 ## Final revalidation
 

@@ -169,22 +169,22 @@ The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.
 
 ## TODO Official Form Fields
 
-Authenticated Devpost preflight on 2026-08-30 returned these exact project fields. Values marked **Confirm** require the project owner's personal choice; they are not inferred.
+Authenticated Devpost preflight on 2026-09-01 at 13:54 UTC returned these exact submission fields. Values marked **Confirm** require the project owner's personal choice; they are not inferred.
 
-| Official field | Prepared answer |
-| --- | --- |
-| Submitter Type | **Confirm:** Individual, Team of Individuals, or Organization |
-| Country of residence of yourself and team members if applicable | **Confirm:** required multi-country selection |
-| Organization name | Leave blank unless the selected submitter type requires it |
-| App Status | **Confirm:** New or Existing; repository creation date alone does not establish project status |
-| Existing-app update explanation | Complete only if the owner selects Existing; describe the WebMCP work added during the challenge period |
-| Live URL | https://protocol-mirror.vercel.app |
-| Testing instructions/credentials | No credentials required. Open the live URL in the Codex/ChatGPT in-app browser with WebMCP enabled; use the deterministic case or call the bounded live-source tools, stage a proposal, complete the visible human review, then export the reviewed receipt. |
-| Public repository | https://github.com/TanavG223/protocol-mirror |
-| Tested agents/clients | Codex desktop in-app browser with WebMCP site tools enabled. |
-| AI tools leveraged | OpenAI Codex for research, scoping, implementation, debugging, deterministic tests, security review, accessibility inspection, browser verification, deployment, and submission preparation. Protocol Mirror itself uses page-native typed WebMCP tools and does not require a hosted model API at runtime. |
-| Learning level | **Confirm:** None, Moderate, or Significant |
-| Career AI value | **Confirm:** Yes or No |
+| ID | Official field | Prepared answer |
+| ---: | --- | --- |
+| `28249` | Submitter Type | **Confirm:** Individual, Team of Individuals, or Organization |
+| `28250` | Country of residence of yourself and team members if applicable | **Confirm:** required multi-country selection; eligibility must match the official rules |
+| `28251` | Organization name | Leave blank unless the selected submitter type requires it |
+| `28252` | App Status | **Confirm:** New or Existing; repository creation date alone does not establish project status |
+| `28253` | Existing-app update explanation | Complete only if the owner selects Existing; describe the WebMCP work added during the challenge period |
+| `28254` | Live URL | https://protocol-mirror.vercel.app |
+| `28255` | Testing instructions/credentials | No credentials required. Open the live URL in the Codex/ChatGPT in-app browser with WebMCP enabled; use the deterministic case or call the bounded live-source tools, stage a proposal, complete the visible human review, then export the reviewed receipt. |
+| `28256` | Public repository | https://github.com/TanavG223/protocol-mirror |
+| `28257` | Tested agents/clients | Codex desktop in-app browser with WebMCP site tools enabled. |
+| `28258` | AI tools leveraged | OpenAI Codex for research, scoping, implementation, debugging, deterministic tests, security review, accessibility inspection, browser verification, deployment, and submission preparation. Protocol Mirror itself uses page-native typed WebMCP tools and does not require a hosted model API at runtime. |
+| `28259` | Learning level | **Confirm:** None, Moderate, or Significant |
+| `28260` | Career AI value | **Confirm:** Yes or No |
 
 Still required before the form can be finalized:
 
@@ -192,4 +192,4 @@ Still required before the form can be finalized:
 - Explicit rules acknowledgment in the local hackathon workflow
 - Final authenticated Devpost preview and the separate literal `yes, submit` confirmation
 
-Official overview and rules checked again in the Codex browser on 2026-09-01 UTC. The Devpost website and official rules prevail if any requirement changes.
+Official overview, rules, dates, prizes, criteria, announcements, and submission schema checked through the authenticated Devpost integration on 2026-09-01 at 13:54 UTC. Registration is live; no Protocol Mirror Devpost project exists. The Devpost website and official rules prevail if any requirement changes.
