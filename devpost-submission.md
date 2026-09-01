@@ -21,6 +21,8 @@ The agent cannot accept or reject its own proposal. A person reviews the rationa
 
 The app includes a deterministic fictional case so the complete judging flow remains available without an upstream network dependency. Validated server adapters also retrieve normalized ClinicalTrials.gov outcomes and structured PubMed abstract sections. Records returned by those agent tools are rendered in a reviewer-visible source-intake area with exact source links and an explicit read-only, untrusted-evidence boundary. Loading, failure, and recovery remain visible to the reviewer; an unavailable source never silently becomes a finding or blocks the deterministic judging path.
 
+We also stress-tested the boundary on 24 real NCT/PMID pairs balanced across published change/no-change labels. All 48 live WebMCP source reads returned the correct record and nonempty evidence. Two blinded local models then showed opposite error bias under the same exact-evidence prompt: the 4B run overcalled changes, while the 9B run frequently missed them. The page exposes this result because it demonstrates why citations, visible uncertainty, and a non-delegable human decision matter.
+
 ## Why This Matters
 
 Protocol Mirror is not less agentic because the final judgment stays human. The agent performs the time-consuming investigation: it retrieves live records, reads typed case state, compares stable outcome IDs, cites exact spans, stages a structured proposal, and moves the reviewer to the right checkpoint. After the person adjudicates, the page exposes a new tool so the agent can package the reviewed result.
@@ -64,6 +66,7 @@ Codex also challenged overbroad claims: the project distinguishes a browser-tool
 - Human-visible loading, failure, and recovery for live agent reads
 - Responsive forensic-editorial interface with visible focus and reduced-motion support
 - Restrictive production response headers and duplicate/cross-record evidence rejection
+- Reproducible 24-pair real-world benchmark with raw outputs, strict citation scoring, and model-specific bias reporting
 
 ## Architecture
 
@@ -109,7 +112,7 @@ npm run check
 npm run dev
 ```
 
-Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 38 deterministic tests, TypeScript through the production build, and the optimized Next.js build.
+Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 42 deterministic tests, TypeScript through the production build, and the optimized Next.js build. The benchmark manifest, raw runs, and reproduction commands are in `benchmarks/`.
 
 ## Public Demo Link
 
@@ -140,7 +143,8 @@ The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.
 
 - [x] Public repository with all source, assets, instructions, and detected MIT license
 - [x] Non-trivial top-level `document.modelContext.registerTool()` implementation
-- [x] 38 deterministic tests, clean lint and TypeScript checks, and a successful production build
+- [x] 42 deterministic tests, clean lint and TypeScript checks, and a successful production build
+- [x] 24-pair, 48-call real-world source stress test plus two raw, reproducible model-grounding runs
 - [x] Local release candidate visibly renders agent-retrieved source records and exposes a human JSON receipt download; production deployment approval remains pending
 - [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
 - [x] Six final screenshots, including a permanent-deployment review proof, and a timed demo script
@@ -156,7 +160,7 @@ The technical local candidate is `docs/demo/protocol-mirror-final-demo.mp4`: 89.
 
 ## Known Limitations
 
-- The included comparison case is fictional and deterministic; it is implementation evidence, not an accuracy benchmark.
+- The included interactive comparison case is fictional and deterministic; it is implementation evidence, not an accuracy benchmark. The separate 24-pair benchmark is model-specific, uses PubMed abstracts against full-publication study labels, and is not clinical validation.
 - Live PubMed abstracts do not provide a canonical clinical-outcome schema, so the adapter preserves structured sections for later human-reviewed extraction.
 - Audit state is in-session only and is not persisted or cryptographically signed.
 - The current application has no authentication and must not be used for protected health information.

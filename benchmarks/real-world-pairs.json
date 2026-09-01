@@ -1,0 +1,50 @@
+{
+  "name": "Protocol Mirror real-world outcome-change benchmark",
+  "version": "2026-08-31",
+  "reference": {
+    "article": "Chen T, et al. Comparison of Clinical Trial Changes in Primary Outcome and Reported Intervention Effect Size Between Trial Registration and Publication. JAMA Network Open. 2019;2(7):e197242.",
+    "articleUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/",
+    "supplementUrl": "https://pmc.ncbi.nlm.nih.gov/articles/instance/6646984/bin/jamanetwopen-2-e197242-s001.pdf",
+    "table": "eTable 4",
+    "labelMeaning": "The published study's classification of whether the trial had a primary-outcome change between registration and publication. It is a study label, not a finding of misconduct or clinical harm."
+  },
+  "selection": {
+    "screenedRowsWithUnambiguousExtractedLabels": 351,
+    "screenedForIdentifiers": 39,
+    "includedPairs": 24,
+    "changed": 12,
+    "unchanged": 12,
+    "exclusionRules": [
+      "No PubMed identifier resolved from the official PubMed search.",
+      "No single ClinicalTrials.gov identifier appeared in the PubMed record.",
+      "The publication exposed only a non-NCT registry identifier.",
+      "More than one NCT identifier appeared, making the pair ambiguous."
+    ]
+  },
+  "cases": [
+    {"id":"pm-real-001","nctId":"NCT01211600","pmid":"24807325","publicationTitle":"Suture compared with staple skin closure after cesarean delivery: a randomized controlled trial","referenceLabel":"change","changeType":"new outcome","supplementPage":33},
+    {"id":"pm-real-002","nctId":"NCT00667914","pmid":"25662415","publicationTitle":"Comprehensive geriatric care for patients with hip fractures: a prospective, randomised, controlled trial","referenceLabel":"change","changeType":"omission","supplementPage":14},
+    {"id":"pm-real-003","nctId":"NCT01549535","pmid":"24560453","publicationTitle":"Standard forward-viewing colonoscopy versus full-spectrum endoscopy: an international, multicentre, randomised, tandem colonoscopy trial","referenceLabel":"change","changeType":"new outcome","supplementPage":33},
+    {"id":"pm-real-004","nctId":"NCT00275496","pmid":"24521106","publicationTitle":"Final trial report of sentinel-node biopsy versus nodal observation in melanoma","referenceLabel":"change","changeType":"new outcome","supplementPage":20},
+    {"id":"pm-real-005","nctId":"NCT00430326","pmid":"21618480","publicationTitle":"Randomized phase II clinical trial of avotermin versus placebo for scar improvement","referenceLabel":"change","changeType":"omission","supplementPage":29},
+    {"id":"pm-real-006","nctId":"NCT00806026","pmid":"24521108","publicationTitle":"Comparison of pregabalin with pramipexole for restless legs syndrome","referenceLabel":"change","changeType":"time changes","supplementPage":14},
+    {"id":"pm-real-007","nctId":"NCT00251342","pmid":"20884642","publicationTitle":"Outcome of a postnatal depression screening programme using the Edinburgh Postnatal Depression Scale: a randomized controlled trial","referenceLabel":"change","changeType":"omission","supplementPage":26},
+    {"id":"pm-real-008","nctId":"NCT00910208","pmid":"22506940","publicationTitle":"Efficacy of patient-controlled analgesia for patients with acute abdominal pain in the emergency department: a randomized trial","referenceLabel":"change","changeType":"omission","supplementPage":38},
+    {"id":"pm-real-009","nctId":"NCT00275145","pmid":"21741606","publicationTitle":"Comparison of aerobic versus resistance exercise training effects on metabolic syndrome (from the Studies of a Targeted Risk Reduction Intervention Through Defined Exercise - STRRIDE-AT/RT)","referenceLabel":"change","changeType":"omission","supplementPage":41},
+    {"id":"pm-real-010","nctId":"NCT00265525","pmid":"21903744","publicationTitle":"Randomized trial of an internet-based computer-tailored expert system for physical activity in patients with heart disease","referenceLabel":"change","changeType":"omission","supplementPage":30},
+    {"id":"pm-real-011","nctId":"NCT00750763","pmid":"21547879","publicationTitle":"Bowel cleansing for colonoscopy: prospective randomized assessment of efficacy and of induced mucosal abnormality with three preparation agents","referenceLabel":"change","changeType":"new outcome","supplementPage":11},
+    {"id":"pm-real-012","nctId":"NCT00534313","pmid":"21128258","publicationTitle":"Abatacept in the treatment of patients with psoriatic arthritis: results of a six-month, multicenter, randomized, double-blind, placebo-controlled, phase II trial","referenceLabel":"change","changeType":"new times","supplementPage":9},
+    {"id":"pm-real-013","nctId":"NCT00237549","pmid":"21705063","publicationTitle":"Effect of early intensive multifactorial therapy on 5-year cardiovascular outcomes in individuals with type 2 diabetes detected by screening (ADDITION-Europe): a cluster-randomised trial","referenceLabel":"no_change","changeType":null,"supplementPage":15},
+    {"id":"pm-real-014","nctId":"NCT00347321","pmid":"21403073","publicationTitle":"Early percutaneous tracheotomy versus prolonged intubation of mechanically ventilated patients after cardiac surgery: a randomized trial","referenceLabel":"no_change","changeType":null,"supplementPage":15},
+    {"id":"pm-real-015","nctId":"NCT00496769","pmid":"21309657","publicationTitle":"Apixaban in patients with atrial fibrillation","referenceLabel":"no_change","changeType":null,"supplementPage":10},
+    {"id":"pm-real-016","nctId":"NCT00135096","pmid":"21812890","publicationTitle":"Influence of preprandial vs. postprandial insulin glulisine on weight and glycaemic control in patients initiating basal-bolus regimen for type 2 diabetes: a multicenter, randomized, parallel, open-label study (NCT00135096)","referenceLabel":"no_change","changeType":null,"supplementPage":22},
+    {"id":"pm-real-017","nctId":"NCT00806988","pmid":"25405390","publicationTitle":"Surgical treatment of moderate ischemic mitral regurgitation","referenceLabel":"no_change","changeType":null,"supplementPage":33},
+    {"id":"pm-real-018","nctId":"NCT00268476","pmid":"22452894","publicationTitle":"Celecoxib plus hormone therapy versus hormone therapy alone for hormone-sensitive prostate cancer: first results from the STAMPEDE multiarm, multistage, randomised controlled trial","referenceLabel":"no_change","changeType":null,"supplementPage":12},
+    {"id":"pm-real-019","nctId":"NCT01280123","pmid":"26116315","publicationTitle":"Pioglitazone in early Parkinson's disease: a phase 2, multicentre, double-blind, randomised trial","referenceLabel":"no_change","changeType":null,"supplementPage":39},
+    {"id":"pm-real-020","nctId":"NCT01490125","pmid":"24176997","publicationTitle":"Dual bronchodilation with QVA149 reduces patient-reported dyspnoea in COPD: the BLAZE study","referenceLabel":"no_change","changeType":null,"supplementPage":40},
+    {"id":"pm-real-021","nctId":"NCT00801606","pmid":"25332327","publicationTitle":"Effect of micronutrient supplementation on treatment outcomes in children with intrathoracic tuberculosis: a randomized controlled trial","referenceLabel":"no_change","changeType":null,"supplementPage":43},
+    {"id":"pm-real-022","nctId":"NCT01149278","pmid":"24635770","publicationTitle":"High versus low blood-pressure target in patients with septic shock","referenceLabel":"no_change","changeType":null,"supplementPage":20},
+    {"id":"pm-real-023","nctId":"NCT00885352","pmid":"23116881","publicationTitle":"Efficacy and safety of sitagliptin added to ongoing metformin and pioglitazone combination therapy in a randomized, placebo-controlled, 26-week trial in patients with type 2 diabetes","referenceLabel":"no_change","changeType":null,"supplementPage":19},
+    {"id":"pm-real-024","nctId":"NCT01399723","pmid":"25550349","publicationTitle":"Oral amoxicillin versus benzyl penicillin for severe pneumonia among kenyan children: a pragmatic randomized controlled noninferiority trial","referenceLabel":"no_change","changeType":null,"supplementPage":26}
+  ]
+}

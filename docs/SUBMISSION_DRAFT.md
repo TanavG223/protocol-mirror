@@ -61,8 +61,9 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 - Deterministic offline demonstration data plus bounded live-source adapters
 - Evidence-side validation that rejects cross-record IDs, unrelated citations, duplicates, and unknown evidence
 - Restrictive production response headers, bounded upstream payloads, and entity-safe XML parsing
-- 38 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
+- 42 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
 - Reviewer-visible live-source intake and a human-downloadable reviewed JSON receipt
+- A balanced 24-pair real-world source and grounding benchmark with raw outputs from two named local models
 - A production-mode Codex-browser rehearsal at desktop and 390-pixel mobile widths with no horizontal overflow or browser errors
 
 ## What we learned
@@ -73,7 +74,7 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 
 - Add a reviewer-approved workflow for turning PubMed sections into candidate reported outcomes
 - Persist signed, versioned receipts across sessions
-- Evaluate agreement and review time on a preregistered public benchmark
+- Expand the current benchmark into a preregistered full-publication reviewer-agreement and task-time study
 - Support version comparison for registry records updated after study completion
 
 ## Required links
@@ -95,4 +96,4 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 
 ## Truthful-claim guardrail
 
-Do not describe Protocol Mirror as clinically validated, as an automatic detector of research misconduct, or as having measured accuracy. Current evidence supports implementation and contract-test claims only.
+Do not describe Protocol Mirror as clinically validated or as an automatic detector of research misconduct. The current benchmark supports only the named models, prompt, exact source snapshots, and strict grounding metrics recorded in the raw artifacts; it is not a universal model-accuracy claim.

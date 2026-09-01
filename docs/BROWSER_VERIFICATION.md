@@ -132,3 +132,18 @@ On 2026-08-31, the final local release candidate was rebuilt and verified in the
 - Browser debugger logging recorded zero console warnings or exceptions after a clean production reload.
 
 The full deterministic suite contained 38 passing tests, including a new external-entity fail-closed case and visible live-source failure/recovery contracts.
+
+## Real-world WebMCP and model-grounding closure
+
+On 2026-08-31, a separate real-world benchmark was executed against the local candidate in the Codex in-app browser. The 24 cases were balanced across 12 primary-outcome-change and 12 no-change labels from eTable 4 of Chen et al.'s published JAMA Network Open supplement. PubMed titles were resolved in the official PubMed interface, and only publications exposing exactly one NCT identifier were included; alternate-registry, missing-ID, and ambiguous multi-NCT records were excluded.
+
+- The page-defined `get_live_clinical_trial` and `get_live_pubmed_article` tools completed 48/48 calls.
+- Every returned NCT and PMID matched the requested identifier; canonical source URLs were present and no evidence record was empty.
+- The trial records contained 172 normalized outcomes, ranging from one to 23 per case. The article records contained 106 PubMed abstract sections, ranging from one to 11 per case.
+- A blinded `qwen3:4b` run produced 24 valid schemas, 87.5% coverage, 52.4% selective label agreement, 86.3% exact-citation validity, and a 17.9% strict unsupported-claim rate. It called all 10 decided no-change cases changed.
+- A blinded `ornith-1.5:9b` run produced 24 valid schemas, 95.8% coverage, 43.5% selective label agreement, 40.6% exact-citation validity, and a 69.0% strict unsupported-claim rate. It called 10 of 11 decided change cases no change.
+- Across both runs, no output attempted to accept or reject a review and no output alleged misconduct.
+
+The reference label never appears in the model prompt. Every model claim is scored against the exact returned locator and quote. The raw outputs, runner, scorer, manifest, and metric definitions are tracked under `benchmarks/`. These results are model-, prompt-, run-, and abstract-snapshot-specific; they are not a universal hallucination rate, a full-publication agreement result, or clinical validation.
+
+After adding the scorer and artifact-integrity tests, the deterministic suite contains 42 passing tests.

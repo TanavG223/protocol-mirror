@@ -59,3 +59,7 @@ Automated candidate checks found no black segment of 0.4 seconds or longer, no s
 5. Provide the final YouTube URL and required personal Devpost answers.
 6. Create/review the Protocol Mirror Devpost project and inspect the final authenticated preview.
 7. Submit only after the separate explicit `yes, submit` confirmation, then preserve the receipt and keep all judging URLs unrestricted through the judging period.
+
+## Post-manifest real-world evaluation
+
+The later local candidate adds a 24-pair real-world evaluation manifest, 48/48 successful live WebMCP source calls, two raw blinded local-model runs, a strict exact-locator/quote scorer, four scorer and artifact-integrity tests, and a judge-visible reality-check section. The current deterministic suite is therefore 42 tests. The two runs showed opposite directional bias and materially different unsupported-claim rates, reinforcing the human-authority design without establishing universal hallucination or clinical-accuracy claims. These additions are local and are not public evidence until the repository and application are explicitly pushed and deployed.

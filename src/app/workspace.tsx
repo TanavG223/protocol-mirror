@@ -269,6 +269,19 @@ export default function Workspace() {
           </div>
         </section>}
       </section>
+      <section className="reality-check" aria-labelledby="reality-check-title">
+        <div className="reality-check-heading">
+          <div><p className="section-kicker">Real-world stress test</p><h2 id="reality-check-title">The same evidence produced opposite model bias.</h2></div>
+          <p>Two local models were blinded to 24 published labels and restricted to exact registry and abstract evidence. Their disagreement is the product argument: an agent may investigate, but its consequential conclusion must stay inspectable and human-decided.</p>
+        </div>
+        <div className="reality-metrics" aria-label="Real-world evaluation summary">
+          <article><strong>24</strong><span>real NCT/PMID pairs</span><small>12 labeled change · 12 labeled no change</small></article>
+          <article><strong>48 / 48</strong><span>live WebMCP reads</span><small>172 outcomes · 106 abstract sections</small></article>
+          <article><strong>4B</strong><span>change-biased run</span><small>qwen3:4b · 100% false positives among decided no-change cases</small></article>
+          <article><strong>9B</strong><span>no-change-biased run</span><small>ornith-1.5:9b · 90.9% false negatives among decided change cases</small></article>
+        </div>
+        <div className="reality-footnote"><strong>Strict grounding result</strong><span>qwen3 17.9% · ornith 69.0% unsupported claims</span><span>0 authority attempts · 0 misconduct claims</span><small>Run-specific evidence—not a universal hallucination or clinical-accuracy claim.</small></div>
+      </section>
       <section className="workspace" id="workspace" aria-labelledby="workspace-title">
         <div className="workspace-heading"><div><p className="section-kicker">Evidence table</p><h2 id="workspace-title" tabIndex={-1}>Registered intent <span aria-hidden="true">↔</span> reported record</h2></div><div className="legend"><span><i className="dot matched" />Matched</span><span><i className="dot flagged" />Flagged</span><span><i className="dot unreviewed" />Unreviewed</span></div></div>
         {audit.mappings.length > 0 && <div className="mobile-mapping-summary" aria-label="Proposed outcome relationships">{audit.mappings.map((mapping) => <button type="button" key={mapping.id} className={mapping.id === activeId ? "active" : ""} onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, DEMO_PAIR.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, DEMO_PAIR.publicationOutcomes)?.title : "Not reported"}</strong></button>)}</div>}

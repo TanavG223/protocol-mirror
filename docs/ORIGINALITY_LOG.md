@@ -25,7 +25,8 @@ No source code from another hackathon entry was copied. The fictional demonstrat
 Claims allowed now:
 
 - The production build compiles.
-- The current deterministic contract suite contains 38 passing tests.
+- The current deterministic contract suite contains 42 passing tests, including the real-world grounding scorer and tracked-artifact integrity.
+- A reproducible 24-pair benchmark records 48 successful live WebMCP source reads and two blinded local-model runs with opposite directional biases.
 - The page registers WebMCP tools when `document.modelContext` is available; the Codex in-app browser exposed the expected six initial tools, both live adapters returned public source records, and the reviewed decision exposed the seventh receipt tool during live verification.
 - Agent writes create staged proposals only.
 - Live-source reads expose loading, success, failure, and recovery to the human reviewer without converting source data or errors into reviewed findings.
@@ -35,5 +36,5 @@ Claims not yet allowed:
 
 - Clinical or research-integrity accuracy
 - Validated detection of outcome switching
-- Performance on a representative trial corpus
+- Performance on a representative clinical corpus beyond the documented 24-pair, abstract-limited grounding benchmark
 - Compatibility in every browser

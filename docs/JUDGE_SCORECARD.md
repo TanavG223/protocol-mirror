@@ -7,12 +7,12 @@ Research and scoring snapshot: 2026-08-31. This is an internal preflight against
 | Official criterion | Verified public baseline | Local release candidate | Why it is not 5/5 yet |
 | --- | ---: | ---: | --- |
 | WebMCP Leverage | 4.5 / 5 | 4.6 / 5 | Strong typed lifecycle and authority boundary; live records are not yet transformed into a human-reviewed real-case comparison |
-| Execution | 4.2 / 5 | 4.5 / 5 | Working, resilient, accessible product; persistence, signatures, and a committed repeatable browser suite remain future work |
-| Potential Impact | 3.7 / 5 | 3.9 / 5 | Specific research-transparency need and audience; no user study, task-time result, or public benchmark yet |
-| Creativity & Ambition | 4.35 / 5 | 4.4 / 5 | Distinct clinical-trial evidence workspace and constrained authority model; approval gates and receipts also appear in some other projects |
-| **Total** | **16.75 / 20** | **17.4 / 20** | The local score assumes the tested candidate is deployed and demonstrated truthfully |
+| Execution | 4.2 / 5 | 4.65 / 5 | Working, resilient, accessible product plus reproducible stress-test artifacts; persistence, signatures, and a committed browser suite remain future work |
+| Potential Impact | 3.7 / 5 | 4.15 / 5 | Specific research-transparency need plus a published-label benchmark; no user study, task-time result, or full-publication reviewer study yet |
+| Creativity & Ambition | 4.35 / 5 | 4.5 / 5 | Distinct clinical-trial evidence workspace, constrained authority model, and model-bias proof; approval gates and receipts also appear in some other projects |
+| **Total** | **16.75 / 20** | **17.9 / 20** | The local score assumes the tested candidate, benchmark section, and raw artifacts are deployed and demonstrated truthfully |
 
-The local increase reflects four concrete changes: agent-retrieved ClinicalTrials.gov and PubMed records appear in the shared reviewer UI; safe loading, error, and recovery states keep failures visible to the human; a reviewed JSON receipt becomes directly downloadable after the human decision; and keyboard/responsive accessibility defects found during final QA were repaired. Those changes do not count as public submission evidence until they are pushed and deployed.
+The local increase reflects five concrete changes: agent-retrieved ClinicalTrials.gov and PubMed records appear in the shared reviewer UI; safe loading, error, and recovery states keep failures visible to the human; a reviewed JSON receipt becomes directly downloadable after the human decision; keyboard/responsive accessibility defects found during final QA were repaired; and a 24-pair real-world benchmark now separates 48/48 source fidelity from two models' opposite grounding failures. Those changes do not count as public submission evidence until they are pushed and deployed.
 
 ## Defensible differentiation
 
@@ -47,10 +47,10 @@ This table compares visible public artifacts only. It does not establish that an
 ## Remaining honest gaps
 
 - The reviewed comparison uses a deterministic fictional case; live reads are visible intake, not an automatic real-record outcome extraction pipeline.
-- No user study, task-time comparison, or preregistered accuracy/agreement benchmark has been run.
+- No user study, task-time comparison, preregistered study, or full-publication reviewer-agreement benchmark has been run. The current 24-pair benchmark uses PubMed abstracts against labels derived from full publications and reports only named-run grounding metrics.
 - Audit state is in-session and the receipt is not persisted or cryptographically signed.
 - The critical lifecycle is contract-tested and repeatedly exercised in clean Codex browser tabs, but is not yet encoded as a committed repeatable browser suite.
 - The current edited video is not upload-cleared until narration rights are resolved and the owner watches the final master with sound.
 - The local improvements are not yet on the public URL.
 
-These limitations should remain explicit. A credible 17.4/20 submission is stronger than an unsupported “perfect” claim.
+These limitations should remain explicit. A credible 17.9/20 submission is stronger than an unsupported “perfect” claim.

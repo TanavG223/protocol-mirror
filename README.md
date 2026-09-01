@@ -54,6 +54,7 @@ WebMCP lifecycle is managed with `AbortController` signals. Tool schemas reject 
 - Restrictive response headers, bounded source payloads, and entity-safe XML parsing
 - Purposeful GSAP handoff motion that is disabled when reduced motion is requested
 - Reduced-motion behavior, semantic landmarks, skip link, and visible focus states
+- Reproducible 24-pair real-world grounding benchmark with raw outputs from two named local models
 
 The demo record is explicitly fictional. Live adapters return source records; they do not claim that an abstract section is a clinical outcome or automatically declare outcome switching.
 
@@ -78,14 +79,15 @@ npm run check
 
 This runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
 
-Current local release candidate: 38 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also tested live-source failure and recovery, called both public source tools, displayed their real records in the reviewer UI, and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
+Current local release candidate: 42 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also tested live-source failure and recovery, called both public source tools, displayed their real records in the reviewer UI, and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
 
 After committing a release candidate, run `npm run preflight:product` from a clean working tree. It fails closed unless the required source, license, screenshots, media assets, WebMCP registrations, four-step collaboration copy, dependency audit, tests, and production build all map to one commit. `npm run preflight:submission` adds explicit owner-controlled gates for current-rules acknowledgment, narration/media approval, personal Devpost answers, and the watched public YouTube URL; it is expected to fail until those external gates are truthfully complete.
 
 | Judge evidence | Verified result |
 | --- | --- |
-| Automated release checks | 38 tests, lint, TypeScript, and optimized build pass |
+| Automated release checks | 42 tests, lint, TypeScript, and optimized build pass |
 | Real WebMCP lifecycle | Six initial tools; human review alone exposes the seventh |
+| Real-world source stress test | 24 NCT/PMID pairs; 48/48 WebMCP source calls; 172 outcomes and 106 abstract sections |
 | Failure behavior | Invalid identifiers, malformed/oversized/entity-shaped source data, missing records, duplicate proposals, and unrelated evidence fail closed |
 | Human authority | No agent accept/reject tool; reviewed JSON is available only after a human decision |
 | Responsive UX | 320- and 390-pixel layouts verified without horizontal overflow; visible enabled targets are at least 44×44 pixels |
@@ -97,6 +99,21 @@ The exact recording sequence and final external-action checklist are in [`docs/D
 The final local candidate is [`docs/demo/protocol-mirror-final-demo.mp4`](docs/demo/protocol-mirror-final-demo.mp4): 89.65 seconds, 1280×720 H.264 at constant 60 fps with an ElevenLabs narration. It has passed cadence, continuity, loudness, codec, and representative-frame checks. It is not cleared for upload yet: the current ElevenLabs account state appears to be Free, whose terms restrict output to non-commercial use, while this prize submission grants promotional rights. The owner must resolve that rights gate and then watch and approve the resulting master with sound. Voice direction, narration, source audio, and reproducible render assets live in [`docs/demo/`](docs/demo/) and [`scripts/render-final-demo.sh`](scripts/render-final-demo.sh).
 The canonical Devpost-ready field packet is [`devpost-submission.md`](devpost-submission.md); it clearly separates the verified live application from the pending public video URL.
 The dated challenge-page evidence and requirement-to-artifact audit are in [`docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md`](docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md).
+
+## Real-world grounding evaluation
+
+The deterministic case proves the collaboration contract; it is not presented as model accuracy. A separate reproducible benchmark uses 24 real NCT/PMID pairs balanced across 12 primary-outcome-change and 12 no-change labels from Chen et al.'s published JAMA Network Open supplement.
+
+All 48 live source calls succeeded through Protocol Mirror's page-defined WebMCP tools, returning 172 normalized registry outcomes and 106 PubMed abstract sections with no identifier, canonical-URL, or empty-evidence failure. Two blinded local-model runs then received the exact returned evidence, not the reference labels:
+
+| Run | Coverage | Selective label agreement | Strict unsupported-claim rate | Directional bias |
+| --- | ---: | ---: | ---: | --- |
+| `qwen3:4b` | 87.5% | 52.4% | 17.9% | 100% false positives among decided no-change cases |
+| `ornith-1.5:9b` | 95.8% | 43.5% | 69.0% | 90.9% false negatives among decided change cases |
+
+Both runs produced zero authority attempts and zero misconduct claims. These are model-, prompt-, run-, and abstract-snapshot-specific grounding results—not a universal hallucination rate, full-publication agreement study, or clinical validation. The opposite biases are evidence for the product's core boundary: the agent assembles evidence; a human decides.
+
+The manifest, scorer, runner, raw model outputs, and exact metric definitions are in [`benchmarks/`](benchmarks/).
 
 ## Live source routes
 

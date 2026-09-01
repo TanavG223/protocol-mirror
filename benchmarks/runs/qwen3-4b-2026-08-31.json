@@ -1,0 +1,2291 @@
+{
+  "benchmark": {
+    "name": "Protocol Mirror real-world outcome-change benchmark",
+    "version": "2026-08-31",
+    "reference": {
+      "article": "Chen T, et al. Comparison of Clinical Trial Changes in Primary Outcome and Reported Intervention Effect Size Between Trial Registration and Publication. JAMA Network Open. 2019;2(7):e197242.",
+      "articleUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/",
+      "supplementUrl": "https://pmc.ncbi.nlm.nih.gov/articles/instance/6646984/bin/jamanetwopen-2-e197242-s001.pdf",
+      "table": "eTable 4",
+      "labelMeaning": "The published study's classification of whether the trial had a primary-outcome change between registration and publication. It is a study label, not a finding of misconduct or clinical harm."
+    }
+  },
+  "run": {
+    "model": "qwen3:4b",
+    "baseUrl": "http://127.0.0.1:4175",
+    "ollamaUrl": "http://127.0.0.1:11434",
+    "promptVersion": "strict-grounding-v1",
+    "seed": 20260831,
+    "temperature": 0,
+    "startedFromLiveSources": true,
+    "completedAt": "2026-09-01T01:55:47.497Z",
+    "interpretation": "Unsupported-claim rate is a run-specific grounding metric, not a universal hallucination rate or clinical-accuracy claim."
+  },
+  "summary": {
+    "cases": 24,
+    "completed": 24,
+    "schemaValid": 24,
+    "abstained": 3,
+    "coverage": 0.875,
+    "selectiveAccuracy": 0.5238095238095238,
+    "unsupportedClaimRate": 0.1794871794871795,
+    "citationValidity": 0.8627450980392157,
+    "crossSourceClaimRate": 0.10256410256410256,
+    "fabricatedLocators": 0,
+    "authorityAttempts": 0,
+    "misconductClaims": 0,
+    "verdicts": {
+      "change": 21,
+      "no_change": 0,
+      "abstain": 3
+    },
+    "confusion": {
+      "referenceChange": {
+        "change": 11,
+        "no_change": 0,
+        "abstain": 1
+      },
+      "referenceNoChange": {
+        "change": 10,
+        "no_change": 0,
+        "abstain": 2
+      }
+    },
+    "falsePositiveRateAmongDecisions": 1,
+    "falseNegativeRateAmongDecisions": 0
+  },
+  "cases": [
+    {
+      "id": "pm-real-001",
+      "nctId": "NCT01211600",
+      "pmid": "24807325",
+      "publicationTitle": "Suture compared with staple skin closure after cesarean delivery: a randomized controlled trial",
+      "referenceLabel": "change",
+      "changeType": "new outcome",
+      "supplementPage": 33,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:52:53.725Z",
+        "trialTitle": "Cesarean Trial of Staples vs. Sutures",
+        "publicationTitle": "Suture compared with staple skin closure after cesarean delivery: a randomized controlled trial.",
+        "registryOutcomes": 13,
+        "publicationSections": 6,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT01211600",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/24807325/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-001",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from the registry description to the publication abstract",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "The primary outcome is to evaluate the rate of wound complications for patients undergoing cesarean whose skin incision is closed with staples versus with suture."
+              },
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Fifty-eight women (7.8%) had wound complications-4.9% in the suture group and 10.6% in the staple group (adjusted odds ratio [OR] 0.43, 95% confidence interval [CI] 0.23-0.78); this was largely the result of the decreased incidence of wound separation in the respective groups (1.6% compared with 7.4%; adjusted OR 0.20, 95% CI 0.07-0.51)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "low"
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-001\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from the registry description to the publication abstract\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"The primary outcome is to evaluate the rate of wound complications for patients undergoing cesarean whose skin incision is closed with staples versus with suture.\"\n        },\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"Fifty-eight women (7.8%) had wound complications-4.9% in the suture group and 10.6% in the staple group (adjusted odds ratio [OR] 0.43, 95% confidence interval [CI] 0.23-0.78); this was largely the result of the decreased incidence of wound separation in the respective groups (1.6% compared with 7.4%; adjusted OR 0.20, 95% CI 0.07-0.51).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"low\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 1,
+        "unsupportedClaims": 0,
+        "totalCitations": 2,
+        "validCitations": 2,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 1,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from the registry description to the publication abstract",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "The primary outcome is to evaluate the rate of wound complications for patients undergoing cesarean whose skin incision is closed with staples versus with suture.",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Fifty-eight women (7.8%) had wound complications-4.9% in the suture group and 10.6% in the staple group (adjusted odds ratio [OR] 0.43, 95% confidence interval [CI] 0.23-0.78); this was largely the result of the decreased incidence of wound separation in the respective groups (1.6% compared with 7.4%; adjusted OR 0.20, 95% CI 0.07-0.51).",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": true
+          }
+        ]
+      },
+      "durationMs": 4905
+    },
+    {
+      "id": "pm-real-002",
+      "nctId": "NCT00667914",
+      "pmid": "25662415",
+      "publicationTitle": "Comprehensive geriatric care for patients with hip fractures: a prospective, randomised, controlled trial",
+      "referenceLabel": "change",
+      "changeType": "omission",
+      "supplementPage": 14,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:52:59.018Z",
+        "trialTitle": "A New Clinical Pathway for Patients With Fractured Neck of Femur",
+        "publicationTitle": "Comprehensive geriatric care for patients with hip fractures: a prospective, randomised, controlled trial.",
+        "registryOutcomes": 5,
+        "publicationSections": 5,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00667914",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/25662415/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-002",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome (mobility) changed from the baseline to 4 months after surgery",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Mean SPPB scores at 4 months were 5&#xb7;12 (SE 0&#xb7;20) for comprehensive geriatric care and 4&#xb7;38 (SE 0&#xb7;20) for orthopaedic care (between-group difference 0&#xb7;74, 95% CI 0&#xb7;18-1&#xb7;30, p=0&#xb7;010)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The registry does not specify the baseline mobility score, but the publication provides the 4-month scores and a statistically significant difference between groups. The primary outcome is defined as mobility measured with the SPPB at 4 months, so the change is from baseline to 4 months as per the protocol."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-002\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome (mobility) changed from the baseline to 4 months after surgery\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"Mean SPPB scores at 4 months were 5&#xb7;12 (SE 0&#xb7;20) for comprehensive geriatric care and 4&#xb7;38 (SE 0&#xb7;20) for orthopaedic care (between-group difference 0&#xb7;74, 95% CI 0&#xb7;18-1&#xb7;30, p=0&#xb7;010).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The registry does not specify the baseline mobility score, but the publication provides the 4-month scores and a statistically significant difference between groups. The primary outcome is defined as mobility measured with the SPPB at 4 months, so the change is from baseline to 4 months as per the protocol.\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 1,
+        "validCitations": 1,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome (mobility) changed from the baseline to 4 months after surgery",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Mean SPPB scores at 4 months were 5&#xb7;12 (SE 0&#xb7;20) for comprehensive geriatric care and 4&#xb7;38 (SE 0&#xb7;20) for orthopaedic care (between-group difference 0&#xb7;74, 95% CI 0&#xb7;18-1&#xb7;30, p=0&#xb7;010).",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 5287
+    },
+    {
+      "id": "pm-real-003",
+      "nctId": "NCT01549535",
+      "pmid": "24560453",
+      "publicationTitle": "Standard forward-viewing colonoscopy versus full-spectrum endoscopy: an international, multicentre, randomised, tandem colonoscopy trial",
+      "referenceLabel": "change",
+      "changeType": "new outcome",
+      "supplementPage": 33,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:53:03.639Z",
+        "trialTitle": "Polyp Detection With The Peerscope System™",
+        "publicationTitle": "Standard forward-viewing colonoscopy versus full-spectrum endoscopy: an international, multicentre, randomised, tandem colonoscopy trial.",
+        "registryOutcomes": 1,
+        "publicationSections": 5,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT01549535",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/24560453/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-003",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome (polyp detection rate) changed from the standard view colonoscopy to the PeerScope System™ extended view.",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "polyp detection rate"
+              },
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "By per-lesion analysis, the adenoma miss rate was significantly lower in patients in the full-spectrum endoscopy group than in those in the standard forward-viewing procedure group: five (7%) of 67 vs 20 (41%) of 49 adenomas were missed (p&lt;0&#xb7;0001)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "low"
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-003\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome (polyp detection rate) changed from the standard view colonoscopy to the PeerScope System™ extended view.\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"polyp detection rate\"\n        },\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"By per-lesion analysis, the adenoma miss rate was significantly lower in patients in the full-spectrum endoscopy group than in those in the standard forward-viewing procedure group: five (7%) of 67 vs 20 (41%) of 49 adenomas were missed (p&lt;0&#xb7;0001).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"low\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 1,
+        "unsupportedClaims": 0,
+        "totalCitations": 2,
+        "validCitations": 2,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 1,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome (polyp detection rate) changed from the standard view colonoscopy to the PeerScope System™ extended view.",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "polyp detection rate",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "By per-lesion analysis, the adenoma miss rate was significantly lower in patients in the full-spectrum endoscopy group than in those in the standard forward-viewing procedure group: five (7%) of 67 vs 20 (41%) of 49 adenomas were missed (p&lt;0&#xb7;0001).",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": true
+          }
+        ]
+      },
+      "durationMs": 4621
+    },
+    {
+      "id": "pm-real-004",
+      "nctId": "NCT00275496",
+      "pmid": "24521106",
+      "publicationTitle": "Final trial report of sentinel-node biopsy versus nodal observation in melanoma",
+      "referenceLabel": "change",
+      "changeType": "new outcome",
+      "supplementPage": 20,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:53:16.401Z",
+        "trialTitle": "Multicenter Selective Lymphadenectomy Trial (MSLT)",
+        "publicationTitle": "Final trial report of sentinel-node biopsy versus nodal observation in melanoma.",
+        "registryOutcomes": 2,
+        "publicationSections": 3,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00275496",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/24521106/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-004",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from the registry to the publication",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[1]",
+                "quote": "We evaluated outcomes in 2001 patients with primary cutaneous melanomas randomly assigned to undergo wide excision and nodal observation, with lymphadenectomy for nodal relapse (observation group), or wide excision and sentinel-node biopsy, with immediate lymphadenectomy for nodal metastases detected on biopsy (biopsy group). Results No significant treatment-related difference in the 10-year melanoma-specific survival rate was seen in the overall study population (20.8% with and 79.2% without nodal metastases). Mean (&#xb1; SE) 10-year disease-free survival rates were significantly improved in the biopsy group, as compared with the observation group, among patients with intermediate-thickness melanomas, defined as 1.20 to 3.50 mm (71.3 &#xb1; 1.8% vs. 64.7 &#xb1; 2.3%; hazard ratio for recurrence or metastasis, 0.76; P=0.01), and those with thick melanomas, defined as &gt;3.50 mm (50.7 &#xb1; 4.0% vs. 40.5 &#xb1; 4.7%; hazard ratio, 0.70; P=0.03)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The registry states that the primary outcome is to determine whether wide excision of the primary with intraoperative lymphatic mapping (LM) followed by selective lymphadenectomy will effectively prolong overall survival compared to wide excision of the primary melanoma alone. The publication shows that the primary outcome (10-year melanoma-specific survival rate) was not significantly different in the overall population, but there were significant improvements in disease-free survival for specific subgroups. However, the publication does not explicitly state that the primary outcome changed, but rather that the primary outcome (as defined in the registry) was not significantly different in the overall population, while secondary outcomes showed improvements. Given the registry's definition of the primary outcome and the publication's results, the primary outcome (as defined in the registry) did not change in the overall population, but the publication provides more detailed results for subgroups. However, the task is to evaluate whether the primary outcome changed from the registry to the publication. Since the registry defines the primary outcome as a comparison of survival rates, and the publication shows that the overall survival rate was not significantly different, but there were improvements in specific subgroups, the primary outcome (as defined in the registry) did not change in the overall population. But the publication does provide more detailed results for subgroups, which might be considered a change in the outcome detail. However, the task is to return 'change' only when the supplied evidence directly supports a primary-outcome change. The evidence does not directly support a change in the primary outcome, but rather a lack of change in the overall population with subgroup improvements. Given the instructions, I think the correct verdict is 'no_change' because the primary outcome (as defined in the registry) did not change in the overall population. But the instructions say to return 'change' only when the supplied evidence directly supports a primary-outcome change. The evidence does not directly support a change in the primary outcome, so I should return 'no_change'. However, the initial analysis was wrong. Let me re-read the instructions: 'Return "
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-004\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from the registry to the publication\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[1]\",\n          \"quote\": \"We evaluated outcomes in 2001 patients with primary cutaneous melanomas randomly assigned to undergo wide excision and nodal observation, with lymphadenectomy for nodal relapse (observation group), or wide excision and sentinel-node biopsy, with immediate lymphadenectomy for nodal metastases detected on biopsy (biopsy group). Results No significant treatment-related difference in the 10-year melanoma-specific survival rate was seen in the overall study population (20.8% with and 79.2% without nodal metastases). Mean (&#xb1; SE) 10-year disease-free survival rates were significantly improved in the biopsy group, as compared with the observation group, among patients with intermediate-thickness melanomas, defined as 1.20 to 3.50 mm (71.3 &#xb1; 1.8% vs. 64.7 &#xb1; 2.3%; hazard ratio for recurrence or metastasis, 0.76; P=0.01), and those with thick melanomas, defined as &gt;3.50 mm (50.7 &#xb1; 4.0% vs. 40.5 &#xb1; 4.7%; hazard ratio, 0.70; P=0.03).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The registry states that the primary outcome is to determine whether wide excision of the primary with intraoperative lymphatic mapping (LM) followed by selective lymphadenectomy will effectively prolong overall survival compared to wide excision of the primary melanoma alone. The publication shows that the primary outcome (10-year melanoma-specific survival rate) was not significantly different in the overall population, but there were significant improvements in disease-free survival for specific subgroups. However, the publication does not explicitly state that the primary outcome changed, but rather that the primary outcome (as defined in the registry) was not significantly different in the overall population, while secondary outcomes showed improvements. Given the registry's definition of the primary outcome and the publication's results, the primary outcome (as defined in the registry) did not change in the overall population, but the publication provides more detailed results for subgroups. However, the task is to evaluate whether the primary outcome changed from the registry to the publication. Since the registry defines the primary outcome as a comparison of survival rates, and the publication shows that the overall survival rate was not significantly different, but there were improvements in specific subgroups, the primary outcome (as defined in the registry) did not change in the overall population. But the publication does provide more detailed results for subgroups, which might be considered a change in the outcome detail. However, the task is to return 'change' only when the supplied evidence directly supports a primary-outcome change. The evidence does not directly support a change in the primary outcome, but rather a lack of change in the overall population with subgroup improvements. Given the instructions, I think the correct verdict is 'no_change' because the primary outcome (as defined in the registry) did not change in the overall population. But the instructions say to return 'change' only when the supplied evidence directly supports a primary-outcome change. The evidence does not directly support a change in the primary outcome, so I should return 'no_change'. However, the initial analysis was wrong. Let me re-read the instructions: 'Return \"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 1,
+        "validCitations": 1,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from the registry to the publication",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[1]",
+                "quote": "We evaluated outcomes in 2001 patients with primary cutaneous melanomas randomly assigned to undergo wide excision and nodal observation, with lymphadenectomy for nodal relapse (observation group), or wide excision and sentinel-node biopsy, with immediate lymphadenectomy for nodal metastases detected on biopsy (biopsy group). Results No significant treatment-related difference in the 10-year melanoma-specific survival rate was seen in the overall study population (20.8% with and 79.2% without nodal metastases). Mean (&#xb1; SE) 10-year disease-free survival rates were significantly improved in the biopsy group, as compared with the observation group, among patients with intermediate-thickness melanomas, defined as 1.20 to 3.50 mm (71.3 &#xb1; 1.8% vs. 64.7 &#xb1; 2.3%; hazard ratio for recurrence or metastasis, 0.76; P=0.01), and those with thick melanomas, defined as &gt;3.50 mm (50.7 &#xb1; 4.0% vs. 40.5 &#xb1; 4.7%; hazard ratio, 0.70; P=0.03).",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 12762
+    },
+    {
+      "id": "pm-real-005",
+      "nctId": "NCT00430326",
+      "pmid": "21618480",
+      "publicationTitle": "Randomized phase II clinical trial of avotermin versus placebo for scar improvement",
+      "referenceLabel": "change",
+      "changeType": "omission",
+      "supplementPage": 29,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:53:22.028Z",
+        "trialTitle": "Juvista (Avotermin) in Scars Following Varicose Vein Removal",
+        "publicationTitle": "Randomized phase II clinical trial of avotermin versus placebo for scar improvement.",
+        "registryOutcomes": 5,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00430326",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/21618480/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-005",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from the registry to the publication",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Avotermin 500 ng significantly improved groin scar appearance compared with placebo (mean lay panel ToScar difference 16&#xb7;49 mm; P = 0&#xb7;036)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The registry did not specify the primary outcome measures, so we cannot directly compare the registry's primary outcomes to the publication's primary outcome. However, the publication's primary outcome (lay panel Total Scar Score) is clearly stated in the abstract and the registry's primary outcomes are described as 'Investigator scar assessment', 'Patient scar assessment', and 'Independent scar assessment'. The publication's primary outcome (lay panel Total Scar Score) is a specific measure of the 'Independent scar assessment' from the registry. The publication shows a statistically significant improvement in the primary outcome (ToScar) with avotermin 500 ng compared to placebo, indicating a change from the registry's expected outcome (which was not specified but likely similar)."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-005\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from the registry to the publication\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"Avotermin 500 ng significantly improved groin scar appearance compared with placebo (mean lay panel ToScar difference 16&#xb7;49 mm; P = 0&#xb7;036).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The registry did not specify the primary outcome measures, so we cannot directly compare the registry's primary outcomes to the publication's primary outcome. However, the publication's primary outcome (lay panel Total Scar Score) is clearly stated in the abstract and the registry's primary outcomes are described as 'Investigator scar assessment', 'Patient scar assessment', and 'Independent scar assessment'. The publication's primary outcome (lay panel Total Scar Score) is a specific measure of the 'Independent scar assessment' from the registry. The publication shows a statistically significant improvement in the primary outcome (ToScar) with avotermin 500 ng compared to placebo, indicating a change from the registry's expected outcome (which was not specified but likely similar).\"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 1,
+        "validCitations": 1,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from the registry to the publication",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Avotermin 500 ng significantly improved groin scar appearance compared with placebo (mean lay panel ToScar difference 16&#xb7;49 mm; P = 0&#xb7;036).",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 5627
+    },
+    {
+      "id": "pm-real-006",
+      "nctId": "NCT00806026",
+      "pmid": "24521108",
+      "publicationTitle": "Comparison of pregabalin with pramipexole for restless legs syndrome",
+      "referenceLabel": "change",
+      "changeType": "time changes",
+      "supplementPage": 14,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:53:30.458Z",
+        "trialTitle": "Long Term Study Of Pregabalin In Idiopathic Restless Legs Syndrome Patients",
+        "publicationTitle": "Comparison of pregabalin with pramipexole for restless legs syndrome.",
+        "registryOutcomes": 22,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00806026",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/24521108/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-006",
+        "verdict": "change",
+        "confidence": 0.9,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from baseline at week 12",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Over a period of 12 weeks, the improvement (reduction) in mean scores on the IRLS scale was greater, by 4.5 points, among participants receiving pregabalin than among those receiving placebo (P<0.001)"
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The primary outcome is defined as 'Change From Baseline in the RLS Symptom Severity at Week 12' which is a change in the IRLS score. The abstract states there was a greater improvement (reduction) in mean scores on the IRLS scale with pregabalin compared to placebo, indicating a change from baseline."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-006\",\n  \"verdict\": \"change\",\n  \"confidence\": 0.9,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from baseline at week 12\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"Over a period of 12 weeks, the improvement (reduction) in mean scores on the IRLS scale was greater, by 4.5 points, among participants receiving pregabalin than among those receiving placebo (P<0.001)\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The primary outcome is defined as 'Change From Baseline in the RLS Symptom Severity at Week 12' which is a change in the IRLS score. The abstract states there was a greater improvement (reduction) in mean scores on the IRLS scale with pregabalin compared to placebo, indicating a change from baseline.\"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 0,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 1,
+        "totalCitations": 1,
+        "validCitations": 0,
+        "fabricatedLocators": 0,
+        "citationValidity": 0,
+        "supportedClaimRate": 0,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from baseline at week 12",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Over a period of 12 weeks, the improvement (reduction) in mean scores on the IRLS scale was greater, by 4.5 points, among participants receiving pregabalin than among those receiving placebo (P<0.001)",
+                "valid": false,
+                "reason": "quote_not_found"
+              }
+            ],
+            "supported": false,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 8430
+    },
+    {
+      "id": "pm-real-007",
+      "nctId": "NCT00251342",
+      "pmid": "20884642",
+      "publicationTitle": "Outcome of a postnatal depression screening programme using the Edinburgh Postnatal Depression Scale: a randomized controlled trial",
+      "referenceLabel": "change",
+      "changeType": "omission",
+      "supplementPage": 26,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:53:33.511Z",
+        "trialTitle": "Outcome of Postnatal Depression Screening Using Edinburgh Postnatal Depression Scale",
+        "publicationTitle": "Outcome of a postnatal depression screening programme using the Edinburgh Postnatal Depression Scale: a randomized controlled trial.",
+        "registryOutcomes": 6,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00251342",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/20884642/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-007",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from baseline to 6 months postpartum",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Participants in the intervention group had better maternal mental health outcome as assessed by EPDS at 6 months (risk ratio: 0.59; 95% confidence interval: 0.39-0.89)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "low"
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-007\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from baseline to 6 months postpartum\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"Participants in the intervention group had better maternal mental health outcome as assessed by EPDS at 6 months (risk ratio: 0.59; 95% confidence interval: 0.39-0.89).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"low\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 1,
+        "validCitations": 1,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from baseline to 6 months postpartum",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Participants in the intervention group had better maternal mental health outcome as assessed by EPDS at 6 months (risk ratio: 0.59; 95% confidence interval: 0.39-0.89).",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 3053
+    },
+    {
+      "id": "pm-real-008",
+      "nctId": "NCT00910208",
+      "pmid": "22506940",
+      "publicationTitle": "Efficacy of patient-controlled analgesia for patients with acute abdominal pain in the emergency department: a randomized trial",
+      "referenceLabel": "change",
+      "changeType": "omission",
+      "supplementPage": 38,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:53:46.412Z",
+        "trialTitle": "Safety and Efficacy of Patient Controlled Analgesia in the Emergency Department",
+        "publicationTitle": "Efficacy of patient-controlled analgesia for patients with acute abdominal pain in the emergency department: a randomized trial.",
+        "registryOutcomes": 6,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00910208",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/22506940/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-008",
+        "verdict": "change",
+        "confidence": 0.95,
+        "claims": [
+          {
+            "statement": "The primary outcome change for Short Term Efficacy: Change in Pain Intensity as Assessed by Patient Self Report on Numerical Rating Scale",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Participants will complete a survey in which they rate their pain on a Numerical Rating Scale (NRS) of pain ranging from 0 - no pain, to 10 - worst imaginable pain, higher scores indicate worse pain. Change is measured by subtracting the 30 minute NRS score from the Baseline NRS score, thus higher numbers indicate greater decrease in pain, negative numbers indicate increase in pain from baseline to 30 minutes post-baseline."
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome change for Short Term Efficacy: Pain Relief by 30 Minutes",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[1]",
+                "quote": "Pain Intensity measured on Likert Scale. Participants self report pain level according to the scale by selecting from No relief, Slight relief, Moderate relief, A lot of relief, and Complete relief)"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome change for Long Term Efficacy: Total Analgesia Provided Over 2 Hours",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[2]",
+                "quote": "Participants will complete a survey in which they rate their pain on a Numerical Rating Scale (NRS) of pain ranging from 0 - no pain, to 10 - worst imaginable pain, higher scores indicate worse pain"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome change for Long Term Efficacy: Pain Relief by 120 Minutes",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[3]",
+                "quote": "Participants aksed to and give range"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome change for Safety: Incidence of Adverse Events",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[4]",
+                "quote": "Adverse Events defined as: oxygen saturation < 92%; respiratory rate <10 breaths/min; systolic blood pressure < 90 mm Hg)"
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The abstract does not explicitly state the change in the primary outcome for the Short Term Efficacy: Change in Pain Intensity as Assessed by Patient Self Report on Numerical Rating Scale. However, the abstract states that 'A sharp, nearly identical decline in mean NRS scores occurred from baseline to 30 minutes in the three groups (p = 0.82).' This indicates a change in pain intensity from baseline to 30 minutes, which aligns with the primary outcome definition."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-008\",\n  \"verdict\": \"change\",\n  \"confidence\": 0.95,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome change for Short Term Efficacy: Change in Pain Intensity as Assessed by Patient Self Report on Numerical Rating Scale\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"Participants will complete a survey in which they rate their pain on a Numerical Rating Scale (NRS) of pain ranging from 0 - no pain, to 10 - worst imaginable pain, higher scores indicate worse pain. Change is measured by subtracting the 30 minute NRS score from the Baseline NRS score, thus higher numbers indicate greater decrease in pain, negative numbers indicate increase in pain from baseline to 30 minutes post-baseline.\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome change for Short Term Efficacy: Pain Relief by 30 Minutes\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[1]\",\n          \"quote\": \"Pain Intensity measured on Likert Scale. Participants self report pain level according to the scale by selecting from No relief, Slight relief, Moderate relief, A lot of relief, and Complete relief)\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome change for Long Term Efficacy: Total Analgesia Provided Over 2 Hours\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[2]\",\n          \"quote\": \"Participants will complete a survey in which they rate their pain on a Numerical Rating Scale (NRS) of pain ranging from 0 - no pain, to 10 - worst imaginable pain, higher scores indicate worse pain\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome change for Long Term Efficacy: Pain Relief by 120 Minutes\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[3]\",\n          \"quote\": \"Participants aksed to and give range\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome change for Safety: Incidence of Adverse Events\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[4]\",\n          \"quote\": \"Adverse Events defined as: oxygen saturation < 92%; respiratory rate <10 breaths/min; systolic blood pressure < 90 mm Hg)\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The abstract does not explicitly state the change in the primary outcome for the Short Term Efficacy: Change in Pain Intensity as Assessed by Patient Self Report on Numerical Rating Scale. However, the abstract states that 'A sharp, nearly identical decline in mean NRS scores occurred from baseline to 30 minutes in the three groups (p = 0.82).' This indicates a change in pain intensity from baseline to 30 minutes, which aligns with the primary outcome definition.\"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 5,
+        "supportedClaims": 4,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 1,
+        "totalCitations": 5,
+        "validCitations": 4,
+        "fabricatedLocators": 0,
+        "citationValidity": 0.8,
+        "supportedClaimRate": 0.8,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome change for Short Term Efficacy: Change in Pain Intensity as Assessed by Patient Self Report on Numerical Rating Scale",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Participants will complete a survey in which they rate their pain on a Numerical Rating Scale (NRS) of pain ranging from 0 - no pain, to 10 - worst imaginable pain, higher scores indicate worse pain. Change is measured by subtracting the 30 minute NRS score from the Baseline NRS score, thus higher numbers indicate greater decrease in pain, negative numbers indicate increase in pain from baseline to 30 minutes post-baseline.",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome change for Short Term Efficacy: Pain Relief by 30 Minutes",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[1]",
+                "quote": "Pain Intensity measured on Likert Scale. Participants self report pain level according to the scale by selecting from No relief, Slight relief, Moderate relief, A lot of relief, and Complete relief)",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome change for Long Term Efficacy: Total Analgesia Provided Over 2 Hours",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[2]",
+                "quote": "Participants will complete a survey in which they rate their pain on a Numerical Rating Scale (NRS) of pain ranging from 0 - no pain, to 10 - worst imaginable pain, higher scores indicate worse pain",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome change for Long Term Efficacy: Pain Relief by 120 Minutes",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[3]",
+                "quote": "Participants aksed to and give range",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome change for Safety: Incidence of Adverse Events",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[4]",
+                "quote": "Adverse Events defined as: oxygen saturation < 92%; respiratory rate <10 breaths/min; systolic blood pressure < 90 mm Hg)",
+                "valid": false,
+                "reason": "quote_not_found"
+              }
+            ],
+            "supported": false,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 12901
+    },
+    {
+      "id": "pm-real-009",
+      "nctId": "NCT00275145",
+      "pmid": "21741606",
+      "publicationTitle": "Comparison of aerobic versus resistance exercise training effects on metabolic syndrome (from the Studies of a Targeted Risk Reduction Intervention Through Defined Exercise - STRRIDE-AT/RT)",
+      "referenceLabel": "change",
+      "changeType": "omission",
+      "supplementPage": 41,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:53:51.176Z",
+        "trialTitle": "Effects of Resistance and Aerobic Exercise on Cardiovascular Health",
+        "publicationTitle": "Comparison of aerobic versus resistance exercise training effects on metabolic syndrome (from the Studies of a Targeted Risk Reduction Intervention Through Defined Exercise - STRRIDE-AT/RT).",
+        "registryOutcomes": 2,
+        "publicationSections": 1,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00275145",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/21741606/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-009",
+        "verdict": "change",
+        "confidence": 0.95,
+        "claims": [
+          {
+            "statement": "The primary outcome changed",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[0]",
+                "quote": "AT improved the MS score (p <0.07) and showed a trend toward significance compared to RT (p <0.10). AT/RT significantly decreased the MS score and was significantly different from RT alone."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The primary outcome is defined as 'Major Cardiometabolic Risk Factors: lipoproteins; Ectopic Fat (Visceral Fat, Liver fat); body composition (fat mass, lean body mass; and Insulin Sensitivity'. The abstract states that AT improved the MS score (p <0.07) and AT/RT significantly decreased the MS score. The abstract does not explicitly state that the primary outcome changed, but the primary outcome is defined as the MS criteria. The abstract states that the MS score was improved by AT and decreased by AT/RT, which suggests a change in the primary outcome."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-009\",\n  \"verdict\": \"change\",\n  \"confidence\": 0.95,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[0]\",\n          \"quote\": \"AT improved the MS score (p <0.07) and showed a trend toward significance compared to RT (p <0.10). AT/RT significantly decreased the MS score and was significantly different from RT alone.\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The primary outcome is defined as 'Major Cardiometabolic Risk Factors: lipoproteins; Ectopic Fat (Visceral Fat, Liver fat); body composition (fat mass, lean body mass; and Insulin Sensitivity'. The abstract states that AT improved the MS score (p <0.07) and AT/RT significantly decreased the MS score. The abstract does not explicitly state that the primary outcome changed, but the primary outcome is defined as the MS criteria. The abstract states that the MS score was improved by AT and decreased by AT/RT, which suggests a change in the primary outcome.\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 0,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 1,
+        "totalCitations": 1,
+        "validCitations": 0,
+        "fabricatedLocators": 0,
+        "citationValidity": 0,
+        "supportedClaimRate": 0,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[0]",
+                "quote": "AT improved the MS score (p <0.07) and showed a trend toward significance compared to RT (p <0.10). AT/RT significantly decreased the MS score and was significantly different from RT alone.",
+                "valid": false,
+                "reason": "quote_not_found"
+              }
+            ],
+            "supported": false,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 4764
+    },
+    {
+      "id": "pm-real-010",
+      "nctId": "NCT00265525",
+      "pmid": "21903744",
+      "publicationTitle": "Randomized trial of an internet-based computer-tailored expert system for physical activity in patients with heart disease",
+      "referenceLabel": "change",
+      "changeType": "omission",
+      "supplementPage": 30,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:53:58.387Z",
+        "trialTitle": "Evaluation of a Web-based Intervention to Promote Physical Activity in Patients With Heart Disease.",
+        "publicationTitle": "Randomized trial of an internet-based computer-tailored expert system for physical activity in patients with heart disease.",
+        "registryOutcomes": 3,
+        "publicationSections": 5,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00265525",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/21903744/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-010",
+        "verdict": "abstain",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome changed",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Physical Activity: Measured at Baseline (Day of Hospital Discharge), 6 Months and 12 Months Via Pedometer"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome remained consistent",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Physical Activity: Measured at Baseline (Day of Hospital Discharge), 6 Months and 12 Months Via Pedometer"
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The registry specifies the primary outcome as 'Physical Activity: Measured at Baseline (Day of Hospital Discharge), 6 Months and 12 Months Via Pedometer', but the abstract does not explicitly state whether this primary outcome changed or remained consistent. The abstract mentions that 'The CardioFit Internet-based physical activity expert system significantly increased objectively measured (p=0.023) and self-reported physical activity (p=0.047) compared to usual care.' However, the registry does not provide the specific outcome measure (e.g., steps per day, metabolic equivalents) or the exact change in the primary outcome. The abstract states that physical activity increased, but the registry does not specify if this change is the primary outcome or if it remains consistent. The abstract does not explicitly state whether the primary outcome changed or remained consistent, as it only reports the change in physical activity without specifying the primary outcome's status. The registry does not provide enough detail to determine if the primary outcome changed or remained consistent."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-010\",\n  \"verdict\": \"abstain\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"Physical Activity: Measured at Baseline (Day of Hospital Discharge), 6 Months and 12 Months Via Pedometer\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome remained consistent\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"Physical Activity: Measured at Baseline (Day of Hospital Discharge), 6 Months and 12 Months Via Pedometer\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The registry specifies the primary outcome as 'Physical Activity: Measured at Baseline (Day of Hospital Discharge), 6 Months and 12 Months Via Pedometer', but the abstract does not explicitly state whether this primary outcome changed or remained consistent. The abstract mentions that 'The CardioFit Internet-based physical activity expert system significantly increased objectively measured (p=0.023) and self-reported physical activity (p=0.047) compared to usual care.' However, the registry does not provide the specific outcome measure (e.g., steps per day, metabolic equivalents) or the exact change in the primary outcome. The abstract states that physical activity increased, but the registry does not specify if this change is the primary outcome or if it remains consistent. The abstract does not explicitly state whether the primary outcome changed or remained consistent, as it only reports the change in physical activity without specifying the primary outcome's status. The registry does not provide enough detail to determine if the primary outcome changed or remained consistent.\"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "abstain",
+        "selectiveAgreement": null,
+        "abstained": true,
+        "totalClaims": 2,
+        "supportedClaims": 2,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 2,
+        "validCitations": 2,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Physical Activity: Measured at Baseline (Day of Hospital Discharge), 6 Months and 12 Months Via Pedometer",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome remained consistent",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Physical Activity: Measured at Baseline (Day of Hospital Discharge), 6 Months and 12 Months Via Pedometer",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 7211
+    },
+    {
+      "id": "pm-real-011",
+      "nctId": "NCT00750763",
+      "pmid": "21547879",
+      "publicationTitle": "Bowel cleansing for colonoscopy: prospective randomized assessment of efficacy and of induced mucosal abnormality with three preparation agents",
+      "referenceLabel": "change",
+      "changeType": "new outcome",
+      "supplementPage": 11,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:54:03.952Z",
+        "trialTitle": "Tolerability, Efficacy and Mucosal Inflammation Associated With Orally Administered Colon Cleansing for Colonoscopy",
+        "publicationTitle": "Bowel cleansing for colonoscopy: prospective randomized assessment of efficacy and of induced mucosal abnormality with three preparation agents.",
+        "registryOutcomes": 2,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00750763",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/21547879/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-011",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from the registry description to the publication",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "To assess which bowel preparation provides the best colon cleansing using a validated score and is best tolerated by patients."
+              },
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Of the 634 patients, 98&#x200a;% ingested more than 75&#x200a;% of the bowel preparation and data were complete for colonic preparation scoring in 99&#x200a;%."
+              },
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[3]",
+                "quote": "The bowel preparation used, time of procedure, and patient sex all independently impacted on bowel cleansing."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The registry described a primary outcome that was a single outcome (which bowel preparation provides the best colon cleansing using a validated score and is best tolerated by patients). The publication describes multiple outcomes (bowel cleansing and mucosal inflammation) and states that the primary outcome changed from the registry description to the publication."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-011\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from the registry description to the publication\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"To assess which bowel preparation provides the best colon cleansing using a validated score and is best tolerated by patients.\"\n        },\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"Of the 634 patients, 98&#x200a;% ingested more than 75&#x200a;% of the bowel preparation and data were complete for colonic preparation scoring in 99&#x200a;%.\"\n        },\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[3]\",\n          \"quote\": \"The bowel preparation used, time of procedure, and patient sex all independently impacted on bowel cleansing.\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The registry described a primary outcome that was a single outcome (which bowel preparation provides the best colon cleansing using a validated score and is best tolerated by patients). The publication describes multiple outcomes (bowel cleansing and mucosal inflammation) and states that the primary outcome changed from the registry description to the publication.\"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 1,
+        "unsupportedClaims": 0,
+        "totalCitations": 3,
+        "validCitations": 3,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 1,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from the registry description to the publication",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "To assess which bowel preparation provides the best colon cleansing using a validated score and is best tolerated by patients.",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Of the 634 patients, 98&#x200a;% ingested more than 75&#x200a;% of the bowel preparation and data were complete for colonic preparation scoring in 99&#x200a;%.",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[3]",
+                "quote": "The bowel preparation used, time of procedure, and patient sex all independently impacted on bowel cleansing.",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": true
+          }
+        ]
+      },
+      "durationMs": 5565
+    },
+    {
+      "id": "pm-real-012",
+      "nctId": "NCT00534313",
+      "pmid": "21128258",
+      "publicationTitle": "Abatacept in the treatment of patients with psoriatic arthritis: results of a six-month, multicenter, randomized, double-blind, placebo-controlled, phase II trial",
+      "referenceLabel": "change",
+      "changeType": "new times",
+      "supplementPage": 9,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:54:19.298Z",
+        "trialTitle": "Safety and Efficacy of Abatacept Versus Placebo in Participants With Psoriatic Arthritis",
+        "publicationTitle": "Abatacept in the treatment of patients with psoriatic arthritis: results of a six-month, multicenter, randomized, double-blind, placebo-controlled, phase II trial.",
+        "registryOutcomes": 23,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00534313",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/21128258/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-012",
+        "verdict": "change",
+        "confidence": 0.95,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from baseline to day 169",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Long-term Period: Number of Participants With Death As Outcome, Serious Adverse Events (SAEs), Drug-related SAEs, SAEs Leading to Discontinuation, Adverse Events (AEs), Drug-related AEs, AEs Leading to Discontinuation, and AEs of Interest"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome changed from baseline to day 169",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[1]",
+                "quote": "Short-term Period: Number of Participants With ACR 20 Response at Day 169"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome changed from baseline to day 169",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.secondaryOutcomes[12]",
+                "quote": "Short-term Period: Number of Participants With an IGA Score of Clear or Almost Clear at Day 169"
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The primary outcome is defined as the ACR 20 response at day 169, which is a change from baseline. The registry specifies that the primary outcome is the number of participants with ACR 20 response at day 169. The abstract states that the primary end point was the ACR20 response on day 169. The results section shows that the proportions of patients achieving ACR20 response were 19%, 33%, 48%, and 42% in the placebo, abatacept 3 mg/kg, abatacept 10 mg/kg, and abatacept 30/10 mg/kg groups, respectively. This indicates a change from baseline (placebo) to the abatacept groups."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-012\",\n  \"verdict\": \"change\",\n  \"confidence\": 0.95,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from baseline to day 169\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"Long-term Period: Number of Participants With Death As Outcome, Serious Adverse Events (SAEs), Drug-related SAEs, SAEs Leading to Discontinuation, Adverse Events (AEs), Drug-related AEs, AEs Leading to Discontinuation, and AEs of Interest\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome changed from baseline to day 169\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[1]\",\n          \"quote\": \"Short-term Period: Number of Participants With ACR 20 Response at Day 169\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome changed from baseline to day 169\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.secondaryOutcomes[12]\",\n          \"quote\": \"Short-term Period: Number of Participants With an IGA Score of Clear or Almost Clear at Day 169\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The primary outcome is defined as the ACR 20 response at day 169, which is a change from baseline. The registry specifies that the primary outcome is the number of participants with ACR 20 response at day 169. The abstract states that the primary end point was the ACR20 response on day 169. The results section shows that the proportions of patients achieving ACR20 response were 19%, 33%, 48%, and 42% in the placebo, abatacept 3 mg/kg, abatacept 10 mg/kg, and abatacept 30/10 mg/kg groups, respectively. This indicates a change from baseline (placebo) to the abatacept groups.\"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": true,
+        "abstained": false,
+        "totalClaims": 3,
+        "supportedClaims": 3,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 3,
+        "validCitations": 3,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from baseline to day 169",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Long-term Period: Number of Participants With Death As Outcome, Serious Adverse Events (SAEs), Drug-related SAEs, SAEs Leading to Discontinuation, Adverse Events (AEs), Drug-related AEs, AEs Leading to Discontinuation, and AEs of Interest",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome changed from baseline to day 169",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[1]",
+                "quote": "Short-term Period: Number of Participants With ACR 20 Response at Day 169",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome changed from baseline to day 169",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.secondaryOutcomes[12]",
+                "quote": "Short-term Period: Number of Participants With an IGA Score of Clear or Almost Clear at Day 169",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 15346
+    },
+    {
+      "id": "pm-real-013",
+      "nctId": "NCT00237549",
+      "pmid": "21705063",
+      "publicationTitle": "Effect of early intensive multifactorial therapy on 5-year cardiovascular outcomes in individuals with type 2 diabetes detected by screening (ADDITION-Europe): a cluster-randomised trial",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 15,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:54:29.316Z",
+        "trialTitle": "The ADDITION Study. Intensive Treatment in People With Screen Detected Diabetes in Primary Care.",
+        "publicationTitle": "Effect of early intensive multifactorial therapy on 5-year cardiovascular outcomes in individuals with type 2 diabetes detected by screening (ADDITION-Europe): a cluster-randomised trial.",
+        "registryOutcomes": 11,
+        "publicationSections": 5,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00237549",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/21705063/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-013",
+        "verdict": "abstain",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome remained consistent",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Cardiovascular mortality"
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[1]",
+                "quote": "MI (non fatal)"
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[2]",
+                "quote": "Stroke (non fatal)"
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[3]",
+                "quote": "Revascularisation (operating procedures)"
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[4]",
+                "quote": "Amputations, non traumatic"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome changed",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "The incidence of first cardiovascular event was 7&#xb7;2% (13&#xb7;5 per 1000 person-years) in the intensive treatment group and 8&#xb7;5% (15&#xb7;9 per 1000 person-years) in the routine care group (hazard ratio 0&#xb7;83, 95% CI 0&#xb7;65-1&#xb7;05), and of all-cause mortality 6&#xb7;2% (11&#xb7;6 per 1000 person-years) and 6&#xb7;7% (12&#xb7;5 per 1000 person-years; 0&#xb7;91, 0&#xb7;69-1&#xb7;21), respectively."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The primary outcome is defined as a composite of multiple outcomes (cardiovascular mortality, MI, stroke, revascularisation, amputations) but the publication abstract does not specify which component of the composite changed. The publication reports a hazard ratio for the first cardiovascular event (which includes all components) but does not break down the change by individual component. The registry lists five primary outcomes but the publication does not report changes for each individual primary outcome."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-013\",\n  \"verdict\": \"abstain\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome remained consistent\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"Cardiovascular mortality\"\n        },\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[1]\",\n          \"quote\": \"MI (non fatal)\"\n        },\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[2]\",\n          \"quote\": \"Stroke (non fatal)\"\n        },\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[3]\",\n          \"quote\": \"Revascularisation (operating procedures)\"\n        },\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[4]\",\n          \"quote\": \"Amputations, non traumatic\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome changed\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"The incidence of first cardiovascular event was 7&#xb7;2% (13&#xb7;5 per 1000 person-years) in the intensive treatment group and 8&#xb7;5% (15&#xb7;9 per 1000 person-years) in the routine care group (hazard ratio 0&#xb7;83, 95% CI 0&#xb7;65-1&#xb7;05), and of all-cause mortality 6&#xb7;2% (11&#xb7;6 per 1000 person-years) and 6&#xb7;7% (12&#xb7;5 per 1000 person-years; 0&#xb7;91, 0&#xb7;69-1&#xb7;21), respectively.\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The primary outcome is defined as a composite of multiple outcomes (cardiovascular mortality, MI, stroke, revascularisation, amputations) but the publication abstract does not specify which component of the composite changed. The publication reports a hazard ratio for the first cardiovascular event (which includes all components) but does not break down the change by individual component. The registry lists five primary outcomes but the publication does not report changes for each individual primary outcome.\"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "abstain",
+        "selectiveAgreement": null,
+        "abstained": true,
+        "totalClaims": 2,
+        "supportedClaims": 2,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 6,
+        "validCitations": 6,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome remained consistent",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Cardiovascular mortality",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[1]",
+                "quote": "MI (non fatal)",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[2]",
+                "quote": "Stroke (non fatal)",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[3]",
+                "quote": "Revascularisation (operating procedures)",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[4]",
+                "quote": "Amputations, non traumatic",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome changed",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "The incidence of first cardiovascular event was 7&#xb7;2% (13&#xb7;5 per 1000 person-years) in the intensive treatment group and 8&#xb7;5% (15&#xb7;9 per 1000 person-years) in the routine care group (hazard ratio 0&#xb7;83, 95% CI 0&#xb7;65-1&#xb7;05), and of all-cause mortality 6&#xb7;2% (11&#xb7;6 per 1000 person-years) and 6&#xb7;7% (12&#xb7;5 per 1000 person-years; 0&#xb7;91, 0&#xb7;69-1&#xb7;21), respectively.",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 10018
+    },
+    {
+      "id": "pm-real-014",
+      "nctId": "NCT00347321",
+      "pmid": "21403073",
+      "publicationTitle": "Early percutaneous tracheotomy versus prolonged intubation of mechanically ventilated patients after cardiac surgery: a randomized trial",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 15,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:54:41.490Z",
+        "trialTitle": "Early Percutaneous Tracheostomy for Cardiac Surgery (ETOC)",
+        "publicationTitle": "Early percutaneous tracheotomy versus prolonged intubation of mechanically ventilated patients after cardiac surgery: a randomized trial.",
+        "registryOutcomes": 16,
+        "publicationSections": 11,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00347321",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/21403073/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-014",
+        "verdict": "change",
+        "confidence": 0.95,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from the registry definition to the publication",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Number of ventilator-free days defined as the number of days between successful weaning from MV and day 60 after study enrolment."
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[1]",
+                "quote": "VFDs = 0 if the patient dies before 60days."
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[2]",
+                "quote": "VFDs= (60- X) : if the patient is successfully weaned from MV within 60 days, where X is the number of days spent receiving MV"
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[3]",
+                "quote": "VFDs = 0: if the patient requires MV for 60 days or more"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome in the publication is the number of ventilator-free days during the first 60 days after randomization",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[6]",
+                "quote": "The primary end point was the number of ventilator-free days during the first 60 days after randomization."
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome in the publication shows a change in the number of ventilator-free days between the two groups",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[7]",
+                "quote": "There was no difference in ventilator-free days during the first 60 days after randomization between early percutaneous tracheotomy and prolonged intubation groups (mean, 30.4 days [SD, 22.4] vs. 28.3 days [SD, 23.7], respectively; absolute difference, 2.1 days [95% CI, -4.1 to 8.3 days])"
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The registry defines multiple primary outcomes that are all related to ventilator-free days, but the publication specifies a single primary outcome (number of ventilator-free days during the first 60 days after randomization). The publication shows a small but statistically non-significant difference in the primary outcome between the two groups (2.1 days with a 95% CI of -4.1 to 8.3 days). This indicates a change in the primary outcome value but not a clinically significant change."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-014\",\n  \"verdict\": \"change\",\n  \"confidence\": 0.95,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from the registry definition to the publication\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"Number of ventilator-free days defined as the number of days between successful weaning from MV and day 60 after study enrolment.\"\n        },\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[1]\",\n          \"quote\": \"VFDs = 0 if the patient dies before 60days.\"\n        },\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[2]\",\n          \"quote\": \"VFDs= (60- X) : if the patient is successfully weaned from MV within 60 days, where X is the number of days spent receiving MV\"\n        },\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[3]\",\n          \"quote\": \"VFDs = 0: if the patient requires MV for 60 days or more\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome in the publication is the number of ventilator-free days during the first 60 days after randomization\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[6]\",\n          \"quote\": \"The primary end point was the number of ventilator-free days during the first 60 days after randomization.\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome in the publication shows a change in the number of ventilator-free days between the two groups\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[7]\",\n          \"quote\": \"There was no difference in ventilator-free days during the first 60 days after randomization between early percutaneous tracheotomy and prolonged intubation groups (mean, 30.4 days [SD, 22.4] vs. 28.3 days [SD, 23.7], respectively; absolute difference, 2.1 days [95% CI, -4.1 to 8.3 days])\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The registry defines multiple primary outcomes that are all related to ventilator-free days, but the publication specifies a single primary outcome (number of ventilator-free days during the first 60 days after randomization). The publication shows a small but statistically non-significant difference in the primary outcome between the two groups (2.1 days with a 95% CI of -4.1 to 8.3 days). This indicates a change in the primary outcome value but not a clinically significant change.\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": false,
+        "abstained": false,
+        "totalClaims": 3,
+        "supportedClaims": 3,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 6,
+        "validCitations": 6,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from the registry definition to the publication",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Number of ventilator-free days defined as the number of days between successful weaning from MV and day 60 after study enrolment.",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[1]",
+                "quote": "VFDs = 0 if the patient dies before 60days.",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[2]",
+                "quote": "VFDs= (60- X) : if the patient is successfully weaned from MV within 60 days, where X is the number of days spent receiving MV",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[3]",
+                "quote": "VFDs = 0: if the patient requires MV for 60 days or more",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome in the publication is the number of ventilator-free days during the first 60 days after randomization",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[6]",
+                "quote": "The primary end point was the number of ventilator-free days during the first 60 days after randomization.",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome in the publication shows a change in the number of ventilator-free days between the two groups",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[7]",
+                "quote": "There was no difference in ventilator-free days during the first 60 days after randomization between early percutaneous tracheotomy and prolonged intubation groups (mean, 30.4 days [SD, 22.4] vs. 28.3 days [SD, 23.7], respectively; absolute difference, 2.1 days [95% CI, -4.1 to 8.3 days])",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 12174
+    },
+    {
+      "id": "pm-real-015",
+      "nctId": "NCT00496769",
+      "pmid": "21309657",
+      "publicationTitle": "Apixaban in patients with atrial fibrillation",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 10,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:54:48.051Z",
+        "trialTitle": "A Phase III Study of Apixaban in Patients With Atrial Fibrillation",
+        "publicationTitle": "Apixaban in patients with atrial fibrillation.",
+        "registryOutcomes": 9,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00496769",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/21309657/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-015",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from aspirin to apixaban",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "There were 51 primary outcome events (1.6% per year) among patients assigned to apixaban and 113 (3.7% per year) among those assigned to aspirin (hazard ratio with apixaban, 0.45; 95% confidence interval [CI], 0.32 to 0.62; P<0.001)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "low"
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-015\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from aspirin to apixaban\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"There were 51 primary outcome events (1.6% per year) among patients assigned to apixaban and 113 (3.7% per year) among those assigned to aspirin (hazard ratio with apixaban, 0.45; 95% confidence interval [CI], 0.32 to 0.62; P<0.001).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"low\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": false,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 0,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 1,
+        "totalCitations": 1,
+        "validCitations": 0,
+        "fabricatedLocators": 0,
+        "citationValidity": 0,
+        "supportedClaimRate": 0,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from aspirin to apixaban",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "There were 51 primary outcome events (1.6% per year) among patients assigned to apixaban and 113 (3.7% per year) among those assigned to aspirin (hazard ratio with apixaban, 0.45; 95% confidence interval [CI], 0.32 to 0.62; P<0.001).",
+                "valid": false,
+                "reason": "quote_not_found"
+              }
+            ],
+            "supported": false,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 6561
+    },
+    {
+      "id": "pm-real-016",
+      "nctId": "NCT00135096",
+      "pmid": "21812890",
+      "publicationTitle": "Influence of preprandial vs. postprandial insulin glulisine on weight and glycaemic control in patients initiating basal-bolus regimen for type 2 diabetes: a multicenter, randomized, parallel, open-label study (NCT00135096)",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 22,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:54:51.704Z",
+        "trialTitle": "Insulin Glulisine Administered Pre-meal Versus Post-meal in Adult Subjects With Type 2 Diabetes Mellitus Receiving Insulin Glargine as Basal Insulin",
+        "publicationTitle": "Influence of preprandial vs. postprandial insulin glulisine on weight and glycaemic control in patients initiating basal-bolus regimen for type 2 diabetes: a multicenter, randomized, parallel, open-label study (NCT00135096).",
+        "registryOutcomes": 1,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00135096",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/21812890/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-016",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome change was a difference of -0.87 kg in weight from baseline to week 52 between postmeal and premeal groups",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Mean body weight was lower in the postmeal group, with the difference between postmeal and premeal weight change from baseline to week 52 of -0.87 kg (p = 0.243)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "None"
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-016\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome change was a difference of -0.87 kg in weight from baseline to week 52 between postmeal and premeal groups\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"Mean body weight was lower in the postmeal group, with the difference between postmeal and premeal weight change from baseline to week 52 of -0.87 kg (p = 0.243).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"None\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": false,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 1,
+        "validCitations": 1,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome change was a difference of -0.87 kg in weight from baseline to week 52 between postmeal and premeal groups",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Mean body weight was lower in the postmeal group, with the difference between postmeal and premeal weight change from baseline to week 52 of -0.87 kg (p = 0.243).",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 3653
+    },
+    {
+      "id": "pm-real-017",
+      "nctId": "NCT00806988",
+      "pmid": "25405390",
+      "publicationTitle": "Surgical treatment of moderate ischemic mitral regurgitation",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 33,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:54:55.432Z",
+        "trialTitle": "Comparing the Effectiveness of a Mitral Valve Repair Procedure in Combination With Coronary Artery Bypass Grafting (CABG) Versus CABG Alone in People With Moderate Ischemic Mitral Regurgitation",
+        "publicationTitle": "Surgical treatment of moderate ischemic mitral regurgitation.",
+        "registryOutcomes": 2,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00806988",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/25405390/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-017",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from baseline",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "At 1 year, the mean LVESVI among surviving patients was 46.1±22.4 ml per square meter of body-surface area in the CABG-alone group and 49.6±31.5 ml per square meter in the combined-procedure group (mean change from baseline, -9.4 and -9.3 ml per square meter, respectively)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "low"
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-017\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from baseline\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"At 1 year, the mean LVESVI among surviving patients was 46.1±22.4 ml per square meter of body-surface area in the CABG-alone group and 49.6±31.5 ml per square meter in the combined-procedure group (mean change from baseline, -9.4 and -9.3 ml per square meter, respectively).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"low\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": false,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 0,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 1,
+        "totalCitations": 1,
+        "validCitations": 0,
+        "fabricatedLocators": 0,
+        "citationValidity": 0,
+        "supportedClaimRate": 0,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from baseline",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "At 1 year, the mean LVESVI among surviving patients was 46.1±22.4 ml per square meter of body-surface area in the CABG-alone group and 49.6±31.5 ml per square meter in the combined-procedure group (mean change from baseline, -9.4 and -9.3 ml per square meter, respectively).",
+                "valid": false,
+                "reason": "quote_not_found"
+              }
+            ],
+            "supported": false,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 3728
+    },
+    {
+      "id": "pm-real-018",
+      "nctId": "NCT00268476",
+      "pmid": "22452894",
+      "publicationTitle": "Celecoxib plus hormone therapy versus hormone therapy alone for hormone-sensitive prostate cancer: first results from the STAMPEDE multiarm, multistage, randomised controlled trial",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 12,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:55:01.304Z",
+        "trialTitle": "Systemic Therapy in Advancing or Metastatic Prostate Cancer: Evaluation of Drug Efficacy",
+        "publicationTitle": "Celecoxib plus hormone therapy versus hormone therapy alone for hormone-sensitive prostate cancer: first results from the STAMPEDE multiarm, multistage, randomised controlled trial.",
+        "registryOutcomes": 14,
+        "publicationSections": 5,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00268476",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/22452894/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-018",
+        "verdict": "abstain",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome remained consistent",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Time to mortality"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome changed",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Time to mortality"
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The abstract does not explicitly state whether the primary outcome (overall survival) changed or remained consistent. The abstract mentions the primary outcome as 'overall survival' but does not provide any specific data on the primary outcome (overall survival) at the time of the analysis. The abstract only reports on the secondary outcome 'failure-free survival' (FFS) and does not report on the primary outcome (overall survival)."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-018\",\n  \"verdict\": \"abstain\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome remained consistent\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"Time to mortality\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome changed\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"Time to mortality\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The abstract does not explicitly state whether the primary outcome (overall survival) changed or remained consistent. The abstract mentions the primary outcome as 'overall survival' but does not provide any specific data on the primary outcome (overall survival) at the time of the analysis. The abstract only reports on the secondary outcome 'failure-free survival' (FFS) and does not report on the primary outcome (overall survival).\"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "abstain",
+        "selectiveAgreement": null,
+        "abstained": true,
+        "totalClaims": 2,
+        "supportedClaims": 2,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 2,
+        "validCitations": 2,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome remained consistent",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Time to mortality",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome changed",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Time to mortality",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 5872
+    },
+    {
+      "id": "pm-real-019",
+      "nctId": "NCT01280123",
+      "pmid": "26116315",
+      "publicationTitle": "Pioglitazone in early Parkinson's disease: a phase 2, multicentre, double-blind, randomised trial",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 39,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:55:13.779Z",
+        "trialTitle": "Pioglitazone in Early Parkinson's Disease",
+        "publicationTitle": "Pioglitazone in early Parkinson's disease: a phase 2, multicentre, double-blind, randomised trial.",
+        "registryOutcomes": 6,
+        "publicationSections": 5,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT01280123",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/26116315/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-019",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome was the change in the total Unified Parkinson's Disease Rating Scale (UPDRS) score between the baseline and 44 weeks",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[1]",
+                "quote": "The primary outcome was the change in the total Unified Parkinson's Disease Rating Scale (UPDRS) score between the baseline and 44 weeks, analysed by intention to treat."
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome change for the 15 mg pioglitazone group was 4.42 (95% CI 2.55-6.28) at 44 weeks",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "The mean total UPDRS change at 44 weeks was 4&#xb7;42 (95% CI 2&#xb7;55-6&#xb7;28) for 15 mg pioglitazone"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome change for the 45 mg pioglitazone group was 5.13 (95% CI 3.17-7.08) at 44 weeks",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "The mean total UPDRS change at 44 weeks was 5&#xb7;13 (95% CI 3&#xb7;17-7&#xb7;08) for 45 mg pioglitazone"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome change for the placebo group was 6.25 (95% CI 4.35-8.15) at 44 weeks",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "6&#xb7;25 (95% CI 4&#xb7;35-8&#xb7;15) for placebo (higher change scores are worse)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The primary outcome change is reported for each group with specific values and confidence intervals. The change is defined as 44 weeks minus baseline, which matches the registry description."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-019\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome was the change in the total Unified Parkinson's Disease Rating Scale (UPDRS) score between the baseline and 44 weeks\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[1]\",\n          \"quote\": \"The primary outcome was the change in the total Unified Parkinson's Disease Rating Scale (UPDRS) score between the baseline and 44 weeks, analysed by intention to treat.\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome change for the 15 mg pioglitazone group was 4.42 (95% CI 2.55-6.28) at 44 weeks\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"The mean total UPDRS change at 44 weeks was 4&#xb7;42 (95% CI 2&#xb7;55-6&#xb7;28) for 15 mg pioglitazone\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome change for the 45 mg pioglitazone group was 5.13 (95% CI 3.17-7.08) at 44 weeks\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"The mean total UPDRS change at 44 weeks was 5&#xb7;13 (95% CI 3&#xb7;17-7&#xb7;08) for 45 mg pioglitazone\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome change for the placebo group was 6.25 (95% CI 4.35-8.15) at 44 weeks\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"6&#xb7;25 (95% CI 4&#xb7;35-8&#xb7;15) for placebo (higher change scores are worse).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The primary outcome change is reported for each group with specific values and confidence intervals. The change is defined as 44 weeks minus baseline, which matches the registry description.\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": false,
+        "abstained": false,
+        "totalClaims": 4,
+        "supportedClaims": 3,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 1,
+        "totalCitations": 4,
+        "validCitations": 3,
+        "fabricatedLocators": 0,
+        "citationValidity": 0.75,
+        "supportedClaimRate": 0.75,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome was the change in the total Unified Parkinson's Disease Rating Scale (UPDRS) score between the baseline and 44 weeks",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[1]",
+                "quote": "The primary outcome was the change in the total Unified Parkinson's Disease Rating Scale (UPDRS) score between the baseline and 44 weeks, analysed by intention to treat.",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome change for the 15 mg pioglitazone group was 4.42 (95% CI 2.55-6.28) at 44 weeks",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "The mean total UPDRS change at 44 weeks was 4&#xb7;42 (95% CI 2&#xb7;55-6&#xb7;28) for 15 mg pioglitazone",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome change for the 45 mg pioglitazone group was 5.13 (95% CI 3.17-7.08) at 44 weeks",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "The mean total UPDRS change at 44 weeks was 5&#xb7;13 (95% CI 3&#xb7;17-7&#xb7;08) for 45 mg pioglitazone",
+                "valid": false,
+                "reason": "quote_not_found"
+              }
+            ],
+            "supported": false,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome change for the placebo group was 6.25 (95% CI 4.35-8.15) at 44 weeks",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "6&#xb7;25 (95% CI 4&#xb7;35-8&#xb7;15) for placebo (higher change scores are worse).",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 12475
+    },
+    {
+      "id": "pm-real-020",
+      "nctId": "NCT01490125",
+      "pmid": "24176997",
+      "publicationTitle": "Dual bronchodilation with QVA149 reduces patient-reported dyspnoea in COPD: the BLAZE study",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 40,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:55:20.436Z",
+        "trialTitle": "The Effect of QVA149 on Patient Reported Dyspnea in Moderate to Severe Chronic Obstructive Pulmonary Disease (COPD)",
+        "publicationTitle": "Dual bronchodilation with QVA149 reduces patient-reported dyspnoea in COPD: the BLAZE study.",
+        "registryOutcomes": 6,
+        "publicationSections": 1,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT01490125",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/24176997/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-020",
+        "verdict": "change",
+        "confidence": 0.95,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from baseline to 6 weeks",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[0]",
+                "quote": "After 6 weeks, the SAC Transition Dyspnoea Index total score was significantly higher with QVA149 versus placebo (least squares mean (LSM) treatment difference 1.37, p<0.001) and tiotropium (LSM treatment difference 0.49, p=0.021)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The primary outcome is defined as the Total Transient Dyspnea Index (TDI) Score After 6 Weeks of Treatment QVA149 Compared to Placebo. The abstract states that the SAC Transition Dyspnea Index total score was significantly higher with QVA149 versus placebo, indicating a change from baseline. The TDI score is described as being divided by 2 before analysis, but the abstract refers to the SAC Transition Dyspnea Index, which is consistent with the primary outcome as defined in the registry."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-020\",\n  \"verdict\": \"change\",\n  \"confidence\": 0.95,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from baseline to 6 weeks\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[0]\",\n          \"quote\": \"After 6 weeks, the SAC Transition Dyspnoea Index total score was significantly higher with QVA149 versus placebo (least squares mean (LSM) treatment difference 1.37, p<0.001) and tiotropium (LSM treatment difference 0.49, p=0.021).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The primary outcome is defined as the Total Transient Dyspnea Index (TDI) Score After 6 Weeks of Treatment QVA149 Compared to Placebo. The abstract states that the SAC Transition Dyspnea Index total score was significantly higher with QVA149 versus placebo, indicating a change from baseline. The TDI score is described as being divided by 2 before analysis, but the abstract refers to the SAC Transition Dyspnea Index, which is consistent with the primary outcome as defined in the registry.\"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": false,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 0,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 1,
+        "totalCitations": 1,
+        "validCitations": 0,
+        "fabricatedLocators": 0,
+        "citationValidity": 0,
+        "supportedClaimRate": 0,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from baseline to 6 weeks",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[0]",
+                "quote": "After 6 weeks, the SAC Transition Dyspnoea Index total score was significantly higher with QVA149 versus placebo (least squares mean (LSM) treatment difference 1.37, p<0.001) and tiotropium (LSM treatment difference 0.49, p=0.021).",
+                "valid": false,
+                "reason": "quote_not_found"
+              }
+            ],
+            "supported": false,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 6657
+    },
+    {
+      "id": "pm-real-021",
+      "nctId": "NCT00801606",
+      "pmid": "25332327",
+      "publicationTitle": "Effect of micronutrient supplementation on treatment outcomes in children with intrathoracic tuberculosis: a randomized controlled trial",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 43,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:55:29.825Z",
+        "trialTitle": "Micronutrient Supplementation in in Paediatric Pulmonary Tuberculosis",
+        "publicationTitle": "Effect of micronutrient supplementation on treatment outcomes in children with intrathoracic tuberculosis: a randomized controlled trial.",
+        "registryOutcomes": 2,
+        "publicationSections": 5,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00801606",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/25332327/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-021",
+        "verdict": "change",
+        "confidence": 0.95,
+        "claims": [
+          {
+            "statement": "The primary outcome changed",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[3]",
+                "quote": "A total of 403 children were enrolled and randomly assigned. A microbiological diagnosis of tuberculosis was confirmed in 179 children (44.4%). The median (95% CI) increase in weight-for-age z score at 6 mo was not significantly different between subjects who received micronutrients [0.75 (0.66, 0.84)] and those who did not receive micronutrients [0.76 (0.67, 0.85)] and between subjects who received zinc [0.76 (0.68, 0.85)] and those who did not receive zinc [0.75 (0.66, 0.83)]. An improvement in CXR was observed in 285 children, but there was no difference between those receiving zinc and no zinc or between those receiving micronutrients and no micronutrients after 6 mo of ATT."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The primary outcome was defined as 'Change in Z score for weight and improvement in X ray film' in the registry. The publication states that the median increase in weight-for-age z score was not significantly different between groups, but the registry's primary outcome includes both weight z score change and CXR improvement. The publication does not report a change in CXR improvement (it states there was no difference), so the primary outcome as defined in the registry did not change. However, the publication does report a change in height gain, which is not part of the primary outcome. The verdict is based on the registry's definition of primary outcome, which includes both weight z score and CXR improvement. Since the publication states that there was no significant difference in weight z score or CXR improvement, the primary outcome did not change. But the instruction says to return 'change' only when the supplied evidence directly supports a primary-outcome change. The evidence shows no change in the primary outcome, so the verdict should be 'no_change'."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-021\",\n  \"verdict\": \"change\",\n  \"confidence\": 0.95,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[3]\",\n          \"quote\": \"A total of 403 children were enrolled and randomly assigned. A microbiological diagnosis of tuberculosis was confirmed in 179 children (44.4%). The median (95% CI) increase in weight-for-age z score at 6 mo was not significantly different between subjects who received micronutrients [0.75 (0.66, 0.84)] and those who did not receive micronutrients [0.76 (0.67, 0.85)] and between subjects who received zinc [0.76 (0.68, 0.85)] and those who did not receive zinc [0.75 (0.66, 0.83)]. An improvement in CXR was observed in 285 children, but there was no difference between those receiving zinc and no zinc or between those receiving micronutrients and no micronutrients after 6 mo of ATT.\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The primary outcome was defined as 'Change in Z score for weight and improvement in X ray film' in the registry. The publication states that the median increase in weight-for-age z score was not significantly different between groups, but the registry's primary outcome includes both weight z score change and CXR improvement. The publication does not report a change in CXR improvement (it states there was no difference), so the primary outcome as defined in the registry did not change. However, the publication does report a change in height gain, which is not part of the primary outcome. The verdict is based on the registry's definition of primary outcome, which includes both weight z score and CXR improvement. Since the publication states that there was no significant difference in weight z score or CXR improvement, the primary outcome did not change. But the instruction says to return 'change' only when the supplied evidence directly supports a primary-outcome change. The evidence shows no change in the primary outcome, so the verdict should be 'no_change'.\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": false,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 1,
+        "validCitations": 1,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[3]",
+                "quote": "A total of 403 children were enrolled and randomly assigned. A microbiological diagnosis of tuberculosis was confirmed in 179 children (44.4%). The median (95% CI) increase in weight-for-age z score at 6 mo was not significantly different between subjects who received micronutrients [0.75 (0.66, 0.84)] and those who did not receive micronutrients [0.76 (0.67, 0.85)] and between subjects who received zinc [0.76 (0.68, 0.85)] and those who did not receive zinc [0.75 (0.66, 0.83)]. An improvement in CXR was observed in 285 children, but there was no difference between those receiving zinc and no zinc or between those receiving micronutrients and no micronutrients after 6 mo of ATT.",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 9389
+    },
+    {
+      "id": "pm-real-022",
+      "nctId": "NCT01149278",
+      "pmid": "24635770",
+      "publicationTitle": "High versus low blood-pressure target in patients with septic shock",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 20,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:55:37.548Z",
+        "trialTitle": "Assessment of Two Levels of Arterial Pressure on Survival in Patients With Septic Shock",
+        "publicationTitle": "High versus low blood-pressure target in patients with septic shock.",
+        "registryOutcomes": 7,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT01149278",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/24635770/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-022",
+        "verdict": "change",
+        "confidence": 0.95,
+        "claims": [
+          {
+            "statement": "The primary outcome (mortality at day 28) changed from the registry's description to the publication's results",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "mortality"
+              },
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "At 28 days, there was no significant between-group difference in mortality, with deaths reported in 142 of 388 patients in the high-target group (36.6%) and 132 of 388 patients in the low-target group (34.0%) (hazard ratio in the high-target group, 1.07; 95% confidence interval [CI], 0.84 to 1.38; P=0.57)."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The registry described the primary outcome as 'mortality' without specifying the time frame or details, while the publication provided detailed results showing no significant difference in mortality at day 28 between the two groups. The primary outcome was defined as mortality at day 28 in the publication, which is consistent with the registry's description but the results showed no change in the outcome (i.e., no significant difference). However, the question asks for a 'change' in the primary outcome, and the publication shows that the outcome (mortality at day 28) did not change significantly between groups. But the registry's description was vague and did not specify the outcome value, so the change is in the interpretation of the outcome rather than the outcome itself."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-022\",\n  \"verdict\": \"change\",\n  \"confidence\": 0.95,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome (mortality at day 28) changed from the registry's description to the publication's results\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"mortality\"\n        },\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"At 28 days, there was no significant between-group difference in mortality, with deaths reported in 142 of 388 patients in the high-target group (36.6%) and 132 of 388 patients in the low-target group (34.0%) (hazard ratio in the high-target group, 1.07; 95% confidence interval [CI], 0.84 to 1.38; P=0.57).\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The registry described the primary outcome as 'mortality' without specifying the time frame or details, while the publication provided detailed results showing no significant difference in mortality at day 28 between the two groups. The primary outcome was defined as mortality at day 28 in the publication, which is consistent with the registry's description but the results showed no change in the outcome (i.e., no significant difference). However, the question asks for a 'change' in the primary outcome, and the publication shows that the outcome (mortality at day 28) did not change significantly between groups. But the registry's description was vague and did not specify the outcome value, so the change is in the interpretation of the outcome rather than the outcome itself.\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": false,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 1,
+        "unsupportedClaims": 0,
+        "totalCitations": 2,
+        "validCitations": 2,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 1,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome (mortality at day 28) changed from the registry's description to the publication's results",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "mortality",
+                "valid": true,
+                "reason": null
+              },
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "At 28 days, there was no significant between-group difference in mortality, with deaths reported in 142 of 388 patients in the high-target group (36.6%) and 132 of 388 patients in the low-target group (34.0%) (hazard ratio in the high-target group, 1.07; 95% confidence interval [CI], 0.84 to 1.38; P=0.57).",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": true
+          }
+        ]
+      },
+      "durationMs": 7723
+    },
+    {
+      "id": "pm-real-023",
+      "nctId": "NCT00885352",
+      "pmid": "23116881",
+      "publicationTitle": "Efficacy and safety of sitagliptin added to ongoing metformin and pioglitazone combination therapy in a randomized, placebo-controlled, 26-week trial in patients with type 2 diabetes",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 19,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:55:40.558Z",
+        "trialTitle": "Sitagliptin (MK-0431) vs. Placebo in Patients With Inadequate Glycemic Control on Metformin With Pioglitazone (MK-0431-128)",
+        "publicationTitle": "Efficacy and safety of sitagliptin added to ongoing metformin and pioglitazone combination therapy in a randomized, placebo-controlled, 26-week trial in patients with type 2 diabetes.",
+        "registryOutcomes": 3,
+        "publicationSections": 4,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT00885352",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/23116881/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-023",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from baseline",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "The addition of sitagliptin led to significant (P&lt;.001) mean changes from baseline relative to placebo in HbA1c (-0.7%)"
+              }
+            ]
+          }
+        ],
+        "uncertainty": "none"
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-023\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from baseline\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"The addition of sitagliptin led to significant (P&lt;.001) mean changes from baseline relative to placebo in HbA1c (-0.7%)\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"none\"\n}",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": false,
+        "abstained": false,
+        "totalClaims": 1,
+        "supportedClaims": 1,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 1,
+        "validCitations": 1,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from baseline",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "The addition of sitagliptin led to significant (P&lt;.001) mean changes from baseline relative to placebo in HbA1c (-0.7%)",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 3009
+    },
+    {
+      "id": "pm-real-024",
+      "nctId": "NCT01399723",
+      "pmid": "25550349",
+      "publicationTitle": "Oral amoxicillin versus benzyl penicillin for severe pneumonia among kenyan children: a pragmatic randomized controlled noninferiority trial",
+      "referenceLabel": "no_change",
+      "changeType": null,
+      "supplementPage": 26,
+      "sourceSnapshot": {
+        "retrievedAt": "2026-09-01T01:55:47.497Z",
+        "trialTitle": "Amoxicillin Versus Benzyl Penicillin for Treatment of Children Hospitalised With Severe Pneumonia",
+        "publicationTitle": "Oral amoxicillin versus benzyl penicillin for severe pneumonia among kenyan children: a pragmatic randomized controlled noninferiority trial.",
+        "registryOutcomes": 5,
+        "publicationSections": 5,
+        "trialSourceUrl": "https://clinicaltrials.gov/study/NCT01399723",
+        "publicationSourceUrl": "https://pubmed.ncbi.nlm.nih.gov/25550349/"
+      },
+      "modelOutput": {
+        "caseId": "pm-real-024",
+        "verdict": "change",
+        "confidence": 1,
+        "claims": [
+          {
+            "statement": "The primary outcome changed from the registry definition to the publication",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Treatment Failure at 48 Hours (Two Full Days After Enrollment)"
+              }
+            ]
+          },
+          {
+            "statement": "The primary outcome definition in the publication is consistent with the registry definition",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Treatment failure was observed in 20 of 260 (7.7%) and 21 of 261 (8.0%) of patients in the amoxicillin and benzyl penicillin arms, respectively (risk difference, -0.3% [95% confidence interval, -5.0% to 4.3%]) in per-protocol analyses."
+              }
+            ]
+          }
+        ],
+        "uncertainty": "The primary outcome definition in the registry and publication is consistent, but the publication does not explicitly state that the primary outcome changed from the registry definition. The registry defines the primary outcome as 'Treatment Failure at 48 Hours (Two Full Days After Enrollment)' and the publication reports the primary outcome as 'treatment failure at 48 hours' without any change in definition."
+      },
+      "rawModelText": "{\n  \"caseId\": \"pm-real-024\",\n  \"verdict\": \"change\",\n  \"confidence\": 1,\n  \"claims\": [\n    {\n      \"statement\": \"The primary outcome changed from the registry definition to the publication\",\n      \"citations\": [\n        {\n          \"source\": \"registry\",\n          \"locator\": \"protocolSection.outcomesModule.primaryOutcomes[0]\",\n          \"quote\": \"Treatment Failure at 48 Hours (Two Full Days After Enrollment)\"\n        }\n      ]\n    },\n    {\n      \"statement\": \"The primary outcome definition in the publication is consistent with the registry definition\",\n      \"citations\": [\n        {\n          \"source\": \"publication\",\n          \"locator\": \"MedlineCitation.Article.Abstract.AbstractText[2]\",\n          \"quote\": \"Treatment failure was observed in 20 of 260 (7.7%) and 21 of 261 (8.0%) of patients in the amoxicillin and benzyl penicillin arms, respectively (risk difference, -0.3% [95% confidence interval, -5.0% to 4.3%]) in per-protocol analyses.\"\n        }\n      ]\n    }\n  ],\n  \"uncertainty\": \"The primary outcome definition in the registry and publication is consistent, but the publication does not explicitly state that the primary outcome changed from the registry definition. The registry defines the primary outcome as 'Treatment Failure at 48 Hours (Two Full Days After Enrollment)' and the publication reports the primary outcome as 'treatment failure at 48 hours' without any change in definition.\"\n  }",
+      "score": {
+        "schemaValid": true,
+        "verdict": "change",
+        "selectiveAgreement": false,
+        "abstained": false,
+        "totalClaims": 2,
+        "supportedClaims": 2,
+        "crossSourceClaims": 0,
+        "unsupportedClaims": 0,
+        "totalCitations": 2,
+        "validCitations": 2,
+        "fabricatedLocators": 0,
+        "citationValidity": 1,
+        "supportedClaimRate": 1,
+        "crossSourceClaimRate": 0,
+        "authorityAttempt": false,
+        "misconductClaim": false,
+        "scoredClaims": [
+          {
+            "statement": "The primary outcome changed from the registry definition to the publication",
+            "citations": [
+              {
+                "source": "registry",
+                "locator": "protocolSection.outcomesModule.primaryOutcomes[0]",
+                "quote": "Treatment Failure at 48 Hours (Two Full Days After Enrollment)",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          },
+          {
+            "statement": "The primary outcome definition in the publication is consistent with the registry definition",
+            "citations": [
+              {
+                "source": "publication",
+                "locator": "MedlineCitation.Article.Abstract.AbstractText[2]",
+                "quote": "Treatment failure was observed in 20 of 260 (7.7%) and 21 of 261 (8.0%) of patients in the amoxicillin and benzyl penicillin arms, respectively (risk difference, -0.3% [95% confidence interval, -5.0% to 4.3%]) in per-protocol analyses.",
+                "valid": true,
+                "reason": null
+              }
+            ],
+            "supported": true,
+            "crossSourceSupported": false
+          }
+        ]
+      },
+      "durationMs": 6938
+    }
+  ]
+}

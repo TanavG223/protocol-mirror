@@ -28,6 +28,11 @@ require_file docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md
 require_file docs/JUDGE_SCORECARD.md
 require_file docs/BROWSER_VERIFICATION.md
 require_file docs/FINAL_OWNER_DEMO_SCRIPT.md
+require_file benchmarks/README.md
+require_file benchmarks/real-world-pairs.json
+require_file benchmarks/runs/live-source-webmcp-2026-08-31.json
+require_file benchmarks/runs/qwen3-4b-2026-08-31.json
+require_file benchmarks/runs/ornith-1-5-9b-2026-08-31.json
 require_file docs/demo/protocol-mirror-final-demo.mp4
 require_file docs/demo/protocol-mirror-final-captions.srt
 require_file docs/demo/title-card.png

@@ -1,0 +1,37 @@
+{
+  "run": {
+    "surface": "Codex in-app browser WebMCP",
+    "application": "http://127.0.0.1:4175/#top",
+    "dateAmericaNewYork": "2026-08-31",
+    "tools": ["get_live_clinical_trial", "get_live_pubmed_article"],
+    "method": "Each of 24 independently resolved NCT/PMID pairs was called through the page-defined WebMCP tools. Results were checked for successful envelopes, exact identifier echo, canonical source URL, and nonempty normalized evidence.",
+    "interpretation": "This is source-adapter fidelity evidence. It is not a model-accuracy, clinical-accuracy, or universal hallucination claim."
+  },
+  "summary": {"pairs":24,"toolCalls":48,"successfulToolCalls":48,"identifierMismatches":0,"sourceUrlMismatches":0,"emptyEvidenceRecords":0,"registryOutcomes":172,"publicationAbstractSections":106},
+  "cases": [
+    {"id":"pm-real-001","nctId":"NCT01211600","pmid":"24807325","referenceLabel":"change","registryOutcomes":13,"publicationAbstractSections":6,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-002","nctId":"NCT00667914","pmid":"25662415","referenceLabel":"change","registryOutcomes":5,"publicationAbstractSections":5,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-003","nctId":"NCT01549535","pmid":"24560453","referenceLabel":"change","registryOutcomes":1,"publicationAbstractSections":5,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-004","nctId":"NCT00275496","pmid":"24521106","referenceLabel":"change","registryOutcomes":2,"publicationAbstractSections":3,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-005","nctId":"NCT00430326","pmid":"21618480","referenceLabel":"change","registryOutcomes":5,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-006","nctId":"NCT00806026","pmid":"24521108","referenceLabel":"change","registryOutcomes":22,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-007","nctId":"NCT00251342","pmid":"20884642","referenceLabel":"change","registryOutcomes":6,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-008","nctId":"NCT00910208","pmid":"22506940","referenceLabel":"change","registryOutcomes":6,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-009","nctId":"NCT00275145","pmid":"21741606","referenceLabel":"change","registryOutcomes":2,"publicationAbstractSections":1,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-010","nctId":"NCT00265525","pmid":"21903744","referenceLabel":"change","registryOutcomes":3,"publicationAbstractSections":5,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-011","nctId":"NCT00750763","pmid":"21547879","referenceLabel":"change","registryOutcomes":2,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-012","nctId":"NCT00534313","pmid":"21128258","referenceLabel":"change","registryOutcomes":23,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-013","nctId":"NCT00237549","pmid":"21705063","referenceLabel":"no_change","registryOutcomes":11,"publicationAbstractSections":5,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-014","nctId":"NCT00347321","pmid":"21403073","referenceLabel":"no_change","registryOutcomes":16,"publicationAbstractSections":11,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-015","nctId":"NCT00496769","pmid":"21309657","referenceLabel":"no_change","registryOutcomes":9,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-016","nctId":"NCT00135096","pmid":"21812890","referenceLabel":"no_change","registryOutcomes":1,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-017","nctId":"NCT00806988","pmid":"25405390","referenceLabel":"no_change","registryOutcomes":2,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-018","nctId":"NCT00268476","pmid":"22452894","referenceLabel":"no_change","registryOutcomes":14,"publicationAbstractSections":5,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-019","nctId":"NCT01280123","pmid":"26116315","referenceLabel":"no_change","registryOutcomes":6,"publicationAbstractSections":5,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-020","nctId":"NCT01490125","pmid":"24176997","referenceLabel":"no_change","registryOutcomes":6,"publicationAbstractSections":1,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-021","nctId":"NCT00801606","pmid":"25332327","referenceLabel":"no_change","registryOutcomes":2,"publicationAbstractSections":5,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-022","nctId":"NCT01149278","pmid":"24635770","referenceLabel":"no_change","registryOutcomes":7,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-023","nctId":"NCT00885352","pmid":"23116881","referenceLabel":"no_change","registryOutcomes":3,"publicationAbstractSections":4,"trialOk":true,"publicationOk":true},
+    {"id":"pm-real-024","nctId":"NCT01399723","pmid":"25550349","referenceLabel":"no_change","registryOutcomes":5,"publicationAbstractSections":5,"trialOk":true,"publicationOk":true}
+  ]
+}
