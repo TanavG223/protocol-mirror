@@ -1,9 +1,12 @@
 # Final release manifest
 
-Updated on 2026-09-01 America/New_York after the benchmark-forward submission assets were prepared on top of exact product commit `61422b01eb3564a5cd49fd3bb11ee9b03c3acdc1`. The existing constant-60-fps media is a technical candidate only: it predates the real-world benchmark panel, current account evidence matches ElevenLabs Free, and the current terms restrict Free User output to non-commercial use. This is not evidence of commercial-use clearance, owner editorial approval, a Devpost entry, or a YouTube upload.
+Updated on 2026-09-01 America/New_York after a clean product preflight on WebMCP-conformance commit `982c4aa5a0aaf2f974f57f5e8d6f616ca5aad105`. The exact current release candidate is always the commit containing this manifest and must be confirmed by the `COMMIT_SHA` printed by `npm run preflight:product`; the manifest does not embed its own changing commit hash. The existing constant-60-fps media is a technical candidate only: it predates the real-world benchmark panel, current account evidence matches ElevenLabs Free, and the current terms restrict Free User output to non-commercial use. This is not evidence of commercial-use clearance, owner editorial approval, a Devpost entry, or a YouTube upload.
 
 ## Authoritative release references
 
+- Exact local release candidate: resolve with `git rev-parse HEAD` and match it to the clean preflight's `COMMIT_SHA`
+- WebMCP conformance-gate commit: `982c4aa5a0aaf2f974f57f5e8d6f616ca5aad105`
+- Real-world benchmark implementation commit: `61422b01eb3564a5cd49fd3bb11ee9b03c3acdc1`
 - Product and final-media commit: `fc3fb52ef4b6d8b34d1ed62d9fb8cb99568eb336`
 - Final browser-evidence commit: `a408bdb815344e49407f004b043273a649836da8`
 - 60 fps/ElevenLabs release-pipeline commit: `c39b921cf54bf26d37257990dafb3eab2a7ac4e9`
@@ -18,12 +21,12 @@ Updated on 2026-09-01 America/New_York after the benchmark-forward submission as
 ## Verified engineering state
 
 - Public baseline: `npm run check` passed ESLint, 34 deterministic tests, TypeScript, and the optimized Next.js production build.
-- Current local release candidate: `npm run check` passes ESLint, 42 deterministic tests, TypeScript, and the optimized Next.js production build. The four-step agent investigation → proposal → human adjudication → agent export loop passed through real WebMCP calls in a clean Codex tab. The 24-pair source benchmark completed 48/48 live tool reads, and the exact product commit was visually checked at desktop and 320-pixel widths without overflow or browser errors. These additions are not deployed yet.
-- `npm run preflight:product` passed on clean commit `61422b01eb3564a5cd49fd3bb11ee9b03c3acdc1` after a clean dependency install, high-severity production audit, lint, all 42 tests, TypeScript, and the production build.
+- Current local release candidate: `npm run check` passes the WebMCP conformance gate, ESLint, 42 deterministic tests, TypeScript, and the optimized Next.js production build. The four-step agent investigation → proposal → human adjudication → agent export loop passed through real WebMCP calls in a clean Codex tab. The 24-pair source benchmark completed 48/48 live tool reads, and the exact product commit was visually checked at desktop and 320-pixel widths without overflow or browser errors. These additions are not deployed yet.
+- `npm run preflight:product` passed on clean commit `982c4aa5a0aaf2f974f57f5e8d6f616ca5aad105` after a clean dependency install, official WebMCP metadata/lifecycle conformance checks, high-severity production audit, lint, all 42 tests, TypeScript, and the production build.
 - `npm run preflight:submission` repeated the product checks and then failed closed at the first truthful owner gate: official-rules acknowledgment remains unset. Media approval, personal fields, and the public YouTube URL remain gated behind it.
 - Repository-wide security closure: 17 runtime/tool files fully read, real malformed-route and XML-entity probes, zero reportable findings, zero dependency vulnerabilities at the enforced threshold, and two documented defense-in-depth recommendations.
 - `npm audit --omit=dev --audit-level=high`: zero vulnerabilities.
-- Final public Codex-browser rehearsal: six initial tools; direct pre-mapping evidence; two live-source reads; malformed, duplicate, and unrelated-evidence rejection; agent staging and focus; human-only acceptance; seven-tool reviewed receipt; undo back to six; no browser warnings or errors.
+- Exact-commit Codex-browser rehearsal: six initial tools; four evidence-linked proposals staged; human accept/reject decisions; a seven-tool reviewed state; a downloadable receipt with decisions, locators, and audit events; one H1; no horizontal overflow at 1280 pixels; no browser warnings or errors.
 - Responsive proof: 390 by 844 viewport with a 390-pixel document width and no horizontal overflow.
 - Production headers: restrictive CSP, anti-framing, MIME-sniffing, referrer, and permissions controls verified.
 
@@ -61,6 +64,6 @@ Automated candidate checks found no black segment of 0.4 seconds or longer, no s
 6. Create/review the Protocol Mirror Devpost project and inspect the final authenticated preview.
 7. Submit only after the separate explicit `yes, submit` confirmation, then preserve the receipt and keep all judging URLs unrestricted through the judging period.
 
-## Post-manifest real-world evaluation
+## Real-world evaluation boundary
 
-The later local candidate adds a 24-pair real-world evaluation manifest, 48/48 successful live WebMCP source calls, two raw blinded local-model runs, a strict exact-locator/quote scorer, four scorer and artifact-integrity tests, and a judge-visible reality-check section. The current deterministic suite is therefore 42 tests. The two runs showed opposite directional bias and materially different unsupported-claim rates, reinforcing the human-authority design without establishing universal hallucination or clinical-accuracy claims. These additions are local and are not public evidence until the repository and application are explicitly pushed and deployed.
+The local candidate includes a 24-pair real-world evaluation manifest, 48/48 successful live WebMCP source calls, two raw blinded local-model runs, a strict exact-locator/quote scorer, four scorer and artifact-integrity tests, and a judge-visible reality-check section. The current deterministic suite is therefore 42 tests. The two runs showed opposite directional bias and materially different unsupported-claim rates, reinforcing the human-authority design without establishing universal hallucination or clinical-accuracy claims. These additions are local and are not public evidence until the repository and application are explicitly pushed and deployed.

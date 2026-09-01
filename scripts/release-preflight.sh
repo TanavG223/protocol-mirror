@@ -28,6 +28,7 @@ require_file docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md
 require_file docs/JUDGE_SCORECARD.md
 require_file docs/BROWSER_VERIFICATION.md
 require_file docs/WEBMCP_CONFORMANCE.md
+require_file docs/FINAL_RELEASE_MANIFEST.md
 require_file docs/FINAL_OWNER_DEMO_SCRIPT.md
 require_file .agent/README.md
 require_file .agent/system/architecture.md
