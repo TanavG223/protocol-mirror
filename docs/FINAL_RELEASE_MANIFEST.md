@@ -9,6 +9,7 @@ Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs cand
 - 60 fps/ElevenLabs release-pipeline commit: `c39b921cf54bf26d37257990dafb3eab2a7ac4e9`
 - Final 60 fps ElevenLabs candidate commit: `ba3a1b811e51ab01a0cdd8446a395caad7baa9d3`
 - Four-step agent collaboration and fail-closed preflight implementation commit: `71287b406fc1fbb8d27dad73bf294742ae1d4f47`
+- Final resilience, accessibility, and security hardening commit: `0775f17de106b4917b121c8345335e295e567ffb`
 - Public repository: https://github.com/TanavG223/protocol-mirror
 - Permanent application: https://protocol-mirror.vercel.app
 - CI verification: https://github.com/TanavG223/protocol-mirror/actions/runs/33346345077
@@ -18,7 +19,7 @@ Updated on 2026-08-31 America/New_York after the constant-60-fps ElevenLabs cand
 
 - Public baseline: `npm run check` passed ESLint, 34 deterministic tests, TypeScript, and the optimized Next.js production build.
 - Current local release candidate: `npm run check` passes ESLint, 38 deterministic tests, TypeScript, and the optimized Next.js production build. The four-step agent investigation → proposal → human adjudication → agent export loop passed through real WebMCP calls in a clean Codex tab. Live-source failure/recovery, reviewer-visible records, the human receipt download, accessible skip-link focus, 320-pixel target sizing, the visible public-source link, and the clarified workflow are not deployed yet.
-- `npm run preflight:product` previously passed on clean commit `52e645a117906cd082e508163e75429fb27527a2` after a clean dependency install, high-severity production audit, lint, all 35 tests, TypeScript, and the production build. The 38-test hardening candidate must receive its own clean preflight after it is committed.
+- `npm run preflight:product` passed on clean commit `0775f17de106b4917b121c8345335e295e567ffb` after a clean dependency install, high-severity production audit, lint, all 38 tests, TypeScript, and the production build.
 - `npm run preflight:submission` repeated the product checks and then failed closed at the first truthful owner gate: official-rules acknowledgment remains unset. Media approval, personal fields, and the public YouTube URL remain gated behind it.
 - Repository-wide security closure: 17 runtime/tool files fully read, real malformed-route and XML-entity probes, zero reportable findings, zero dependency vulnerabilities at the enforced threshold, and two documented defense-in-depth recommendations.
 - `npm audit --omit=dev --audit-level=high`: zero vulnerabilities.
