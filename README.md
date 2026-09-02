@@ -16,6 +16,8 @@ No account, API key, or setup. Open https://protocol-mirror.vercel.app in Chrome
 
 **If the header reads "WebMCP preview"**, this browser did not expose WebMCP. Skip the pasted prompts — steps 4-6 are ordinary clicks and work identically by hand.
 
+The same three prompts sit on the page itself, under the hero, in an **Ask your agent** panel with Copy buttons; they adapt their identifiers to whichever pair is loaded.
+
 1. **Ask what was registered first.** Paste:
    > Call get_audit_state and summarize registryHistory: how many registration versions, and when did the primary outcome change?
 

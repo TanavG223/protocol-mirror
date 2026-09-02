@@ -64,7 +64,7 @@ function PromptChips({ pair }: { pair: TrialPair }) {
   };
   return <div className="try-prompts case-reveal" aria-labelledby="try-title">
     <div><p className="section-kicker" id="try-title">Ask your agent</p><p className="try-note">Three prompts for the case on this page, for ChatGPT&apos;s in-app browser or Chrome with WebMCP. The agent reads and proposes; you decide in the review queue below.</p></div>
-    <ol className="prompt-list">{prompts.map((prompt, index) => <li key={prompt.label}><button type="button" className="prompt-chip" onClick={() => void copy(index)} aria-label={`Copy prompt ${index + 1}: ${prompt.label}`}><span className="prompt-step" aria-hidden="true">{index + 1}</span><span className="prompt-body"><strong>{prompt.label}</strong><small>{prompt.text}</small></span><span className="prompt-copy">{copied === index ? "Copied" : "Copy"}</span></button></li>)}</ol>
+    <ol className="prompt-list">{prompts.map((prompt, index) => <li key={prompt.label}><button type="button" className="prompt-chip" onClick={() => void copy(index)} title="Copy this prompt to the clipboard"><span className="prompt-step" aria-hidden="true">{index + 1}</span><span className="prompt-body"><strong>{prompt.label}</strong><small>{prompt.text}</small></span><span className="prompt-copy">{copied === index ? "Copied" : "Copy"}</span></button></li>)}</ol>
   </div>;
 }
 
