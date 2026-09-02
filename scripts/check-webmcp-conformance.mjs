@@ -20,7 +20,11 @@ const readOnlyTools = new Set([
 ]);
 
 const untrustedOutputTools = new Set(readOnlyTools);
-const sourcePaths = ["src/app/workspace.tsx", "src/lib/webmcp-tools.ts"];
+const sourcePaths = ["src/app/workspace.tsx", "src/lib/webmcp-tools.ts", "src/lib/case-tools.ts"];
+// workspace.tsx registers tools from three effects: pair-independent tools (live readers, audit
+// state, review focus), pair-bound tools (evidence spans, proposals) that re-register when the
+// active case changes, and the reviewed-receipt tool that exists only after a human decision.
+const expectedRegistrationCallSites = 3;
 
 function fail(message) {
   throw new Error(`WEBMCP_CONFORMANCE_FAIL: ${message}`);
@@ -111,7 +115,7 @@ for (const sourcePath of sourcePaths) {
 
 const actualTools = [...definitions.keys()].sort();
 if (JSON.stringify(actualTools) !== JSON.stringify(expectedTools)) fail(`expected tools ${expectedTools.join(", ")}; found ${actualTools.join(", ")}`);
-if (registrationCalls !== 6) fail(`expected six registration call sites (two live tools share one call site); found ${registrationCalls}`);
+if (registrationCalls !== expectedRegistrationCallSites) fail(`expected ${expectedRegistrationCallSites} registration call sites (one per registration effect); found ${registrationCalls}`);
 
 for (const tool of definitions.values()) {
   if (!/^[A-Za-z0-9_.-]{1,128}$/.test(tool.name)) fail(`${tool.name} violates the specification name grammar`);

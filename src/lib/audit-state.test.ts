@@ -1,6 +1,21 @@
 import { describe, expect, it } from "vitest";
 import type { AuditState } from "./contracts";
-import { findLatestReviewedMappingId, hasReviewedWork, transitionHumanDecision } from "./audit-state";
+import { findLatestReviewedMappingId, hasReviewedWork, prepareCaseSwitch, transitionHumanDecision } from "./audit-state";
+
+describe("prepareCaseSwitch", () => {
+  const loaded = { id: "e9", action: "pair_loaded", detail: "Live pair loaded.", actor: "system" as const };
+
+  it("refuses to switch while accepted or rejected work exists", () => {
+    expect(prepareCaseSwitch({ mappings: [mapping("done", "accepted")], history: [] }, loaded)).toBeNull();
+    expect(prepareCaseSwitch({ mappings: [mapping("done", "rejected")], history: [] }, loaded)).toBeNull();
+  });
+
+  it("starts a fresh audit and reports how many staged proposals were discarded", () => {
+    const result = prepareCaseSwitch({ mappings: [mapping("a", "staged"), mapping("b", "staged")], history: [loaded] }, loaded);
+    expect(result?.discardedStaged).toBe(2);
+    expect(result?.audit).toEqual({ mappings: [], history: [loaded] });
+  });
+});
 
 const mapping = (id: string, status: "staged" | "accepted" | "rejected") => ({
   id,

@@ -28,6 +28,10 @@ export interface Outcome {
 
 export interface TrialPair {
   id: string;
+  /** "demo" for the bundled fictional case; "live" when built from records fetched through the adapters. */
+  provenance?: "demo" | "live";
+  /** ISO timestamp of the live retrieval; absent for the fictional case. */
+  retrievedAt?: string;
   nctId: string;
   pmid: string;
   title: string;

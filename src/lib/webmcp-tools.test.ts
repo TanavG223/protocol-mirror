@@ -59,6 +59,15 @@ describe("live source WebMCP tools", () => {
     expect(onPubMedArticleError).toHaveBeenCalledWith("The source adapter returned no article record.");
   });
 
+  it("accepts JSON-string input and a missing options object, as Chromium's in-page executeTool passes them", async () => {
+    const clinicalTrial = { nctId: "NCT01234567", title: "Trial title", outcomes: [] };
+    const fetcher = vi.fn(async () => Response.json({ ok: true, data: clinicalTrial }));
+    const [tool] = createLiveSourceTools(fetcher);
+    const result = await (tool.execute as unknown as (input: unknown) => Promise<{ ok: boolean }>)(JSON.stringify({ nctId: "NCT01234567" }));
+    expect(result).toMatchObject({ ok: true });
+    expect(fetcher).toHaveBeenCalledWith("/api/clinical-trials/NCT01234567", expect.objectContaining({ signal: undefined }));
+  });
+
   it("rejects malformed identifiers before a request is made", async () => {
     const fetcher = vi.fn();
     const [trialTool, pubmedTool] = createLiveSourceTools(fetcher);

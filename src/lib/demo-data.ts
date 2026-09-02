@@ -2,6 +2,7 @@ import type { AuditState, TrialPair } from "./contracts";
 
 export const DEMO_PAIR: TrialPair = {
   id: "demo-cardio-001",
+  provenance: "demo",
   nctId: "NCT-DEMO-042",
   pmid: "PMID-DEMO-2042",
   title: "A randomized study of Cardioluma for persistent hypertension",

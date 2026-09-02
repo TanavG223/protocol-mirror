@@ -25,13 +25,33 @@ export interface LivePubMedRecord {
   limitation: string;
 }
 
-interface LiveSourceCallbacks {
+export interface LiveSourceCallbacks {
   onClinicalTrialStart?: () => void;
   onClinicalTrial?: (record: LiveClinicalTrialRecord) => void;
   onClinicalTrialError?: (message: string) => void;
   onPubMedArticleStart?: () => void;
   onPubMedArticle?: (record: LivePubMedRecord) => void;
   onPubMedArticleError?: (message: string) => void;
+}
+
+export const isValidNctId = (value: unknown): value is string => typeof value === "string" && NCT_PATTERN.test(value);
+export const isValidPmid = (value: unknown): value is string => typeof value === "string" && PMID_PATTERN.test(value);
+
+/**
+ * Agents reach `execute` through different hosts: the draft specification passes a parsed object,
+ * while Chromium's current in-page `executeTool()` hands over the JSON text. Accept both so the
+ * same tool works in the ChatGPT in-app browser, in Chrome with the WebMCP flag, and in tests.
+ */
+export function normalizeToolInput(input: unknown): Record<string, unknown> {
+  if (typeof input === "string") {
+    try {
+      const parsed: unknown = JSON.parse(input);
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed as Record<string, unknown> : {};
+    } catch {
+      return {};
+    }
+  }
+  return input && typeof input === "object" && !Array.isArray(input) ? input as Record<string, unknown> : {};
 }
 
 const errorMessage = (error: unknown) => error instanceof Error && error.message
@@ -47,7 +67,46 @@ async function readSourceResponse<T>(response: Response): Promise<Record<string,
   return { ...payload, instruction: SOURCE_INSTRUCTION };
 }
 
+/**
+ * The two bounded readers behind the live-source tools. The same readers back the human-side
+ * "load a real pair" form, so an agent and a person retrieve records through one code path and
+ * the reviewer-visible intake cards behave identically for both.
+ */
+export function createLiveSourceReaders(fetcher: Fetcher = fetch, callbacks: LiveSourceCallbacks = {}) {
+  return {
+    async clinicalTrial(nctId: string, signal?: AbortSignal) {
+      if (!isValidNctId(nctId)) throw new Error("nctId must match NCT followed by exactly eight digits.");
+      callbacks.onClinicalTrialStart?.();
+      try {
+        const response = await fetcher(`/api/clinical-trials/${encodeURIComponent(nctId.toUpperCase())}`, { headers: { Accept: "application/json" }, signal });
+        const result = await readSourceResponse<LiveClinicalTrialRecord>(response);
+        if (!result.data) throw new Error("The source adapter returned no trial record.");
+        callbacks.onClinicalTrial?.(result.data);
+        return result;
+      } catch (error) {
+        callbacks.onClinicalTrialError?.(errorMessage(error));
+        throw error;
+      }
+    },
+    async pubMedArticle(pmid: string, signal?: AbortSignal) {
+      if (!isValidPmid(pmid)) throw new Error("pmid must contain one to nine digits.");
+      callbacks.onPubMedArticleStart?.();
+      try {
+        const response = await fetcher(`/api/pubmed/${encodeURIComponent(pmid)}`, { headers: { Accept: "application/json" }, signal });
+        const result = await readSourceResponse<LivePubMedRecord>(response);
+        if (!result.data) throw new Error("The source adapter returned no article record.");
+        callbacks.onPubMedArticle?.(result.data);
+        return result;
+      } catch (error) {
+        callbacks.onPubMedArticleError?.(errorMessage(error));
+        throw error;
+      }
+    },
+  };
+}
+
 export function createLiveSourceTools(fetcher: Fetcher = fetch, callbacks: LiveSourceCallbacks = {}): WebMCP.ModelContextTool[] {
+  const readers = createLiveSourceReaders(fetcher, callbacks);
   return [
     {
       name: "get_live_clinical_trial",
@@ -60,19 +119,10 @@ export function createLiveSourceTools(fetcher: Fetcher = fetch, callbacks: LiveS
         additionalProperties: false,
       },
       annotations: { readOnlyHint: true, untrustedContentHint: true },
-      execute: async (input, options) => {
-        if (typeof input.nctId !== "string" || !NCT_PATTERN.test(input.nctId)) throw new Error("nctId must match NCT followed by exactly eight digits.");
-        callbacks.onClinicalTrialStart?.();
-        try {
-          const response = await fetcher(`/api/clinical-trials/${encodeURIComponent(input.nctId.toUpperCase())}`, { headers: { Accept: "application/json" }, signal: options.signal });
-          const result = await readSourceResponse<LiveClinicalTrialRecord>(response);
-          if (!result.data) throw new Error("The source adapter returned no trial record.");
-          callbacks.onClinicalTrial?.(result.data);
-          return result;
-        } catch (error) {
-          callbacks.onClinicalTrialError?.(errorMessage(error));
-          throw error;
-        }
+      execute: async (rawInput: unknown, options?: { signal?: AbortSignal }) => {
+        const input = normalizeToolInput(rawInput);
+        if (!isValidNctId(input.nctId)) throw new Error("nctId must match NCT followed by exactly eight digits.");
+        return readers.clinicalTrial(input.nctId, options?.signal);
       },
     },
     {
@@ -86,19 +136,10 @@ export function createLiveSourceTools(fetcher: Fetcher = fetch, callbacks: LiveS
         additionalProperties: false,
       },
       annotations: { readOnlyHint: true, untrustedContentHint: true },
-      execute: async (input, options) => {
-        if (typeof input.pmid !== "string" || !PMID_PATTERN.test(input.pmid)) throw new Error("pmid must contain one to nine digits.");
-        callbacks.onPubMedArticleStart?.();
-        try {
-          const response = await fetcher(`/api/pubmed/${encodeURIComponent(input.pmid)}`, { headers: { Accept: "application/json" }, signal: options.signal });
-          const result = await readSourceResponse<LivePubMedRecord>(response);
-          if (!result.data) throw new Error("The source adapter returned no article record.");
-          callbacks.onPubMedArticle?.(result.data);
-          return result;
-        } catch (error) {
-          callbacks.onPubMedArticleError?.(errorMessage(error));
-          throw error;
-        }
+      execute: async (rawInput: unknown, options?: { signal?: AbortSignal }) => {
+        const input = normalizeToolInput(rawInput);
+        if (!isValidPmid(input.pmid)) throw new Error("pmid must contain one to nine digits.");
+        return readers.pubMedArticle(input.pmid, options?.signal);
       },
     },
   ];

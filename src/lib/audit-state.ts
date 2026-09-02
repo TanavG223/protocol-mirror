@@ -1,4 +1,4 @@
-import type { AuditState, Mapping } from "./contracts";
+import type { AuditEvent, AuditState, Mapping } from "./contracts";
 
 const DECISION_ACTIONS = new Set(["mapping_accepted", "mapping_rejected"]);
 
@@ -31,5 +31,22 @@ export function transitionHumanDecision(
     mappings: audit.mappings.map((mapping) => mapping.id === requestedId ? { ...mapping, status } : mapping),
     target,
     nextActiveId: audit.mappings.find((mapping) => mapping.status === "staged" && mapping.id !== requestedId)?.id ?? null,
+  };
+}
+
+/**
+ * Switching the active trial pair starts a fresh audit. Reviewed decisions are never discarded
+ * silently: while any accepted or rejected mapping exists the switch is refused and the reviewer
+ * must undo first. Staged proposals cite the previous pair's identifiers, so they are dropped and
+ * the count is reported for the notice.
+ */
+export function prepareCaseSwitch(
+  audit: AuditState,
+  loadedEvent: AuditEvent,
+): { audit: AuditState; discardedStaged: number } | null {
+  if (hasReviewedWork(audit)) return null;
+  return {
+    audit: { mappings: [], history: [loadedEvent] },
+    discardedStaged: audit.mappings.filter((mapping) => mapping.status === "staged").length,
   };
 }
