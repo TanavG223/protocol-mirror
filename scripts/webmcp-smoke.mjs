@@ -13,7 +13,7 @@
 //   agent can read → human sends a note → reload keeps the session → Clear session resets →
 //   ?nct=&pmid= deep link loads a pair.
 //
-// Usage: node scripts/webmcp-smoke.mjs [--url=http://127.0.0.1:4180] [--chrome=/path/to/chrome] [--screenshots=dir]
+// Usage: node scripts/webmcp-smoke.mjs [--url=http://127.0.0.1:4180] [--chrome=/path/to/chrome] [--port=9333] [--screenshots=dir]
 // Requires Google Chrome 152 or newer. No npm dependency: it speaks the DevTools protocol over
 // Node's built-in WebSocket. Chromium's in-page executeTool passes tool input as JSON strings and
 // the script tolerates both that and the object form from the draft specification.

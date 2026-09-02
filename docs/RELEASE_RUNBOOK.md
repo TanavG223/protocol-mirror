@@ -8,10 +8,10 @@ This runbook starts from a clean, CI-verified `main` branch.
 - Public MIT repository: https://github.com/TanavG223/protocol-mirror
 - Permanent WebMCP workflow: verified end to end in the Codex in-app browser
 - Benchmark-forward local candidate: `docs/demo/protocol-mirror-submission-demo.mp4`; 127.90 seconds, 1920×1080 H.264 at constant 60 fps, rights-documented Kokoro-82M narration
-- Candidate verification: 7,674 frames; no tested black/silence discontinuity; no variable cadence; −16.4 LUFS and −4.2 dBTP; owner watch-and-approve still pending
+- Candidate verification: 7,674 frames; no tested black/silence discontinuity; no variable cadence; −16.4 LUFS and −4.2 dBTP; owner watched and approved the master on 2026-09-02
 - Reproducible HD edit: `scripts/render-hd-submission-demo.sh`; release mode requires an explicit rights-cleared `NARRATION_AUDIO`
 - Upload thumbnail: `docs/demo/title-card.png` (1280×720)
-- Still pending by owner choice: public YouTube upload, explicit rules acknowledgment, Devpost project write, and final `yes, submit`
+- Owner-side steps after this runbook (YouTube upload, Devpost form and submission) are tracked in `docs/SUBMISSION_HANDOFF.md`
 
 The steps below are the reproducible release procedure and final external-action checklist. Do not repeat completed account or deployment actions unless current verification contradicts the state above.
 
@@ -50,7 +50,7 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 7. Upload `docs/demo/protocol-mirror-submission-captions.srt` as English captions and inspect every cue in YouTube's caption editor against the processed audio.
 8. Watch the complete upload with sound and captions before making it public; the challenge requires a publicly visible YouTube video.
 9. Put the live app and public repository links in the video description.
-10. Replace the pending demo-video lines in `docs/SUBMISSION_DRAFT.md` and `devpost-submission.md` with the final URL only after watching the uploaded result end to end with sound.
+10. Add the final public video URL to `docs/SUBMISSION_HANDOFF.md` and the Devpost Video field after watching the uploaded result end to end with sound.
 
 ## 4. Complete the Devpost entry
 

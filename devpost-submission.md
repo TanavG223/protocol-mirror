@@ -51,7 +51,7 @@ The real-pair loop with registration history is verified in Google Chrome 152 wi
 
 ## Demo video
 
-The prepared local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`: 127.90 seconds, 1920×1080 H.264 at constant 60 fps, with locally generated Kokoro-82M narration (Apache-2.0 model card; provenance in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`). Paste-ready title, description, and chapters are in `docs/YOUTUBE_METADATA.md`.
+The demo video linked in this submission's Video field is 2:08 (127.90 seconds), 1920×1080 H.264 at 60 fps, with locally generated Kokoro-82M narration (Apache-2.0 model card; provenance in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`); the same master is in the repository at `docs/demo/protocol-mirror-submission-demo.mp4` (Git LFS). Paste-ready title, description, and chapters are in `docs/YOUTUBE_METADATA.md`.
 
 ## Screenshots
 

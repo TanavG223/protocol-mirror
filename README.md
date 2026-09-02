@@ -10,7 +10,7 @@ Research transparency aid only. Not medical advice, a clinical decision system, 
 
 ## Five-minute judge path
 
-No account, API key, flag, or setup. Open https://protocol-mirror.vercel.app in Chrome 149 or newer: the live origin serves a Chrome WebMCP origin-trial token, verified on 2026-09-02 in Chrome 152 with no flag. (A local build is a different origin and still needs `chrome://flags/#enable-webmcp-testing`.) The ChatGPT/Codex in-app browser with site tools enabled works too. The header should read **WebMCP connected · 7 tools**.
+No account, API key, flag, or setup. Open https://protocol-mirror.vercel.app in Chrome 149 or newer: the live origin serves a Chrome WebMCP origin-trial token, verified on 2026-09-02 in Chrome 152 with no flag. (A local build is a different origin and still needs `chrome://flags/#enable-webmcp-testing`.) The ChatGPT/Codex in-app browser with site tools enabled works too. Paste the prompts into whichever agent is driving the browser: the client verified end to end is the ChatGPT/Codex desktop app's in-app browser with site tools enabled. Plain Chrome with the origin trial makes the tools visible to any WebMCP-capable agent client but does not supply one; without an agent, the badge still proves the tools registered and steps 4-6 are ordinary clicks. The header should read **WebMCP connected · 7 tools**.
 
 **Nothing to load first.** The page opens on a real pair: ACTT-1 (ClinicalTrials.gov `NCT04280705`) and its NEJM report (PubMed `32445440`), with the trial's ClinicalTrials.gov *registration history* already fetched. The registry column shows an amber note — the registered primary outcome set changed three times across 25 registration versions, twice before the paper appeared — and lists the **originally registered** primary outcome first, so what was first promised can be paired against what was published. If the fetch fails, the fictional teaching case loads instead. `?demo` opens on that teaching case; `?nct=NCT…&pmid=…` deep-links any other pair.
 
@@ -88,16 +88,23 @@ A separate reproducible run tests the source layer and model grounding on **24 r
 
 ## Run locally
 
-Requires Node.js 20.9+ and npm.
+Requires Node.js 20.9+ (an even-numbered LTS; the test runner does not support Node 21.x or 23.x) and npm; `.nvmrc` pins 20.9 for `nvm use`. Git LFS is optional: the demo videos under `docs/demo/` are LFS objects and arrive as small pointer files without it, which affects nothing but `npm run check:media`.
 
 ```bash
 npm install
-npm run dev
+npm run dev              # development server on http://localhost:3000
+```
+
+For a production build:
+
+```bash
+npm run build
+npm start -- -p 3000     # any port; pass -p to change it
 ```
 
 Open `http://localhost:3000`. A local origin is not covered by the origin-trial token, so to connect an agent locally use Chrome 152 or newer with `chrome://flags/#enable-webmcp-testing` set to Enabled (relaunch Chrome), or open the local URL in the ChatGPT/Codex desktop in-app browser with site tools enabled. Browsers without `document.modelContext` or `navigator.modelContext` show **WebMCP preview** and keep the complete manual review workflow. No environment variables or accounts are needed; the two live-source routes call the public ClinicalTrials.gov and PubMed APIs directly.
 
-The demo videos under `docs/demo/` are stored with Git LFS. Cloning without `git-lfs` installed gives you small pointer files in their place, which affects nothing else; `git lfs install && git lfs pull` fetches them.
+`git lfs install && git lfs pull` fetches the real video files if you want them.
 
 Live source routes, used by both the tools and the human loader:
 
@@ -117,7 +124,7 @@ npm run build && npx next start -p 4180   # in one terminal: the production buil
 npm run smoke:webmcp   # in another: headless Chrome 152+ drives the page's own tools through the whole loop
 ```
 
-The smoke expects Google Chrome at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`; pass `--chrome=/path/to/chrome` or set `CHROME_BIN` elsewhere, and `--url=http://127.0.0.1:PORT` to target a different server. It needs Chrome 152 or newer because it uses Chromium's in-page testing API (`document.modelContext.getTools()` / `executeTool()`), which the `--enable-features=WebMCPTesting` flag it launches with enables.
+The smoke expects Google Chrome at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`; pass `--chrome=/path/to/chrome` or set `CHROME_BIN` elsewhere, and `--url=http://127.0.0.1:PORT` to target a different server. It needs Chrome 152 or newer because it uses Chromium's in-page testing API (`document.modelContext.getTools()` / `executeTool()`), which the `--enable-features=WebMCPTesting` flag it launches with enables. It opens a Chrome DevTools port, 9333 by default; pass `--port=` if that port is taken. The run drives the real ClinicalTrials.gov and PubMed routes, so it needs network access; `npm run check` does not.
 
 `npm run smoke:webmcp` is a dependency-free DevTools-protocol script. It launches Google Chrome headless with `--enable-features=WebMCPTesting` and calls `document.modelContext.getTools()` / `executeTool()` on the real page. It asserts: 7 initial tools; the page opening on ACTT-1 with its registration history and the original primary outcome listed first; a return to the demonstration case; agent reads of the trial, the article and the history; human promotion via a DOM click on **Review this pair**; `get_audit_state` and `get_evidence_spans` on the original primary outcome against the RESULTS section; `propose_outcome_mapping`; `request_human_review`; DOM **Accept** → 8 tools; a receipt whose `live_sources` evidence cites a `history/0.` locator; **Undo** → 7 tools; a rejection whose reason is readable in `reviewerFeedback`; a note readable in `reviewerNotes`; a reload that restores the case; **Clear session**; and a `?nct=&pmid=` deep link. It passed against the local production build and against https://protocol-mirror.vercel.app on 2026-09-02 (America/New_York) with Google Chrome 152.0.7977.65, most recently on the deployment of commit `d8de2a8`, the last change to the application code. Chromium's in-page `executeTool` passes tool input as JSON strings, so every executor accepts both objects and JSON strings.
 
