@@ -61,3 +61,28 @@ Official overview, rules, dates, prizes, criteria, and submission schema were ch
 ## External-state warning
 
 The repository, public application, YouTube account, and Devpost entry must be checked live immediately before submission. The official Devpost pages and rules prevail if any saved copy differs.
+
+## Devpost story prompt answers (paste if the form asks)
+
+Each answer is 60-120 words and repeats no claim the packet does not already support. Elevator pitch (198 characters): ACTT-1's registered primary outcome changed twice before its NEJM paper appeared. Page-side WebMCP tools read the registry's version history live, quote both spans with locators, and let you decide.
+
+### Inspiration
+ACTT-1 registered a 7-point ordinal scale at Day 15 on 2020-02-20. Its NEJM paper reports time to recovery. That change sits in the public registration history with a version number on it, and nobody has to dig for it. Reading it still takes three browser tabs and a lot of copy-paste. Chen et al. found that 130 of 389 trials had changed at least one primary outcome, and 66 of those omitted or never reported the registered one. The retrieval is mechanical, the sources are open APIs, and the call at the end belongs to a person. That split is the shape WebMCP fits.
+
+### What it does
+Protocol Mirror opens on a real trial beside its paper, both fetched live from ClinicalTrials.gov and PubMed, and registers 8 WebMCP tools on that page. The agent reads the trial, the abstract, and the registration version history. It quotes exact spans with source locators. It stages a proposal, matched, omitted, introduced, or uncertain, with a rationale and a confidence. You accept or reject. Accepting registers `export_review_receipt`, so the agent can package the reviewed decisions with their locators and source URLs. Rejecting sends your reason and note back through `get_audit_state`, and the agent revises.
+
+### How we built it
+A Next.js app with no backend service and no accounts. Two server routes proxy ClinicalTrials.gov and PubMed, validating identifiers before interpolation and returning a stable `{ ok, data }` envelope. Tools register through `document.modelContext.registerTool` with a `navigator.modelContext` fallback, in three effects: pair-independent reads, pair-bound tools that re-register when the case changes, and the gated receipt tool. Every schema is closed, every registration carries an `AbortSignal`, and audit state lives in the tab's `sessionStorage`. A conformance script checks annotations, abort signals, same-origin defaults and Chrome's metadata budgets. A headless Chrome script drives the whole loop.
+
+### Challenges we ran into
+Registration history was the hard part. Late versions can carry 4 MB of posted results, so the route caps the version list and compares at most nine versions, then reports which ones it compared and whether each change date is exact. Above six Outcome Measures versions, a bisection dates the first change instead of reading everything. Enum lists of outcome IDs are emitted only at 20 or fewer, with runtime validation authoritative either way. Chromium's in-page `executeTool` passes tool input as JSON strings, so every executor had to accept objects and JSON strings before the smoke run would pass.
+
+### Accomplishments that we're proud of
+48/48 live reads through the page's own tools returned the requested record with a canonical URL and non-empty evidence: 172 outcomes and 106 abstract sections across 24 real NCT/PMID pairs. The loop is verified end to end in Google Chrome 152 by a headless smoke script, and in the Codex/ChatGPT desktop in-app browser with site tools enabled. The authority boundary held in both model runs: neither model attempted to accept or reject anything, because there is nothing to call. And the default case is a real trial with a real dated outcome change, fetched at page load.
+
+### What we learned
+Two small local models received identical evidence and failed in opposite directions. qwen3:4b called all 10 of its decided no-change cases a change. ornith-1.5:9b missed 10 of its 11 decided change cases. Averaging those two would look reasonable and mean nothing, which is the argument for keeping the accept click human instead of tuning a threshold. The second lesson is smaller. Tool annotations are a contract, and writing a conformance gate for `readOnlyHint`, `untrustedContentHint`, abort signals and metadata budgets keeps them honest as the tool surface changes.
+
+### What's next
+The limitations are the roadmap. Registration history compares primary outcome measures only, so secondary outcomes and eligibility changes are the next comparison to add. The publication column shows PubMed abstract sections, so reading full-text results would let a proposal cite reported numbers rather than an abstract summary. Receipts are unsigned and live in the tab's `sessionStorage`, so a signed, portable receipt is worth building. And the loop is verified in two browsers so far. More agent clients, against the same page and the same tools, is the cheapest test of whether this page-side design travels.
