@@ -5,7 +5,7 @@ import { DEMO_PAIR, INITIAL_AUDIT } from "@/lib/demo-data";
 import type { AuditEvent, AuditState, DiscrepancyKind, Mapping, Outcome, TrialPair } from "@/lib/contracts";
 import { createReviewReceipt } from "@/lib/review-receipt";
 import { findLatestReviewedMappingId, hasReviewedWork, prepareCaseSwitch, transitionHumanDecision } from "@/lib/audit-state";
-import { useWorkspaceMotion } from "@/lib/use-workspace-motion";
+import { useRestart, useWorkspaceMotion } from "@/lib/use-workspace-motion";
 import { createLiveSourceReaders, createLiveSourceTools, isValidNctId, isValidPmid, type LiveClinicalTrialRecord, type LivePubMedRecord, type LiveRegistryHistory } from "@/lib/webmcp-tools";
 import { createCaseReadTools, createPairBoundTools, type CaseToolDeps } from "@/lib/case-tools";
 import { LIVE_PUBLICATION_LIMITATION, buildLiveTrialPair, isLivePair, listMeasures } from "@/lib/live-pair";
@@ -40,6 +40,33 @@ function Icon({ name }: { name: "spark" | "check" | "arrow" | "quote" | "undo" |
 }
 
 const outcomeById = (id: string | null, outcomes: Outcome[]) => outcomes.find((item) => item.id === id);
+
+const promptsFor = (pair: TrialPair) => {
+  const registry = pair.registryOutcomes[0];
+  const results = pair.publicationOutcomes.find((outcome) => /results/i.test(outcome.title)) ?? pair.publicationOutcomes[pair.publicationOutcomes.length - 1];
+  return [
+    { label: "Read the registration history", text: "Call get_audit_state and tell me, with dates, how this trial's registered primary outcome changed and whether the changes predate the publication." },
+    { label: "Quote both sides", text: `Call get_evidence_spans for ${registry ? `ev-${registry.id}` : "the first registry evidence id"} and ${results ? `ev-${results.id}` : "the publication evidence id"} and quote both spans word for word with their locators.` },
+    { label: "Stage one proposal", text: `Stage one proposal with propose_outcome_mapping: registryOutcomeId ${registry?.id ?? "<registry id>"}, publicationOutcomeId ${results?.id ?? "<publication id>"}, discrepancy uncertain, both evidence ids, a two-sentence rationale, confidence 0.7. Then call request_human_review with the returned mappingId. Do not accept or reject anything.` },
+  ];
+};
+
+/** Three copyable prompts for the case on the page, so a visitor never needs the README to start. */
+function PromptChips({ pair }: { pair: TrialPair }) {
+  const [copied, setCopied] = useState<number | null>(null);
+  const prompts = promptsFor(pair);
+  const copy = async (index: number) => {
+    try {
+      await navigator.clipboard.writeText(prompts[index].text);
+      setCopied(index);
+      window.setTimeout(() => setCopied((current) => (current === index ? null : current)), 1600);
+    } catch { setCopied(null); }
+  };
+  return <div className="try-prompts case-reveal" aria-labelledby="try-title">
+    <div><p className="section-kicker" id="try-title">Ask your agent</p><p className="try-note">Three prompts for the case on this page, for ChatGPT&apos;s in-app browser or Chrome with WebMCP. The agent reads and proposes; you decide in the review queue below.</p></div>
+    <ol className="prompt-list">{prompts.map((prompt, index) => <li key={prompt.label}><button type="button" className="prompt-chip" onClick={() => void copy(index)} aria-label={`Copy prompt ${index + 1}: ${prompt.label}`}><span className="prompt-step" aria-hidden="true">{index + 1}</span><span className="prompt-body"><strong>{prompt.label}</strong><small>{prompt.text}</small></span><span className="prompt-copy">{copied === index ? "Copied" : "Copy"}</span></button></li>)}</ol>
+  </div>;
+}
 
 /** Renders a number; when it changes, replays a short roll (transform/opacity only, skipped under reduced motion). */
 function Rolling({ value }: { value: number }) {
@@ -210,7 +237,11 @@ export default function Workspace() {
   }, [active, evidence]);
   const liveIntakeReady = Boolean(liveTrial && liveArticle);
   const liveIntakeIsActive = liveIntakeReady && activePair.id === `live-${liveTrial!.nctId}-${liveArticle!.pmid}`;
-  useWorkspaceMotion(shellRef, staged.length, activeId, reviewed.length);
+  useWorkspaceMotion(shellRef, staged.length, reviewed.length);
+  const evidenceRef = useRef<HTMLDivElement>(null);
+  const noticeRef = useRef<HTMLParagraphElement>(null);
+  useRestart(evidenceRef, activeId ?? selectedOutcomeId, "drawer-in");
+  useRestart(noticeRef, decisionNotice, "notice-in");
 
   const event = useCallback((action: string, detail: string, actor: AuditEvent["actor"], subjectId?: string): AuditEvent => ({
     id: `event-${++counter.current}`, action, detail, actor, subjectId,
@@ -634,6 +665,7 @@ export default function Workspace() {
     </header>
     <main id="top">
       <section className="case-header" aria-labelledby="case-title">
+        <div className="case-header-canvas">
         <div className="eyebrow case-reveal"><span>Clinical-trial outcome check</span><span aria-hidden="true">/</span><span>ClinicalTrials.gov registry vs PubMed publication</span></div>
         <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>Did the trial publish</span><span>what it registered?</span></h1><p className="case-subtitle">Load a real ClinicalTrials.gov record and its PubMed report. Your agent quotes the exact registered and reported text through WebMCP and stages each match or discrepancy for you. AI assembles evidence. A human decides.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={showExamples} disabled={(reviewedWorkAvailable && live) || loaderBusy} title={loaderBusy ? "Wait for the real trial to finish loading" : reviewedWorkAvailable && live ? "Undo the reviewed decisions before switching to the demonstration case" : undefined}><Icon name="spark" /> {live ? "See 4 example proposals (demo case)" : "Load 4 example proposals"}</button><p>{webMcp === "connected"
           ? <><strong><Rolling value={reviewedWorkAvailable ? 8 : 7} /> tools</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Agent export unlocked" : "Your decision unlocks export"}</>
@@ -644,6 +676,8 @@ export default function Workspace() {
           <li><span>03</span><strong>You decide</strong><small>Accept or reject in the page; no agent tool can</small></li>
           <li><span>04</span><strong>Exports only what you approved</strong><small>The receipt tool appears after your first decision</small></li>
         </ol>
+        </div>
+        <PromptChips pair={activePair} />
         <div className={`case-passport case-reveal ${live ? "live" : ""}`}><span>{live ? "Live public record · active case" : "Active demonstration case"}</span><h2>{activePair.title}</h2><p>{live ? "Real ClinicalTrials.gov and PubMed records · research transparency aid, not a finding" : "Deterministic fictional record · no clinical claim"}</p></div>
         <div className="source-strip" role="group" aria-label="Study sources">
           <div><span>Registration</span><strong>{live ? <a href={activePair.registryUrl} target="_blank" rel="noreferrer">{activePair.nctId}</a> : activePair.nctId}</strong><small>{live ? `Retrieved ${activePair.registryUpdated}` : `Updated ${activePair.registryUpdated}`}</small></div>
@@ -703,7 +737,7 @@ export default function Workspace() {
         </div>
       </section>
       <section className="review-dock" aria-labelledby="review-title" ref={reviewRef} tabIndex={-1}>
-        <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title">Review queue <span>{staged.length}</span></h2><p className="decision-notice" role="status" aria-live="polite">{decisionNotice}</p></div><div className="review-dock-actions">{receiptDownloadHref && <a className="text-button" href={receiptDownloadHref} download={`${activePair.id}-review-receipt.json`}><Icon name="download" /> Download reviewed receipt JSON</a>}<button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div></div>
+        <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title">Review queue <span>{staged.length}</span></h2><p className="decision-notice" ref={noticeRef} role="status" aria-live="polite">{decisionNotice}</p></div><div className="review-dock-actions">{receiptDownloadHref && <a className="text-button" href={receiptDownloadHref} download={`${activePair.id}-review-receipt.json`}><Icon name="download" /> Download reviewed receipt JSON</a>}<button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div></div>
         <form className="agent-note-form" onSubmit={(submitEvent) => { submitEvent.preventDefault(); sendNoteToAgent(noteDraft); }}><label><span>Note to the agent{active ? ` about ${active.id}` : ""}</span><input value={noteDraft} maxLength={240} onChange={(changeEvent) => setNoteDraft(changeEvent.target.value)} placeholder="e.g. Compare the original primary outcome, not the current one, against the RESULTS section" /></label><button type="submit" className="text-button" disabled={!noteDraft.trim()}>Send to agent <Icon name="arrow" /></button></form>
         {staged.length === 0 ? <div className="empty-review"><Icon name="spark" /><div><strong>The queue is clear.</strong><p>{live ? "Ask an agent to inspect this real pair with WebMCP and stage a proposal, or return to the demonstration case." : "Ask an agent to inspect the case with WebMCP, or stage the guided demonstration."}</p></div></div> : <div className="review-cards">{staged.map((mapping) => { const isActive = mapping.id === activeId; const registryTitle = mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, activePair.registryOutcomes)?.title : "No registered counterpart"; const publicationTitle = mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, activePair.publicationOutcomes)?.title : "Not reported"; const mappingName = `${LABELS[mapping.discrepancy]} proposal from ${registryTitle} to ${publicationTitle}`; return <article className={`review-card ${isActive ? "active" : ""}`} key={mapping.id}><button className="review-card-main" type="button" aria-pressed={isActive} aria-controls="evidence-drawer" onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{registryTitle}</strong><span className="mapping-arrow"><Icon name="arrow" /></span><strong>{publicationTitle}</strong><small>{Math.round(mapping.confidence * 100)}% agent confidence · {mapping.evidenceIds.length} source {mapping.evidenceIds.length === 1 ? "span" : "spans"}{!isActive && " · inspect before deciding"}</small></button><div className="review-actions"><button type="button" className="reject" disabled={!isActive} aria-expanded={rejecting?.id === mapping.id} aria-label={`Reject ${mappingName}`} onClick={() => setRejecting((current) => current?.id === mapping.id ? null : { id: mapping.id, reason: REJECT_REASONS[0], text: "" })}>Reject</button><button type="button" className="accept" disabled={!isActive} aria-label={`Accept ${mappingName}`} onClick={() => decide(mapping.id, "accepted")}><Icon name="check" />Accept</button></div>{isActive && rejecting?.id === mapping.id && <form className="reject-form" onSubmit={(submitEvent) => { submitEvent.preventDefault(); decide(mapping.id, "rejected", rejecting.text.trim() ? `${rejecting.reason}: ${rejecting.text.trim()}` : rejecting.reason); }}><label><span>Why reject? The agent can read this and try again.</span><select value={rejecting.reason} onChange={(changeEvent) => setRejecting({ ...rejecting, reason: changeEvent.target.value })}>{REJECT_REASONS.map((reason) => <option key={reason} value={reason}>{reason}</option>)}</select></label><label><span>Detail (optional)</span><input value={rejecting.text} maxLength={200} onChange={(changeEvent) => setRejecting({ ...rejecting, text: changeEvent.target.value })} placeholder="e.g. the METHODS sentence defines the outcome; it does not report a result" /></label><div className="reject-form-actions"><button type="submit" className="text-button danger">Confirm reject</button><button type="button" className="text-button" onClick={() => setRejecting(null)}>Cancel</button></div></form>}</article>; })}</div>}
       </section>
@@ -721,7 +755,7 @@ export default function Workspace() {
       </section>
       <section className="evidence-panel" id="evidence-drawer" aria-labelledby="evidence-title" aria-live="polite">
         <div className="evidence-heading"><div><p className="section-kicker">Inspectable reasoning</p><h2 id="evidence-title">{active ? "Proposal evidence" : selectedOutcome ? "Source evidence" : "Evidence drawer"}</h2></div>{active && <span className={`classification ${active.discrepancy}`}>{LABELS[active.discrepancy]}</span>}</div>
-        {active || selectedOutcome ? <div className="evidence-content"><div className="rationale"><span>{active ? "Agent rationale" : "Selected outcome"}</span>{active && <div className="evidence-mapping-identity"><strong>{active.registryOutcomeId ? outcomeById(active.registryOutcomeId, activePair.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{active.publicationOutcomeId ? outcomeById(active.publicationOutcomeId, activePair.publicationOutcomes)?.title : "Not reported"}</strong></div>}<p>{active ? active.rationale : selectedOutcome?.title}</p><small>{active ? "Proposal only · source text is treated as untrusted data" : "Direct source inspection · no mapping or inference required"}</small>{active?.reviewNote && <p className="review-note"><span>Your reason</span>{active.reviewNote}</p>}{spanDiff && <div className="span-diff"><span>Word-level difference</span>{spanDiff.parts ? <p>{spanDiff.parts.map((part, index) => <em key={index} className={`diff-${part.kind}`}>{part.text}</em>)}</p> : <p className="muted">{spanDiff.note}</p>}<small>Amber: only in the registry text. Blue: only in the publication text.</small></div>}</div><div className="quotes">{evidence.map((item) => item && <blockquote key={item.id}><Icon name="quote" /><p>“{item.quote}”</p><cite><span className={`evidence-origin ${live ? "live" : ""}`}>{live ? "Live source span" : "Fictional demonstration span"}</span>{item.sourceLabel}<span>{item.locator}</span></cite><a href={item.url} target="_blank" rel="noreferrer" aria-label={live ? `Open the exact ${item.source} record for this span` : `Visit the ${item.source} database; this fictional demonstration span has no public record page`}>{live ? "Open exact record" : "Visit source database"} <Icon name="arrow" /></a></blockquote>)}</div></div> : <p className="muted">Select any outcome to inspect its exact source span, or select a staged proposal to inspect the agent rationale.</p>}
+        {active || selectedOutcome ? <div className="evidence-content" ref={evidenceRef}><div className="rationale"><span>{active ? "Agent rationale" : "Selected outcome"}</span>{active && <div className="evidence-mapping-identity"><strong>{active.registryOutcomeId ? outcomeById(active.registryOutcomeId, activePair.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{active.publicationOutcomeId ? outcomeById(active.publicationOutcomeId, activePair.publicationOutcomes)?.title : "Not reported"}</strong></div>}<p>{active ? active.rationale : selectedOutcome?.title}</p><small>{active ? "Proposal only · source text is treated as untrusted data" : "Direct source inspection · no mapping or inference required"}</small>{active?.reviewNote && <p className="review-note"><span>Your reason</span>{active.reviewNote}</p>}{spanDiff && <div className="span-diff"><span>Word-level difference</span>{spanDiff.parts ? <p>{spanDiff.parts.map((part, index) => <em key={index} className={`diff-${part.kind}`}>{part.text}</em>)}</p> : <p className="muted">{spanDiff.note}</p>}<small>Amber: only in the registry text. Blue: only in the publication text.</small></div>}</div><div className="quotes">{evidence.map((item) => item && <blockquote key={item.id}><Icon name="quote" /><p>“{item.quote}”</p><cite><span className={`evidence-origin ${live ? "live" : ""}`}>{live ? "Live source span" : "Fictional demonstration span"}</span>{item.sourceLabel}<span>{item.locator}</span></cite><a href={item.url} target="_blank" rel="noreferrer" aria-label={live ? `Open the exact ${item.source} record for this span` : `Visit the ${item.source} database; this fictional demonstration span has no public record page`}>{live ? "Open exact record" : "Visit source database"} <Icon name="arrow" /></a></blockquote>)}</div></div> : <p className="muted">Select any outcome to inspect its exact source span, or select a staged proposal to inspect the agent rationale.</p>}
       </section>
     </main>
     <footer><p>Protocol Mirror is a research transparency aid—not medical advice or a finding of misconduct.</p><div className="footer-meta"><p>{accepted.length} accepted · {audit.history.length} auditable {audit.history.length === 1 ? "event" : "events"} · {live ? "live public records" : "deterministic demo data"}</p><a href="https://github.com/TanavG223/protocol-mirror" target="_blank" rel="noreferrer">Public source · MIT <Icon name="arrow" /></a></div></footer>
