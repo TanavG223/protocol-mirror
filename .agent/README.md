@@ -12,6 +12,7 @@ This directory is a selective context router for coding agents. It keeps stable 
 | Real-world benchmark work | `../benchmarks/README.md` | Manifest, scorer, runner, then only the necessary raw run |
 | Security change or review | `../docs/SECURITY_MODEL.md` | `../docs/SECURITY_REVIEW.md`, headers, adapters, and validation code |
 | Hackathon submission or release | `tasks/submission-readiness.md` | Official snapshot, scorecard, runbook, and form-ready draft |
+| Final push (Sep 1–3, 2026): phases, owners, coordination rules for Claude Code + Codex | `tasks/final-push-plan.md` | Phase status table, Phase 2 design, verification commands |
 | Demo video or screenshots | `tasks/submission-readiness.md` | Benchmark recut storyboard, YouTube metadata, and release manifest |
 | Update this context system | `sop/update-context.md` | The canonical document whose routing changed |
 
