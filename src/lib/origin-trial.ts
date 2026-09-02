@@ -7,7 +7,7 @@
  * below, or provide it as NEXT_PUBLIC_WEBMCP_ORIGIN_TRIAL_TOKEN at build time. Other origins
  * (a local build, a fork) still need the flag.
  */
-const PASTED_TOKEN = "";
+const PASTED_TOKEN = "Ask+SwLwGn+KblU/K9sMOhcv22VCtltXHwMcKf8LG+umhURRRf6Sidan+YTSZDVgQnjY83U2mRBkiJ8BFDYD0wkAAABaeyJvcmlnaW4iOiJodHRwczovL3Byb3RvY29sLW1pcnJvci52ZXJjZWwuYXBwOjQ0MyIsImZlYXR1cmUiOiJXZWJNQ1AiLCJleHBpcnkiOjE3OTQ4NzM2MDB9";
 
 export const WEBMCP_ORIGIN_TRIAL_TOKEN = (process.env.NEXT_PUBLIC_WEBMCP_ORIGIN_TRIAL_TOKEN ?? PASTED_TOKEN).trim();
 export const WEBMCP_ORIGIN_TRIAL_ORIGIN = "https://protocol-mirror.vercel.app";
