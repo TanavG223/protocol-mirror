@@ -47,6 +47,7 @@ const chrome = spawn(chromePath, [
 let ws;
 let nextId = 0;
 const pending = new Map();
+const pageErrors = [];
 
 async function connect() {
   for (let attempt = 0; attempt < 50; attempt += 1) {
@@ -56,6 +57,9 @@ async function connect() {
       await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject; });
       ws.onmessage = (message) => {
         const payload = JSON.parse(message.data);
+        // Any uncaught page exception (a hydration mismatch, a render error) fails the run at the end.
+        if (payload.method === "Runtime.exceptionThrown") pageErrors.push(payload.params.exceptionDetails.exception?.description ?? payload.params.exceptionDetails.text ?? "unknown exception");
+        if (payload.method === "Runtime.consoleAPICalled" && payload.params.type === "error") pageErrors.push(`console.error: ${payload.params.args.map((arg) => arg.value ?? arg.description ?? "").join(" ")}`);
         if (payload.id && pending.has(payload.id)) {
           const { resolve, reject } = pending.get(payload.id);
           pending.delete(payload.id);
@@ -283,6 +287,8 @@ try {
   if (linked.activeCase !== "live" || linked.pair.nctId !== nctId || linked.pair.pmid !== pmid) fail("the deep link did not load the requested pair");
   log("deep link loaded the requested pair");
 
+  if (pageErrors.length > 0) fail(`the page raised ${pageErrors.length} uncaught error(s) during the run: ${pageErrors.map((text) => text.split("\n")[0].slice(0, 200)).join(" | ")}`);
+  log("no uncaught page errors or console.error calls during the run");
   console.log("WEBMCP_SMOKE=PASS");
 } catch (error) {
   console.error(`WEBMCP_SMOKE=FAIL ${error.message}`);
