@@ -8,7 +8,7 @@ Protocol Mirror
 
 ## Tagline
 
-AI can surface the discrepancy. Only a human can decide what it means.
+Did the trial publish what it registered? Your agent pulls ClinicalTrials.gov and PubMed, quotes exact spans. You decide.
 
 ## One-sentence summary
 
@@ -20,7 +20,7 @@ Clinical-trial registries capture what researchers planned to measure; publicati
 
 ## Evidence of need
 
-A 2019 cross-sectional study of 389 trials published in high-impact journals found that 130 had at least one primary-outcome change between registration and publication. Of those 130 trials, 66 involved a registered primary outcome that was not reported or was omitted. Protocol Mirror does not assume that every change is improper; it makes the comparison and its evidence reviewable. [Chen et al., *JAMA Network Open*](https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/)
+A 2019 cross-sectional study checked 389 randomized trials sampled from PubMed and Embase, published 2011-2015 with no restriction by journal, against their registrations. 130 had at least one primary-outcome change between registration and publication; 66 of those omitted or did not report the registered primary outcome; and trials with a change reported intervention effect sizes about 16% larger. Protocol Mirror does not assume that every change is improper; it makes the comparison and its evidence reviewable. [Chen et al., *JAMA Network Open*](https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/)
 
 ## What it does
 
@@ -61,7 +61,7 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 - Deterministic offline demonstration data plus bounded live-source adapters
 - Evidence-side validation that rejects cross-record IDs, unrelated citations, duplicates, and unknown evidence
 - Restrictive production response headers, bounded upstream payloads, and entity-safe XML parsing
-- 42 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
+- 54 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
 - Reviewer-visible live-source intake and a human-downloadable reviewed JSON receipt
 - A balanced 24-pair real-world source and grounding benchmark with raw outputs from two named local models
 - A production-mode Codex-browser rehearsal at desktop and 390-pixel mobile widths with no horizontal overflow or browser errors

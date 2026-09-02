@@ -5,7 +5,7 @@
 Read these in order and verify drift before acting:
 
 1. `../../docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md`
-2. `../../docs/JUDGE_SCORECARD.md`
+2. `../../docs/internal/JUDGE_SCORECARD.md`
 3. `../../devpost-submission.md`
 4. `../../docs/RELEASE_RUNBOOK.md`
 5. `../../docs/FINAL_RELEASE_MANIFEST.md`

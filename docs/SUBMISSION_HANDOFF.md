@@ -31,6 +31,33 @@ This package contains the complete prepared submission media and copy. It is a h
 - Continuity: no tested black segment of 0.4 seconds or longer; no tested silence of 1.5 seconds or longer
 - Narration: local Kokoro-82M v1.0 `af_heart`; provenance in `submission/KOKORO_NARRATION_PROVENANCE.md`
 
+## Official Devpost form fields
+
+Authenticated Devpost preflight on 2026-09-01 at 13:54 UTC returned these exact submission fields. Values marked **Confirm** require the project owner's personal choice; they are not inferred.
+
+| ID | Official field | Prepared answer |
+| ---: | --- | --- |
+| `28249` | Submitter Type | **Confirm:** Individual, Team of Individuals, or Organization |
+| `28250` | Country of residence of yourself and team members if applicable | **Confirm:** required multi-country selection; eligibility must match the official rules |
+| `28251` | Organization name | Leave blank unless the selected submitter type requires it |
+| `28252` | App Status | **Confirm:** New or Existing; repository creation date alone does not establish project status |
+| `28253` | Existing-app update explanation | Complete only if the owner selects Existing; describe the WebMCP work added during the challenge period |
+| `28254` | Live URL | https://protocol-mirror.vercel.app |
+| `28255` | Testing instructions/credentials | No credentials required. Paste the six-step judge path from `devpost-submission.md` ("Testing instructions"): load NCT04280705 / PMID 32445440 through the two live tools, click **Review this pair**, read the exact spans, let the agent stage a proposal, accept it yourself, watch the seventh tool appear, export the receipt, then undo. In a browser without WebMCP, click a curated pair chip and do the same steps by hand. |
+| `28256` | Public repository | https://github.com/TanavG223/protocol-mirror |
+| `28257` | Tested agents/clients | Codex desktop in-app browser with WebMCP site tools enabled (earlier flow, 2026-08-30/31); Google Chrome 152.0.7977.65 headless with `--enable-features=WebMCPTesting` driven by `npm run smoke:webmcp` (real-pair loop, 2026-09-01). |
+| `28258` | AI tools leveraged | OpenAI Codex for research, scoping, implementation, debugging, deterministic tests, security review, accessibility inspection, browser verification, deployment, and submission preparation. Protocol Mirror itself uses page-native typed WebMCP tools and does not require a hosted model API at runtime. |
+| `28259` | Learning level | **Confirm:** None, Moderate, or Significant |
+| `28260` | Career AI value | **Confirm:** Yes or No |
+
+Still required before the form can be finalized:
+
+- Public YouTube demo URL after the project owner watches, approves, and uploads the master
+- Explicit rules acknowledgment in the local hackathon workflow
+- Final authenticated Devpost preview and the separate literal `yes, submit` confirmation
+
+Official overview, rules, dates, prizes, criteria, and submission schema were checked through the authenticated Devpost integration on 2026-09-01 at 13:54 UTC.
+
 ## External-state warning
 
 The repository, public application, YouTube account, and Devpost entry must be checked live immediately before submission. The official Devpost pages and rules prevail if any saved copy differs.

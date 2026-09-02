@@ -27,7 +27,7 @@ require_file LICENSE
 require_file README.md
 require_file devpost-submission.md
 require_file docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md
-require_file docs/JUDGE_SCORECARD.md
+require_file docs/internal/JUDGE_SCORECARD.md
 require_file docs/BROWSER_VERIFICATION.md
 require_file docs/WEBMCP_CONFORMANCE.md
 require_file docs/FINAL_RELEASE_MANIFEST.md

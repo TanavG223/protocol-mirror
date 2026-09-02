@@ -147,3 +147,22 @@ On 2026-08-31, a separate real-world benchmark was executed against the local ca
 The reference label never appears in the model prompt. Every model claim is scored against the exact returned locator and quote. The raw outputs, runner, scorer, manifest, and metric definitions are tracked under `benchmarks/`. These results are model-, prompt-, run-, and abstract-snapshot-specific; they are not a universal hallucination rate, a full-publication agreement result, or clinical validation.
 
 After adding the scorer and artifact-integrity tests, the deterministic suite contains 42 passing tests.
+
+## 2026-09-01 — headless Chrome 152 smoke of the real-pair loop
+
+`npm run smoke:webmcp` (`scripts/webmcp-smoke.mjs`) launched Google Chrome 152.0.7977.65 headless with `--enable-features=WebMCPTesting` and drove the page's own tools through `document.modelContext.getTools()` and `document.modelContext.executeTool()` over the DevTools protocol. It PASSED against a local production build and against the public deployment at `https://protocol-mirror.vercel.app`. Every human action in the run is a real DOM click, not a tool call.
+
+Asserted, in order:
+
+- The page registers exactly six tools before any decision — `get_audit_state`, `get_evidence_spans`, `get_live_clinical_trial`, `get_live_pubmed_article`, `propose_outcome_mapping`, `request_human_review` — and the header badge reports **6 tools**.
+- `get_live_clinical_trial` returned `NCT04280705` and `get_live_pubmed_article` returned PMID `32445440`, each with the requested identifier.
+- Before promotion, `get_audit_state` still reported the demonstration case plus an intake hint; the live records do not silently become the reviewable case.
+- A human DOM click on **Review this pair** promoted the real pair; the registered column rendered the trial's real primary outcome, and `get_audit_state` then reported `activeCase: "live"` with the requested NCT.
+- `get_evidence_spans` returned two spans with `provenance: "live"` and their source locators, bound to the real identifiers.
+- `propose_outcome_mapping` returned `staged_for_human_review`; `request_human_review` returned `decisionAuthority: "human_reviewer_only"`; `export_review_receipt` was still absent from the tool list.
+- A human DOM click on **Accept** moved the badge to **7 tools** and registered `export_review_receipt`. The receipt reported `generatedFrom: "live_sources"` with exactly one reviewed mapping and its two evidence spans.
+- A human DOM click on **Undo last decision** unregistered `export_review_receipt` and returned the badge to **6 tools**.
+
+Implementation note: Chromium's in-page `executeTool()` passes tool input to the executor as a JSON string. The executors accept both objects and JSON strings, and the smoke run exercises that path.
+
+Scope of this run: it is browser-implementation evidence for Google Chrome 152 with the WebMCP testing flag. **The Codex/ChatGPT in-app browser has not yet been run against this real-pair loop**; the Codex in-app browser sections above cover the earlier flow (fictional case, six-to-seven tools, live intake cards) on 2026-08-30 and 2026-08-31. The deterministic suite is 54 passing tests at the time of this run.

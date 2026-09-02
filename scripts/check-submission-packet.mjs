@@ -4,7 +4,7 @@ const paths = {
   readme: "README.md",
   packet: "devpost-submission.md",
   draft: "docs/SUBMISSION_DRAFT.md",
-  scorecard: "docs/JUDGE_SCORECARD.md",
+  scorecard: "docs/internal/JUDGE_SCORECARD.md",
   requirements: "docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md",
   manifest: "docs/FINAL_RELEASE_MANIFEST.md",
   handoff: "docs/SUBMISSION_HANDOFF.md",
@@ -53,32 +53,43 @@ const publicApp = "https://protocol-mirror.vercel.app";
 const publicRepo = "https://github.com/TanavG223/protocol-mirror";
 const criteria = ["WebMCP Leverage", "Execution", "Potential Impact", "Creativity & Ambition"];
 const requiredPacketSections = [
-  "## One-line Summary",
-  "## Problem",
-  "## Solution",
-  "## Why This Matters",
-  "## How We Used AI",
-  "## How We Used Codex",
-  "## Key Features",
-  "## Architecture",
-  "## Testing Instructions",
-  "## Public Demo Link",
-  "## Public Repository Link",
-  "## Demo Video",
-  "## Known Limitations",
+  "## Why this use case is a strong fit for WebMCP",
+  "## How it creates a better user experience",
+  "## What people and agents can do together that was hard before",
+  "## How WebMCP was implemented",
+  "## Benchmark",
+  "## Testing instructions",
+  "## Verified compatibility",
+  "## Demo video",
+  "## Known limitations",
+];
+const scopeSentence = "medical advice, a clinical decision system, or a finding of research misconduct";
+const bannedJudgeClaims = [
+  ["high-impact", "the Chen et al. sample had no restriction by journal"],
+  ["Chrome 149", "verification was done in Chrome 152 with the WebMCP flag"],
+  ["load_trial_pair", "no such tool is registered"],
+  ["await_human", "no such tool is registered"],
+  ["Stage guided review", "the visible control is \"Load 4 example proposals\""],
 ];
 
 requireAll(packet, requiredPacketSections, paths.packet);
 requireAll(requirements, criteria, paths.requirements);
 requireAll(scorecard, criteria, paths.scorecard);
-requireAll(packet, [publicApp, publicRepo, "### ⏳ Not submitted yet", "not medical advice", "or a clinically validated detector"], paths.packet);
+requireAll(packet, [publicApp, publicRepo, scopeSentence], paths.packet);
 requireAll(draft, [publicApp, publicRepo, "Truthful-claim guardrail"], paths.draft);
-requireAll(readme, [publicApp, publicRepo, "42 passing tests"], paths.readme);
+requireAll(readme, [publicApp, publicRepo, scopeSentence, "Five-minute judge path", "chrome://flags/#enable-webmcp-testing", "npm run smoke:webmcp", "54 tests"], paths.readme);
 requireAll(manifest, ["Owner-only gates still open", "without establishing universal hallucination or clinical-accuracy claims"], paths.manifest);
 requireAll(handoff, ["Complete video watch and explicit approval", "Current official-rules acknowledgment", "Separate literal authorization before final submission", "External-state warning"], paths.handoff);
 
+// The owner-only Devpost form map lives in the handoff, not in the judge-facing packet.
 for (let fieldId = 28249; fieldId <= 28260; fieldId += 1) {
-  requireText(packet, `\`${fieldId}\``, `${paths.packet} official form map`);
+  requireText(handoff, `\`${fieldId}\``, `${paths.handoff} official form map`);
+}
+if (packet.includes("Not submitted yet")) fail(`${paths.packet} must not carry the internal submission-state banner`);
+if (/^- \[[ x]\] /m.test(packet)) fail(`${paths.packet} must not carry the internal readiness checklist`);
+
+for (const [phrase, reason] of bannedJudgeClaims) {
+  if (combinedJudgeCopy.includes(phrase)) fail(`judge-facing copy contains "${phrase}": ${reason}`);
 }
 
 if (/\b(?:TBD|TODO:|YOUR_[A-Z_]+|INSERT_[A-Z_]+)\b/.test(combinedJudgeCopy)) {
@@ -109,6 +120,7 @@ requireAll(combinedJudgeCopy, [
 ], "judge-facing benchmark claims");
 
 requireAll(packet, ["113.30 seconds", "Kokoro-82M", "project owner must still watch and approve", "final public YouTube URL remains pending"], `${paths.packet} media boundary`);
+requireAll(packet, ["Google Chrome 152", "has not yet been run against the new real-pair loop"], `${paths.packet} browser-verification boundary`);
 requireAll(requirements, ["owner watch and public upload remain", "Missing"], `${paths.requirements} media status`);
 requireAll(manifest, ["not evidence of owner editorial approval, a Devpost entry, or a YouTube upload", "Owner-only gates still open"], `${paths.manifest} external-state boundary`);
 

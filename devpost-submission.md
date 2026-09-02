@@ -1,195 +1,80 @@
 # Protocol Mirror
 
-### ⏳ Not submitted yet
-Nothing has been sent to Devpost.
+**Tagline:** Did the trial publish what it registered? Your agent pulls ClinicalTrials.gov and PubMed, quotes exact spans. You decide.
 
-## One-line Summary
+**Live app:** https://protocol-mirror.vercel.app · **Source (MIT):** https://github.com/TanavG223/protocol-mirror
 
-AI assembles evidence. A human decides. Protocol Mirror is a WebMCP-native clinical-trial transparency workspace where an agent retrieves records, compares outcomes, cites exact spans, stages discrepancies, focuses the reviewer, and packages the reviewed result after a human adjudicates it.
+## Why this use case is a strong fit for WebMCP
 
-## Problem
+Clinical trials register the outcomes they promise to measure, then publish years later. In a 2019 JAMA Network Open study, Chen et al. checked 389 randomized trials sampled from PubMed and Embase — published 2011-2015, with no restriction by journal — against their registrations: 130 had changed at least one primary outcome, 66 of those omitted or never reported the registered one, and trials with a change reported effect sizes about 16% larger. Journal editors, peer reviewers and systematic reviewers do this check by hand, in two tabs, copying quotes.
 
-Clinical-trial registries record what researchers planned to measure, while publications record what readers eventually see. Comparing those records is valuable but slow, citation-heavy work. A conventional AI summary can make the problem worse by collapsing uncertainty and evidence into a confident paragraph.
+An agent alone cannot be trusted with it: scrape both documents and it hands back a confident paragraph you cannot check. A hosted backend is no better — the reviewer never sees what was read. WebMCP is the fit because the tools live on the page the reviewer is already looking at. The agent gets typed outcome IDs and exact locators instead of screenshots, and every read, quote and proposal lands in the reviewer's own view.
 
-In a 2019 cross-sectional study of 389 trials published in high-impact journals, 130 had at least one primary-outcome change between registration and publication. Of those 130 trials, 66 involved a registered primary outcome that was omitted or not reported. A changed outcome is not automatically improper; reviewers need a transparent comparison, not an automatic misconduct verdict. Source: Chen et al., *JAMA Network Open*: https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/
+## How it creates a better user experience
 
-## Solution
+Before: two browser tabs, a spreadsheet, and hand-copied quotes, with no record of what was compared. In Protocol Mirror you paste one line, and the agent pulls ClinicalTrials.gov `NCT04280705` and PubMed `32445440` into intake cards you can see. You click **Review this pair** and the real trial becomes the case. The agent then quotes the registered outcome and the abstract section verbatim, each with its source locator, and stages a proposal — matched, omitted, introduced, or uncertain — with rationale, cited evidence IDs and a confidence.
 
-Protocol Mirror places registered and reported outcomes side by side in one human-agent workspace. A WebMCP agent can inspect stable outcome IDs, retrieve exact source spans, stage a mapping or non-match, and focus the relevant review card. Every proposal carries a discrepancy category, rationale, evidence IDs, and calibrated confidence.
+You read the rationale beside both quotes and decide. A session log lists every tool call and every human decision as it happens, and a seven-chip tool roster shows exactly which capability is available right now. Nothing enters the exported receipt that a person did not accept.
 
-The agent cannot accept or reject its own proposal. A person reviews the rationale and exact source spans in the same interface and makes the decision. Only reviewed decisions appear in the exportable receipt, and that export capability is registered dynamically after a human decision exists. The reviewer can also download that reviewed receipt as JSON directly from the human checkpoint.
+## What people and agents can do together that was hard before
 
-The app includes a deterministic fictional case so the complete judging flow remains available without an upstream network dependency. Validated server adapters also retrieve normalized ClinicalTrials.gov outcomes and structured PubMed abstract sections. Records returned by those agent tools are rendered in a reviewer-visible source-intake area with exact source links and an explicit read-only, untrusted-evidence boundary. Loading, failure, and recovery remain visible to the reviewer; an unavailable source never silently becomes a finding or blocks the deterministic judging path.
+The agent does the whole investigation and stops precisely where authority begins. It cannot cite an ID that is not in the loaded case, cannot accept or reject — no such tool is registered, so ask it and it will tell you it has none — and cannot export anything until a human has decided.
 
-We also stress-tested the boundary on 24 real NCT/PMID pairs balanced across published change/no-change labels. All 48 live WebMCP source reads returned the correct record and nonempty evidence. Two blinded local models then showed opposite error bias under the same exact-evidence prompt: the 4B run overcalled changes, while the 9B run frequently missed them. The page exposes this result because it demonstrates why citations, visible uncertainty, and a non-delegable human decision matter.
+That last part is the collaboration: the human's click is not just a UI event, it registers a new tool. Accept or reject one proposal and `export_review_receipt` appears; the agent can now package the reviewed decisions with their exact locators and source URLs. Undo the decision and the tool is unregistered. The agent's capability surface is grown and revoked by human review, on a real registry-to-publication pair, in the page both parties share.
 
-## Why This Matters
+## How WebMCP was implemented
 
-Protocol Mirror is not less agentic because the final judgment stays human. The agent performs the time-consuming investigation: it retrieves live records, reads typed case state, compares stable outcome IDs, cites exact spans, stages a structured proposal, and moves the reviewer to the right checkpoint. After the person adjudicates, the page exposes a new tool so the agent can package the reviewed result.
+Seven tools are registered with `document.modelContext.registerTool` (with a `navigator.modelContext` fallback) in three registration effects: pair-independent tools (`get_live_clinical_trial`, `get_live_pubmed_article`, `get_audit_state`, `request_human_review`); pair-bound tools (`get_evidence_spans`, `propose_outcome_mapping`) that re-register against the new identifiers whenever the case changes; and the gated `export_review_receipt`, registered only while reviewed work exists.
 
-That complete loop is why WebMCP is essential rather than decorative: agent investigation → agent proposal → human adjudication → agent export. The shared page makes the agent's actions, limits, citations, uncertainty, and authority boundary visible.
+Every registration carries an `AbortSignal` that effect cleanup aborts; every schema is a closed object with `additionalProperties: false`, bounded strings and enum-bound IDs — emitted as enums only for ID lists of 20 or fewer, with runtime validation authoritative either way. Read tools declare `readOnlyHint` and `untrustedContentHint`; staging and focus tools do not claim to be read-only. `propose_outcome_mapping` re-checks category shape and evidence linkage at execute time. A conformance script enforces the annotations, the abort signals, the same-origin default and Chrome's metadata budgets in CI.
 
-This is a research-transparency aid, not medical advice, a clinical decision system, a finding of misconduct, or a clinically validated detector.
+## Benchmark
 
-## How We Used AI
+On 24 real NCT/PMID pairs (12 primary-outcome-change, 12 no-change, labels from Chen et al.'s published supplement), 48/48 live reads through the page's own WebMCP tools returned the requested record with a canonical URL and non-empty evidence: 172 outcomes and 106 abstract sections. Two local models then got the exact returned evidence, blinded to the labels, and failed in opposite directions: qwen3:4b called every one of its 10 decided no-change cases a change, while ornith-1.5:9b missed 10 of its 11 decided change cases. Neither ever tried to accept or reject. Run-specific, abstract-only grounding results, not clinical validation — and the opposite biases are the argument for the human click.
 
-The product does not hide a server-side model behind an API route. Instead, it exposes a task-specific capability surface to the agent already operating in the WebMCP-capable browser:
+## Testing instructions
 
-- `get_audit_state` reads stable outcome IDs, proposals, decisions, and audit events.
-- `get_evidence_spans` returns exact source quotations and locators while marking source text as untrusted.
-- `get_live_clinical_trial` retrieves a current ClinicalTrials.gov record through a fixed-host, bounded server adapter.
-- `get_live_pubmed_article` retrieves a current PubMed abstract through a fixed-host, entity-safe server adapter.
-- `propose_outcome_mapping` stages one schema-bound, evidence-linked proposal.
-- `request_human_review` focuses and scrolls the matching visible checkpoint into view.
-- `export_review_receipt` appears only after reviewed work exists and excludes staged proposals.
+No login, API key, or paid service. Open https://protocol-mirror.vercel.app in the ChatGPT/Codex in-app browser with site tools enabled, or Chrome 152+ with `chrome://flags/#enable-webmcp-testing`. The header should read **WebMCP connected · 6 tools**; if it reads **WebMCP preview**, click a curated pair chip in **Load a real trial** (or **Load 4 example proposals**) and do steps 4-6 by hand.
 
-This lets an agent move from brittle screen interpretation to typed, state-aware collaboration. The model can assemble and explain a candidate comparison, but no agent-callable capability can perform the final accept or reject action.
+1. Paste: *Call get_live_clinical_trial with nctId NCT04280705, then get_live_pubmed_article with pmid 32445440.* Both records appear in the intake cards; click **Review this pair**.
+2. Paste: *Call get_audit_state, then call get_evidence_spans for two evidence IDs it returned and quote both spans with their locators.*
+3. Paste: *Call propose_outcome_mapping for those two IDs with a discrepancy of uncertain, both evidence IDs, a rationale and a confidence, then call request_human_review with the returned mappingId.*
+4. Ask the agent to accept it — it has no such tool. Click **Accept** yourself.
+5. The header reads **7 tools**. Paste: *Call export_review_receipt and list its mappings, locators and audit events.* It reports `generatedFrom: "live_sources"`.
+6. Click **Undo last decision**; the receipt tool is unregistered and the header returns to 6 tools.
 
-## How We Used Codex
+Locally: `npm ci && npm run check` runs the WebMCP conformance gate, ESLint, 54 tests, TypeScript and the production build. `npm run smoke:webmcp` drives the whole loop above through `document.modelContext.getTools()` / `executeTool()` in headless Google Chrome with `--enable-features=WebMCPTesting`; it passed against the live URL on Sep 1, 2026 with Chrome 152.0.7977.65.
 
-Codex was used throughout the build as an engineering and browser-testing collaborator. It helped inspect the official challenge materials and WebMCP behavior, implement and refine the Next.js application, build fail-closed validation and security controls, write deterministic contract tests, exercise the real tool lifecycle in the Codex in-app browser, verify desktop and mobile layouts, capture the final screenshots, and prepare the release documentation.
+## Verified compatibility
 
-Codex also challenged overbroad claims: the project distinguishes a browser-tool implementation test from clinical validation, preserves PubMed abstract sections instead of pretending they are already clinical outcomes, and records residual security and product limitations explicitly.
+The real-pair loop is verified in Google Chrome 152 with the WebMCP flag by the headless smoke script. The Codex/ChatGPT in-app browser was verified on 2026-08-30 and 08-31 against the earlier flow — six initial tools, both live reads rendered in the page, agent-staged proposal, human accept, seventh tool, receipt — on the fictional case; that browser has not yet been run against the new real-pair loop.
 
-## Key Features
+## Demo video
 
-- Seven atomic WebMCP tools with narrow schemas and lifecycle cleanup; six are available initially and the reviewed-receipt tool appears only after a human decision
-- Stable, evidence-linked registered-to-reported outcome comparison
-- Agent-staged proposals with a human-only accept/reject boundary
-- Dynamic capability registration after review state changes
-- Exact evidence drawer with source quotations and locators
-- Reversible decisions and reviewed-only audit receipt export
-- Reviewer-visible live-source intake after agent ClinicalTrials.gov and PubMed calls
-- Human-downloadable reviewed receipt JSON after a decision
-- Deterministic fictional case for reliable judging
-- Bounded ClinicalTrials.gov and PubMed source adapters with safe failures
-- Human-visible loading, failure, and recovery for live agent reads
-- Responsive forensic-editorial interface with visible focus and reduced-motion support
-- Restrictive production response headers and duplicate/cross-record evidence rejection
-- Reproducible 24-pair real-world benchmark with raw outputs, strict citation scoring, and model-specific bias reporting
+The prepared local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`: 113.30 seconds, 1920×1080 H.264 at constant 60 fps, with locally generated Kokoro-82M narration (Apache-2.0 model card; provenance in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`). It is a narrated slideshow and is the fallback; a screen recording of the live loop is preferred. The project owner must still watch and approve the complete master with sound, and the final public YouTube URL remains pending. Paste-ready title, description and chapters are in `docs/YOUTUBE_METADATA.md`.
 
-## Architecture
+## Screenshots
 
-```text
-Human reviewer ───────┐
-                     ▼
-                Shared workspace
-                     ▲
-WebMCP agent ─ tools ┘
-        │      read → evidence and audit state
-        │      write → staged proposals only
-        └──────────── human accept/reject boundary
+1. `docs/screenshots/01-hero.jpg` — the question, the connected WebMCP state, the tool roster
+2. `docs/screenshots/02-comparison.jpg` — registered and reported columns side by side
+3. `docs/screenshots/03-review-queue.jpg` — staged proposals and the human-only checkpoint
+4. `docs/screenshots/04-evidence-drawer.jpg` — rationale beside exact quotations and locators
+5. `docs/screenshots/05-mobile.jpg` — 390×844 layout without horizontal overflow
+6. `docs/screenshots/06-agent-reviewed.png` — the seven-tool state after a human decision
+7. `docs/screenshots/07-real-world-benchmark.png` — the 24-pair stress-test panel
+8. `docs/screenshots/08-session-log.png` — the session log and the tool roster with the receipt tool unlocked
 
-ClinicalTrials.gov ─┐
-                    ├─ bounded, validated adapters ─ normalized records
-PubMed E-utilities ─┘
-```
+## Known limitations
 
-WebMCP registration and the reviewer UI live in `src/app/workspace.tsx`. Runtime proposal validation lives in `src/lib/proposal-validation.ts`, the deterministic case in `src/lib/demo-data.ts`, and source adapters in `src/lib/source-adapters.ts`.
+- The default bundled case is a fictional trial; it is implementation evidence, not accuracy evidence.
+- PubMed returns abstract sections, not a canonical outcome schema, so the publication column shows sections and labels them as such.
+- The benchmark is abstract-only and specific to the named models, prompt and run; it is not clinical validation.
+- Audit state is in-session only: not persisted, not signed.
+- No authentication; the app must not be used with protected health information.
+- Compatibility is claimed only for the browsers listed under **Verified compatibility**.
 
-## Testing Instructions
+Protocol Mirror is a research transparency aid. It is not medical advice, a clinical decision system, or a finding of research misconduct.
 
-### Hosted judging flow
+## Owner-completed form fields
 
-1. Open the public app in ChatGPT's in-app browser.
-2. Confirm the header says **WebMCP connected · 6 tools** and the browser exposes both live-source tools plus the four case-review tools.
-3. Call `get_live_clinical_trial` with `NCT04280705` and `get_live_pubmed_article` with `32445440`; confirm both returned records and exact source links appear in the visible agent-source-intake area.
-4. Ask the agent to inspect the deterministic audit state and retrieve the exact systolic-blood-pressure evidence spans.
-5. Ask it to stage an uncertain mapping using both evidence spans and request human review.
-6. Confirm focus moves to the visible review checkpoint; accept or reject manually.
-7. Confirm `export_review_receipt` appears as the seventh tool and the human JSON download becomes visible.
-8. Export the receipt and confirm staged proposals are excluded while the accepted mapping's exact evidence locator is included.
-
-No login, API key, patient data, or paid service is required.
-
-### Local verification
-
-Requirements: Node.js 20.9+ and npm.
-
-```bash
-npm ci
-npm run check
-npm run dev
-```
-
-Open `http://localhost:3000` in a WebMCP-capable browser. `npm run check` runs ESLint, 42 deterministic tests, TypeScript through the production build, and the optimized Next.js build. The benchmark manifest, raw runs, and reproduction commands are in `benchmarks/`.
-
-## Public Demo Link
-
-https://protocol-mirror.vercel.app
-
-Verified in the Codex in-app browser on 2026-08-30: the public HTTPS deployment exposed six initial WebMCP tools, returned live ClinicalTrials.gov and PubMed records, completed the agent-stage → human-accept workflow, exposed the seventh receipt tool, and exported both cited evidence locators.
-
-## Public Repository Link
-
-https://github.com/TanavG223/protocol-mirror
-
-The repository is public, GitHub detects its MIT license, all required source and screenshot assets are tracked, GitHub Actions is green, and no credential-shaped files or high-risk key literals are committed.
-
-## Demo Video
-
-The benchmark-forward local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`: 113.30 seconds, 1280×720 H.264 at a verified constant 60 fps, with locally generated Kokoro-82M `af_heart` narration. It shows the 24-pair reality check, the agent evidence and proposal path, the human-only decision, the six-to-seven capability change, reviewed receipt proof, and live-source intake. Automated checks found no black segment of 0.4 seconds or longer, no silence of 1.5 seconds or longer at the tested threshold, no variable cadence, −16.4 LUFS integrated loudness, and −4.2 dBTP true peak. The model card labels the weights Apache-2.0; provenance and exact settings are in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`. The project owner must still watch and approve the complete result with sound. The final public YouTube URL remains pending; paste-ready title and description text are in `docs/YOUTUBE_METADATA.md`.
-
-## Screenshot Shot List
-
-1. `docs/screenshots/01-hero.jpg` — case context, connected WebMCP state, and the human-agent authority model
-2. `docs/screenshots/02-comparison.jpg` — registered and reported source columns with state-backed relationship status
-3. `docs/screenshots/03-review-queue.jpg` — four staged proposals and the human-only checkpoint
-4. `docs/screenshots/04-evidence-drawer.jpg` — rationale beside exact quotations and source locators
-5. `docs/screenshots/05-mobile.jpg` — responsive 390 by 844 layout without horizontal overflow
-6. `docs/screenshots/06-agent-reviewed.png` — permanent deployment after the agent-to-human handoff, showing the dynamic seven-tool state and exact evidence drawer
-7. `docs/screenshots/07-real-world-benchmark.png` — verified local benchmark panel showing 24 real pairs, 48/48 live reads, opposite model bias, and the explicit run-specific disclaimer
-
-## Submission Readiness Notes
-
-- [x] Public repository with all source, assets, instructions, and detected MIT license
-- [x] Non-trivial top-level `document.modelContext.registerTool()` implementation
-- [x] 42 deterministic tests, clean lint and TypeScript checks, and a successful production build
-- [x] 24-pair, 48-call real-world source stress test plus two raw, reproducible model-grounding runs
-- [x] Local release candidate visibly renders agent-retrieved source records and exposes a human JSON receipt download; production deployment approval remains pending
-- [x] Real Codex in-app-browser rehearsal of six-before/seven-after tool registration, both live public adapters, and the complete stage/review/export flow
-- [x] Seven final screenshots, including a permanent-deployment review proof, the real-world benchmark panel, and a timed demo script
-- [x] Permanent live URL deployed and fully exercised in the Codex in-app browser
-- [x] Benchmark-forward 60 fps candidate rendered with Apache-2.0 Kokoro-82M narration and automated release checks
-- [x] ElevenLabs Free-plan narration replaced; model-card license provenance and generation settings recorded
-- [x] New 23-cue English caption file prepared and structurally verified; owner and processed-YouTube timing review remain pending
-- [ ] Project owner watched and approved the complete local master with sound
-- [ ] Public YouTube upload completed and watched end to end
-- [x] Devpost MCP reports the account registered for The WebMCP Challenge with submissions open
-- [ ] Authenticated Devpost project form fields and final preview verified
-- [ ] Final Devpost preview reviewed and entry receipt saved before the displayed deadline
-
-## Known Limitations
-
-- The included interactive comparison case is fictional and deterministic; it is implementation evidence, not an accuracy benchmark. The separate 24-pair benchmark is model-specific, uses PubMed abstracts against full-publication study labels, and is not clinical validation.
-- Live PubMed abstracts do not provide a canonical clinical-outcome schema, so the adapter preserves structured sections for later human-reviewed extraction.
-- Audit state is in-session only and is not persisted or cryptographically signed.
-- The current application has no authentication and must not be used for protected health information.
-- Compatibility has been directly rehearsed in the Codex in-app browser, not claimed for every browser.
-
-## TODO Official Form Fields
-
-Authenticated Devpost preflight on 2026-09-01 at 13:54 UTC returned these exact submission fields. Values marked **Confirm** require the project owner's personal choice; they are not inferred.
-
-| ID | Official field | Prepared answer |
-| ---: | --- | --- |
-| `28249` | Submitter Type | **Confirm:** Individual, Team of Individuals, or Organization |
-| `28250` | Country of residence of yourself and team members if applicable | **Confirm:** required multi-country selection; eligibility must match the official rules |
-| `28251` | Organization name | Leave blank unless the selected submitter type requires it |
-| `28252` | App Status | **Confirm:** New or Existing; repository creation date alone does not establish project status |
-| `28253` | Existing-app update explanation | Complete only if the owner selects Existing; describe the WebMCP work added during the challenge period |
-| `28254` | Live URL | https://protocol-mirror.vercel.app |
-| `28255` | Testing instructions/credentials | No credentials required. Open the live URL in the Codex/ChatGPT in-app browser with WebMCP enabled; use the deterministic case or call the bounded live-source tools, stage a proposal, complete the visible human review, then export the reviewed receipt. |
-| `28256` | Public repository | https://github.com/TanavG223/protocol-mirror |
-| `28257` | Tested agents/clients | Codex desktop in-app browser with WebMCP site tools enabled. |
-| `28258` | AI tools leveraged | OpenAI Codex for research, scoping, implementation, debugging, deterministic tests, security review, accessibility inspection, browser verification, deployment, and submission preparation. Protocol Mirror itself uses page-native typed WebMCP tools and does not require a hosted model API at runtime. |
-| `28259` | Learning level | **Confirm:** None, Moderate, or Significant |
-| `28260` | Career AI value | **Confirm:** Yes or No |
-
-Still required before the form can be finalized:
-
-- Public YouTube demo URL after the project owner watches, approves, and uploads the edited local master
-- Explicit rules acknowledgment in the local hackathon workflow
-- Final authenticated Devpost preview and the separate literal `yes, submit` confirmation
-
-Official overview, rules, dates, prizes, criteria, announcements, and submission schema checked through the authenticated Devpost integration on 2026-09-01 at 13:54 UTC. Registration is live; no Protocol Mirror Devpost project exists. The Devpost website and official rules prevail if any requirement changes.
+The authenticated Devpost form field map, the answers that require the owner's personal choice, and the remaining external gates are in [`docs/SUBMISSION_HANDOFF.md`](docs/SUBMISSION_HANDOFF.md). The official Devpost pages and rules prevail if any requirement changes.

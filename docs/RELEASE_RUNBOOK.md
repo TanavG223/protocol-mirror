@@ -19,7 +19,7 @@ The steps below are the reproducible release procedure and final external-action
 
 This step changes external state and requires the project owner's explicit confirmation at action time.
 
-Before any push or deployment, commit the candidate and run `npm run preflight:product`. The command requires a clean tree and prints the exact commit SHA after the dependency audit, 42-test contract, TypeScript check, and production build pass.
+Before any push or deployment, commit the candidate and run `npm run preflight:product`. The command requires a clean tree and prints the exact commit SHA after the dependency audit, 54-test contract, TypeScript check, and production build pass.
 
 1. Import `https://github.com/TanavG223/protocol-mirror` into Vercel.
 2. Keep the detected Next.js defaults. The current application requires no environment variables.
@@ -68,3 +68,30 @@ Run `npm run preflight:submission` only after the owner has completed every pers
 - Confirm GitHub Actions is green for the submitted commit and the working tree is clean.
 - Save the submitted Devpost URL, live URL, video URL, commit SHA, and a screenshot of the final confirmation page.
 - Avoid post-deadline deployment or repository changes unless the official rules explicitly allow them.
+
+## Appendix. Verification commands and release plumbing
+
+Moved here from `README.md` on 2026-09-01 so the public README stays a product page. These are the maintainer-facing commands.
+
+| Command | What it does |
+| --- | --- |
+| `npm run check` | WebMCP metadata/lifecycle conformance, judge-facing submission-packet consistency, ESLint, 54 deterministic tests, TypeScript, and a production Next.js build |
+| `npm run smoke:webmcp` | Headless Google Chrome 152+ with `--enable-features=WebMCPTesting`; drives the page's own tools through the full 6 → live reads → human promotion → propose → human Accept → 7 → receipt → Undo → 6 loop. Add `--url=` to point it at the deployment |
+| `npm run check:media` | Exact checksums, codec, 60 fps cadence, duration, frame count, audio contract, black/silence thresholds, and the 23-cue caption timeline for the demo master |
+| `npm run preflight:product` | Fails closed unless source, license, screenshots, media assets, WebMCP registrations, dependency audit, tests, and the production build all map to one clean commit; prints that `COMMIT_SHA` |
+| `npm run preflight:submission` | Adds owner-controlled gates for rules acknowledgment, narration/media approval, personal Devpost answers, and the watched public YouTube URL. Expected to fail until those external gates are truthfully complete |
+
+Judge-evidence summary for the current candidate:
+
+| Judge evidence | Verified result |
+| --- | --- |
+| Automated release checks | 54 tests, lint, TypeScript, and an optimized build pass |
+| WebMCP metadata contract | Seven unique tools, three registration call sites, signal cleanup, same-origin exposure, annotations, and Chrome's character budgets enforced |
+| Real WebMCP lifecycle | Six initial tools; a human decision alone exposes the seventh; undo removes it. Driven end to end by `npm run smoke:webmcp` in Google Chrome 152 |
+| Real-pair loop | A real ClinicalTrials.gov/PubMed pair becomes the reviewable case from either the agent side or the human loader; pair-bound tools re-register on the new identifiers |
+| Real-world source stress test | 24 NCT/PMID pairs; 48/48 WebMCP source calls; 172 outcomes and 106 abstract sections |
+| Failure behavior | Invalid identifiers, malformed/oversized/entity-shaped source data, missing records, duplicate proposals, and unrelated evidence fail closed |
+| Human authority | No agent accept/reject tool; reviewed JSON is available only after a human decision |
+| Responsive UX | 320- and 390-pixel layouts verified without horizontal overflow; visible enabled targets are at least 44×44 pixels |
+| Security | Zero reportable repository-scan findings and zero dependency vulnerabilities at the enforced threshold |
+

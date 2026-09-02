@@ -1,132 +1,114 @@
 # Protocol Mirror
 
-Protocol Mirror is a human–agent clinical-trial transparency workspace. It compares prespecified outcomes from a trial registry with outcomes described in a publication, lets an AI agent stage evidence-linked discrepancy proposals through WebMCP, and reserves every accept/reject decision for a human reviewer.
+**Did the trial publish what it registered? Your agent pulls ClinicalTrials.gov and PubMed, quotes exact spans. You decide.**
 
-> Research transparency aid only. Protocol Mirror is not medical advice, a clinical decision system, or a finding of research misconduct.
+**Live app:** https://protocol-mirror.vercel.app · **Source (MIT):** https://github.com/TanavG223/protocol-mirror
 
-**Live application:** https://protocol-mirror.vercel.app
+Research transparency aid only. Not medical advice, a clinical decision system, or a finding of research misconduct.
 
 ![Protocol Mirror comparison workspace](docs/screenshots/01-hero.jpg)
 
-## 60-second judge path
+## Five-minute judge path
 
-No account, API key, or setup is required.
+No account, API key, or setup. Open https://protocol-mirror.vercel.app in the ChatGPT/Codex in-app browser with site tools enabled, or in Chrome 152+ with `chrome://flags/#enable-webmcp-testing`. The header should read **WebMCP connected · 6 tools**.
 
-1. Open the live application in the Codex/ChatGPT in-app browser with WebMCP site tools enabled and confirm the header reports six tools.
-2. For bounded live-source proof, call `get_live_clinical_trial` with `NCT04280705` and `get_live_pubmed_article` with `32445440`; the retrieved records become visible to the reviewer in the page.
-3. Ask the agent for the deterministic case's audit state and exact evidence spans, then have it stage one evidence-linked proposal and request human review.
-4. Use the visible **Accept** or **Reject** control yourself. There is intentionally no agent-callable decision tool.
-5. Confirm the header now reports seven tools, then either call `export_review_receipt` or use the visible JSON download. Both outputs contain only reviewed work and the exact evidence locators that supported it.
+**If the header reads "WebMCP preview"**, this browser did not expose WebMCP. Skip the prompts: in the **Load a real trial** section click the **ACTT-1 · remdesivir** chip to load the real pair, or click **Load 4 example proposals** in the hero to run the same review loop on the bundled fictional case. Steps 4-6 work identically by hand.
 
-The deterministic fictional case remains available if either public upstream is unavailable; live records are explicitly labeled as untrusted, read-only intake and never become reviewed findings automatically.
+1. **Load a real pair.** Paste:
+   > Call get_live_clinical_trial with nctId NCT04280705, then get_live_pubmed_article with pmid 32445440.
 
-## Why this is a WebMCP project
+   Both records appear in the page's intake cards with their ClinicalTrials.gov and PubMed links. Click **Review this pair** to make them the reviewable case; the pair-bound tools re-register against the real identifiers.
+2. **Read the exact text.** Paste:
+   > Call get_audit_state, then call get_evidence_spans for two evidence IDs it returned — one registered outcome and one publication section — and quote both spans with their locators.
 
-The page is the shared workspace for both the reviewer and the agent. It registers atomic browser tools directly on `document.modelContext`:
+   You get the registered outcome's exact wording and the abstract section's exact wording, each with a source locator such as `OutcomesModule.primaryOutcomes[0]`.
+3. **Let the agent propose.** Paste:
+   > Call propose_outcome_mapping for those two IDs with a discrepancy of uncertain, both evidence IDs, a one-sentence rationale and a calibrated confidence, then call request_human_review with the returned mappingId.
+
+   The proposal lands in the review queue next to its quotes and the checkpoint takes keyboard focus.
+4. **Ask the agent to accept it.** It cannot — no accept or reject tool is registered. Click **Accept** yourself.
+5. **Watch the tool surface grow.** The header now reads **7 tools** and `export_review_receipt` unlocks in the tool roster. Paste:
+   > Call export_review_receipt and list its mappings, locators and audit events.
+
+   The receipt carries only the reviewed decision, its exact locators, the source URLs, and `generatedFrom: "live_sources"`.
+6. **Undo.** Click **Undo last decision**. The receipt tool is unregistered and the header returns to 6 tools.
+
+The session log below the queue lists every tool call and human decision as it happens, so nothing in this path has to be taken on trust.
+
+## What it does
+
+Trial registries record the outcomes researchers promised to measure; publications record what readers eventually see. Checking one against the other is slow, quotation-heavy work done by journal editors, peer reviewers, and systematic reviewers scoring selective-reporting bias. In a 2019 JAMA Network Open study, Chen et al. checked 389 randomized trials sampled from PubMed and Embase (published 2011-2015, with no restriction by journal) against their registrations: 130 had at least one primary-outcome change, 66 of those omitted or never reported the registered primary outcome, and trials with a change reported intervention effect sizes about 16% larger ([PMC6646984](https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/)).
+
+Protocol Mirror puts the registry record and the publication side by side and gives the agent on the page typed tools over that shared state. The loop is: **agent retrieves → agent quotes exact spans → agent stages a proposal → human accepts or rejects → agent exports the reviewed receipt.** The agent never decides; the decision is what unlocks the agent's seventh tool.
+
+## The seven WebMCP tools
+
+All are registered with `document.modelContext.registerTool` (falling back to `navigator.modelContext`), each with an `AbortSignal`, a closed schema (`additionalProperties: false`), and Chrome's `readOnlyHint` / `untrustedContentHint` annotations.
 
 | Tool | Purpose | Authority |
 | --- | --- | --- |
-| `get_live_clinical_trial` | Retrieve a current ClinicalTrials.gov record through the bounded adapter | Read-only; source text is untrusted |
-| `get_live_pubmed_article` | Retrieve a current PubMed abstract through the bounded adapter | Read-only; source text is untrusted |
+| `get_live_clinical_trial` | Retrieve a current ClinicalTrials.gov record | Read-only; source text is untrusted |
+| `get_live_pubmed_article` | Retrieve a current PubMed abstract | Read-only; source text is untrusted |
 | `get_audit_state` | Read stable outcome IDs, proposals, decisions, and events | Read-only; source text is untrusted |
 | `get_evidence_spans` | Read exact quotes and source locators | Read-only; source text is untrusted |
 | `propose_outcome_mapping` | Stage one evidence-backed mapping or non-match | Agent may stage, never decide |
 | `request_human_review` | Focus a proposal in the visible UI | Agent may request attention |
-| `export_review_receipt` | Export reviewed decisions and their audit trail | Read-only; dynamically registered after review exists |
+| `export_review_receipt` | Export reviewed decisions and their audit trail | Registered only after a human decision; removed on undo |
 
-WebMCP lifecycle is managed with `AbortController` signals. Tool schemas reject extra properties, constrain identifiers to the loaded case, require evidence IDs, and bound free-text and confidence values. The final human decision has no agent-callable tool.
+Schemas bind outcome and evidence IDs to the loaded case; enum lists are emitted only for ID lists of 20 or fewer, and runtime validation stays authoritative either way. There is deliberately no agent-callable accept or reject.
 
-## Current vertical slice
+## Load a real trial
 
-- Distinctive, responsive registry-to-publication comparison workspace
-- Deterministic fictional demonstration record that works offline
-- Direct inspection of exact source spans before any mapping exists
-- Evidence-bound review controls: a proposal must be active before its uniquely named accept/reject actions unlock
-- Staged review queue with accept, reject, deterministic focus recovery, and undo
-- Evidence drawer with mapping identity, exact spans, stable locators, and authoritative source links
-- Append-only in-session audit events and reviewed receipt export
-- Reviewer-visible live ClinicalTrials.gov and PubMed intake after agent tool calls
-- Visible live-source loading, failure, and recovery states that preserve the deterministic review path
-- Human-downloadable reviewed receipt JSON after a decision unlocks it
-- ClinicalTrials.gov v2 API adapter with validation and normalized outcomes
-- PubMed E-utilities adapter with structured abstract sections
-- Bounded upstream requests, safe failures, and 12-hour fetch caching
-- Restrictive response headers, bounded source payloads, and entity-safe XML parsing
-- Purposeful GSAP handoff motion that is disabled when reduced motion is requested
-- Reduced-motion behavior, semantic landmarks, skip link, and visible focus states
-- Reproducible 24-pair real-world grounding benchmark with raw outputs from two named local models
+A real ClinicalTrials.gov/PubMed pair can become the reviewable case from either side:
 
-The demo record is explicitly fictional. Live adapters return source records; they do not claim that an abstract section is a clinical outcome or automatically declare outcome switching.
+- **Agent side** — the agent calls `get_live_clinical_trial` and `get_live_pubmed_article`; the records land in the intake cards; a human clicks **Review this pair**.
+- **Human side** — one-click curated pairs (ACTT-1 `NCT04280705` / PMID `32445440`; Pfizer BNT162b2 `NCT04368728` / `33301246`; RECOVERY dexamethasone `NCT04381936` / `32678530`), or type any NCT + PMID into the **Load a real trial** form.
+
+After promotion, `get_evidence_spans` and `propose_outcome_mapping` re-register bound to the real identifiers, `get_audit_state` reports `activeCase: "live"`, and the receipt reports `generatedFrom: "live_sources"` with source URLs. Publication entries are PubMed abstract sections and are labelled as such — never presented as extracted outcomes. Switching cases is refused while accepted or rejected decisions exist; staged proposals are discarded with a visible notice. The fictional Cardioluma case remains the default so the loop always runs, even offline.
+
+## Benchmark
+
+A separate reproducible run tests the source layer and model grounding on **24 real NCT/PMID pairs** (12 primary-outcome-change, 12 no-change, labels from eTable 4 of Chen et al.). All **48/48** live reads through the page's own WebMCP tools returned the requested record with a canonical URL and non-empty evidence: **172 outcomes** and **106 abstract sections**. Two local models then received the exact returned evidence, blinded to the labels, and failed in opposite directions: **`qwen3:4b`** called every one of its 10 decided no-change cases a change, while **`ornith-1.5:9b`** missed 10 of its 11 decided change cases. Neither attempted to accept or reject anything. These are run-specific, abstract-only grounding results, not clinical validation — and the opposite biases are the argument for keeping the decision human. Manifest, runner, scorer, and raw outputs are in [`benchmarks/`](benchmarks/).
 
 ## Run locally
 
-Requirements: Node.js 20.9+ and npm.
+Requires Node.js 20.9+ and npm.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` in a WebMCP-capable browser. The primary supported rehearsal path is the ChatGPT/Codex desktop in-app browser with site tools enabled. Browsers without `document.modelContext` show **WebMCP preview** while preserving the full manual review workflow.
+Open `http://localhost:3000` in a WebMCP-capable browser. Browsers without `document.modelContext` or `navigator.modelContext` show **WebMCP preview** and keep the complete manual review workflow.
 
-`request_human_review` moves keyboard focus to the shared review region after the requested staged mapping becomes active. This makes an agent's request visible to sighted reviewers and immediately available to keyboard and assistive-technology users.
-
-## Verify
-
-```bash
-npm run check
-```
-
-This runs the WebMCP metadata/lifecycle conformance check, validates the judge-facing submission packet against the tracked benchmark artifacts and official field map, then runs ESLint, the deterministic adapter contract tests, TypeScript, and a production Next.js build.
-
-`npm run check:media` separately verifies the final benchmark-forward video's exact checksums, codec, 60 fps cadence, duration, frame count, audio contract, black/silence thresholds, and 23-cue caption timeline. The clean product preflight runs both contracts.
-
-Current local release candidate: 42 passing tests, clean lint and TypeScript checks, a successful production build, and zero high-severity production dependency audit findings. Public CI enforces the same production audit before the full check. The Codex in-app-browser rehearsal also tested live-source failure and recovery, called both public source tools, displayed their real records in the reviewer UI, and completed the full agent-stage → human-review → evidence-locator receipt lifecycle.
-
-After committing a release candidate, run `npm run preflight:product` from a clean working tree. It fails closed unless the required source, license, screenshots, media assets, WebMCP registrations, four-step collaboration copy, dependency audit, tests, and production build all map to one commit. `npm run preflight:submission` adds explicit owner-controlled gates for current-rules acknowledgment, narration/media approval, personal Devpost answers, and the watched public YouTube URL; it is expected to fail until those external gates are truthfully complete.
-
-| Judge evidence | Verified result |
-| --- | --- |
-| Automated release checks | 42 tests, lint, TypeScript, and optimized build pass |
-| WebMCP metadata contract | Seven unique tools, six registration call sites, signal cleanup, same-origin exposure, annotations, and official character budgets enforced |
-| Real WebMCP lifecycle | Six initial tools; human review alone exposes the seventh |
-| Real-world source stress test | 24 NCT/PMID pairs; 48/48 WebMCP source calls; 172 outcomes and 106 abstract sections |
-| Failure behavior | Invalid identifiers, malformed/oversized/entity-shaped source data, missing records, duplicate proposals, and unrelated evidence fail closed |
-| Human authority | No agent accept/reject tool; reviewed JSON is available only after a human decision |
-| Responsive UX | 320- and 390-pixel layouts verified without horizontal overflow; visible enabled targets are at least 44×44 pixels |
-| Security | Zero reportable repository-scan findings and zero dependency vulnerabilities at the enforced threshold; bounded fixed-host adapters |
-
-The real browser-tool rehearsal and fail-closed results are recorded in [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md).
-The current specification and security-guidance mapping is recorded in [`docs/WEBMCP_CONFORMANCE.md`](docs/WEBMCP_CONFORMANCE.md).
-The scoped threat model, implemented controls, and residual risks are recorded in [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md) and [`docs/SECURITY_REVIEW.md`](docs/SECURITY_REVIEW.md).
-The exact recording sequence and final external-action checklist are in [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) and [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.md).
-The benchmark-forward local candidate is [`docs/demo/protocol-mirror-submission-demo.mp4`](docs/demo/protocol-mirror-submission-demo.mp4): 113.30 seconds, 1920×1080 H.264 at constant 60 fps with a locally generated Kokoro-82M narration. It visibly includes the real-world stress test, human-only decision, six-to-seven capability change, reviewed receipt, and live-source intake. Cadence, continuity, loudness, codec, captions, and representative-frame checks pass. The Apache-2.0 model-card provenance and exact generation settings are recorded in [`docs/demo/KOKORO_NARRATION_PROVENANCE.md`](docs/demo/KOKORO_NARRATION_PROVENANCE.md). The owner must still watch and approve the complete master with sound before upload. Reproducible HD render assets live in [`docs/demo/`](docs/demo/) and [`scripts/render-hd-submission-demo.sh`](scripts/render-hd-submission-demo.sh).
-The canonical Devpost-ready field packet is [`devpost-submission.md`](devpost-submission.md); it clearly separates the verified live application from the pending public video URL.
-The dated challenge-page evidence and requirement-to-artifact audit are in [`docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md`](docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md).
-
-## Real-world grounding evaluation
-
-The deterministic case proves the collaboration contract; it is not presented as model accuracy. A separate reproducible benchmark uses 24 real NCT/PMID pairs balanced across 12 primary-outcome-change and 12 no-change labels from Chen et al.'s published JAMA Network Open supplement.
-
-All 48 live source calls succeeded through Protocol Mirror's page-defined WebMCP tools, returning 172 normalized registry outcomes and 106 PubMed abstract sections with no identifier, canonical-URL, or empty-evidence failure. Two blinded local-model runs then received the exact returned evidence, not the reference labels:
-
-| Run | Coverage | Selective label agreement | Strict unsupported-claim rate | Directional bias |
-| --- | ---: | ---: | ---: | --- |
-| `qwen3:4b` | 87.5% | 52.4% | 17.9% | 100% false positives among decided no-change cases |
-| `ornith-1.5:9b` | 95.8% | 43.5% | 69.0% | 90.9% false negatives among decided change cases |
-
-Both runs produced zero authority attempts and zero misconduct claims. These are model-, prompt-, run-, and abstract-snapshot-specific grounding results—not a universal hallucination rate, full-publication agreement study, or clinical validation. The opposite biases are evidence for the product's core boundary: the agent assembles evidence; a human decides.
-
-The manifest, scorer, runner, raw model outputs, and exact metric definitions are in [`benchmarks/`](benchmarks/).
-
-## Live source routes
+Live source routes, used by both the tools and the human loader:
 
 ```text
 GET /api/clinical-trials/NCT01234567
 GET /api/pubmed/12345678
 ```
 
-Identifiers are validated before interpolation. Responses use a stable `{ ok, data }` or `{ ok, error }` envelope. Upstream bodies and stack traces are never forwarded to the browser.
+Identifiers are validated before interpolation; responses use a stable `{ ok, data }` / `{ ok, error }` envelope; upstream bodies and stack traces are never forwarded to the browser.
+
+## Verify
+
+```bash
+npm run check          # WebMCP conformance, submission packet, ESLint, 54 tests, TypeScript, production build
+npm run smoke:webmcp   # headless Chrome 152+ drives the page's own tools through the whole loop
+```
+
+`npm run smoke:webmcp` is a dependency-free DevTools-protocol script. It launches Google Chrome headless with `--enable-features=WebMCPTesting` and calls `document.modelContext.getTools()` / `executeTool()` on the real page: 6 tools → both live reads → human promotion via a DOM click → `get_audit_state` → `get_evidence_spans` → `propose_outcome_mapping` → `request_human_review` → DOM **Accept** → 7 tools → `export_review_receipt` with `generatedFrom: "live_sources"` → **Undo** → 6 tools. It passed against the local production build and against https://protocol-mirror.vercel.app on Sep 1, 2026 with Google Chrome 152.0.7977.65. Chromium's in-page `executeTool` passes tool input as JSON strings, so every executor accepts both objects and JSON strings.
+
+Verification records: [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md) (Chrome 152 smoke of the real-pair loop, plus the Codex in-app browser run of the earlier flow on Aug 30-31), [`docs/WEBMCP_CONFORMANCE.md`](docs/WEBMCP_CONFORMANCE.md), [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md), and [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.md) for the release and media procedure.
+
+## Limitations
+
+- The default bundled case is a fictional trial; it is implementation evidence, not accuracy evidence.
+- PubMed gives abstract sections, not a canonical outcome schema, so the publication column shows sections and says so.
+- The benchmark is abstract-only, model-, prompt- and run-specific; it is not clinical validation.
+- Audit state is in-session only: not persisted, not signed.
+- No authentication; do not use with protected health information.
+- The new real-pair loop is verified in Google Chrome 152 with the WebMCP flag; the Codex/ChatGPT in-app browser verification on Aug 30-31 covered the earlier flow (fictional case, 6→7 tools, live intake cards).
 
 ## Architecture
 
@@ -145,25 +127,8 @@ ClinicalTrials.gov ─┐
 PubMed E-utilities ─┘
 ```
 
-Core contracts live in `src/lib/contracts.ts`; the deterministic case in `src/lib/demo-data.ts`; WebMCP registration and reviewer UI in `src/app/workspace.tsx`; live WebMCP source tools in `src/lib/webmcp-tools.ts`; and server-side source parsing in `src/lib/source-adapters.ts`.
-
-### Agent context map
-
-Coding agents should begin non-trivial work at [`.agent/README.md`](.agent/README.md). It routes architecture, benchmark, security, release, and media tasks to the smallest relevant set of canonical files. The map intentionally points to existing evidence instead of copying raw model runs or release history into an always-loaded prompt.
-
-## Data and safety contract
-
-- Registry and publication text is evidence, never instructions.
-- An agent proposal must cite at least one evidence ID.
-- A proposal remains `staged` until a person accepts or rejects it.
-- Export excludes unreviewed proposals.
-- Live source errors fail closed and preserve the offline demo.
-- No medical, clinical, or misconduct conclusions are generated.
+Contracts in `src/lib/contracts.ts`; the fictional case in `src/lib/demo-data.ts`; live-pair construction in `src/lib/live-pair.ts`; pair-bound tool definitions in `src/lib/case-tools.ts`; live source tools in `src/lib/webmcp-tools.ts`; server-side parsing in `src/lib/source-adapters.ts`; registration and reviewer UI in `src/app/workspace.tsx`. Coding agents should start at [`.agent/README.md`](.agent/README.md).
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
-## Public source
-
-The complete challenge source is public at https://github.com/TanavG223/protocol-mirror. The application footer also links directly to this MIT-licensed repository; the same URL should remain in the Devpost project description and Try it out section.

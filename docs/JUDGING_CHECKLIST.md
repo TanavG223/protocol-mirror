@@ -11,7 +11,10 @@ This criterion is equal-weight with the other three and is the first tie-break.
 - [x] Abort-signal lifecycle cleanup
 - [x] Dynamic export registration after human review
 - [x] Agent cannot call the human accept/reject action
-- [x] Codex browser reports the expected six-before/seven-after tools
+- [x] Codex browser reports the expected six-before/seven-after tools (earlier flow, 2026-08-30/31)
+- [x] `npm run smoke:webmcp` drives the real-pair loop end to end through `getTools()`/`executeTool()` in Google Chrome 152 with the WebMCP flag, locally and against the public deployment
+- [x] A real ClinicalTrials.gov/PubMed pair becomes the reviewable case; pair-bound tools re-register on the new identifiers
+- [ ] Codex/ChatGPT in-app browser run of the new real-pair loop
 - [x] Both live ClinicalTrials.gov and PubMed tools exercised through the real WebMCP surface
 - [x] Agent-retrieved live records appear in the shared reviewer UI with exact source links
 - [x] Complete agent investigation → proposal → human adjudication → agent export loop exercised through real WebMCP calls
@@ -70,7 +73,7 @@ This criterion is equal-weight with the other three and is the fourth tie-break.
 - [x] ElevenLabs Free-plan output replaced; model-card license provenance and generation settings recorded
 - [x] Branded 1280×720 upload thumbnail and exact YouTube metadata prepared
 - [x] Structurally validated 23-cue English caption file prepared; owner listening and processed-upload timing review remain owner gates
-- [x] Judge-facing 60-second no-credentials test path added to the public README
+- [x] Judge-facing five-minute no-credentials test path with pasteable prompts and a no-agent fallback in the public README
 - [ ] Project owner watched and approved the complete local master with sound
 - [ ] Public YouTube upload under three minutes with audio
 - [x] Devpost integration reports hackathon registration complete and submissions open

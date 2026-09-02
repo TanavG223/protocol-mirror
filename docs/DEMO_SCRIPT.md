@@ -25,7 +25,7 @@ As the live records appear inside the reviewer UI, say: “The agent called the 
 
 Show the case header and side-by-side outcome record.
 
-“A trial registry captures what researchers planned to measure. A paper captures what readers see. In a 2019 cross-sectional study of 389 trials in high-impact journals, 130 had at least one primary-outcome change between registration and publication. Comparing those records is slow, citation-heavy work—and a confident AI summary can hide exactly the details a reviewer needs.”
+“A trial registry captures what researchers planned to measure. A paper captures what readers see. In a 2019 cross-sectional study of 389 randomized trials sampled from PubMed and Embase with no restriction by journal, 130 had at least one primary-outcome change between registration and publication. Comparing those records is slow, citation-heavy work—and a confident AI summary can hide exactly the details a reviewer needs.”
 
 On-screen source: Chen et al., *JAMA Network Open* — https://pmc.ncbi.nlm.nih.gov/articles/PMC6646984/
 
@@ -53,7 +53,7 @@ Accept the proposal manually, then undo once and accept it again to demonstrate 
 
 ## 1:45–2:05 — Discrepancies become legible
 
-Click **Stage guided review**. Show the omitted quality-of-life outcome and introduced response-rate outcome.
+Click **Load 4 example proposals**. Show the omitted quality-of-life outcome and introduced response-rate outcome.
 
 “The interface keeps registered intent, reported record, agent rationale, and exact evidence visible together. Reviewers can inspect uncertainty instead of receiving a black-box verdict.”
 

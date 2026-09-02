@@ -24,8 +24,8 @@ Goal: a judge opening the live URL, the video, the README or the Devpost page se
 | 5 | ClinicalTrials.gov `?fields=` projection (fixes NCT04368728 502); upstream 400 → `invalid_identifier` | Claude | done (0b49388); NCT04368728 returns 200 |
 | 6 | `scripts/webmcp-smoke.mjs`: headless Chrome 152 + `--enable-features=WebMCPTesting` over CDP; drives `executeTool` through the full loop; asserts 6 → 7 → 6 and `generatedFrom: live_sources`; `npm run smoke:webmcp` | Claude | done (e754444); Chromium passes tool input as JSON strings, executors accept both |
 | 7 | Session tool-call log (`role="log"`) and a 7-chip tool roster with `export_review_receipt` locked until a decision | Claude | done (eb3f520) |
-| 8 | Copy: Chen citation ("no restriction by journal"), README six-step judge path with pasteable prompts, Devpost text organized by the four required questions, test-count literal refreshed everywhere `check-submission-packet.mjs` enforces it | Claude | pending |
-| 9 | Final `npm run check`, honesty grep, push, live checks (badge, NCT04368728 200), hand-off report | Claude | pending |
+| 8 | Copy: Chen citation ("no restriction by journal"), README six-step judge path with pasteable prompts, Devpost text organized by the four required questions, test-count literal refreshed everywhere `check-submission-packet.mjs` enforces it | Claude | done |
+| 9 | Final `npm run check`, honesty grep, push, live checks (badge, NCT04368728 200), hand-off report | Claude | in progress; hand-off at `.agent/tasks/handoff-2026-09-01.md` |
 | 10 | Conditional: `load_trial_pair` as an eighth tool | Claude | only if 6 and 7 are done |
 | V | Real screen recording of the in-app browser doing the real-pair loop, own voice, under 2:30; the 1080p60 slideshow stays as the fallback | Tanav (+Codex for capture help) | pending |
 | D | YouTube upload with chapters; Devpost form; submit by noon PT Sep 3 | Tanav | pending |

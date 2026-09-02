@@ -87,7 +87,7 @@ Target runtime: 2:30–2:45. Hard limit: under three minutes. The current 1:53.3
 
 ## 2:23–2:43 — Reliability and close
 
-**On screen:** Briefly show **Stage guided review**, the live-source tool names, or the architecture section in the README; finish on the hero or reviewed workspace.
+**On screen:** Briefly show **Load 4 example proposals**, the live-source tool names, or the architecture section in the README; finish on the hero or reviewed workspace.
 
 **Say:**
 
