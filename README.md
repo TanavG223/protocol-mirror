@@ -157,7 +157,7 @@ ClinicalTrials.gov ─┬─ record
 PubMed E-utilities ─┘
 ```
 
-Contracts in `src/lib/contracts.ts`; the fictional case in `src/lib/demo-data.ts`; live-pair and history construction in `src/lib/live-pair.ts`; pair-bound tool definitions in `src/lib/case-tools.ts`; live source tools in `src/lib/webmcp-tools.ts`; server-side parsing in `src/lib/source-adapters.ts`; registration and reviewer UI in `src/app/workspace.tsx`.agent/README.md).
+Contracts in `src/lib/contracts.ts`; the fictional case in `src/lib/demo-data.ts`; live-pair and history construction in `src/lib/live-pair.ts`; pair-bound tool definitions in `src/lib/case-tools.ts`; live source tools in `src/lib/webmcp-tools.ts`; server-side parsing in `src/lib/source-adapters.ts`; registration and reviewer UI in `src/app/workspace.tsx`.
 
 ## License
 
