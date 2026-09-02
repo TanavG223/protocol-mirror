@@ -40,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${instrumentSans.variable} ${newsreader.variable}`}>
       <head>
         {/* Origin-trial tokens are origin-bound and meant to be public; see src/lib/origin-trial.ts. */}
-        {WEBMCP_ORIGIN_TRIAL_TOKEN && <meta httpEquiv="origin-trial" content={WEBMCP_ORIGIN_TRIAL_TOKEN} />}
+        {WEBMCP_ORIGIN_TRIAL_TOKEN ? <meta httpEquiv="origin-trial" content={WEBMCP_ORIGIN_TRIAL_TOKEN} /> : null}
       </head>
       <body>{children}</body>
     </html>
