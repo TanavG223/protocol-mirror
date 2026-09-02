@@ -8,7 +8,7 @@ import { findLatestReviewedMappingId, hasReviewedWork, prepareCaseSwitch, transi
 import { useWorkspaceMotion } from "@/lib/use-workspace-motion";
 import { createLiveSourceReaders, createLiveSourceTools, isValidNctId, isValidPmid, type LiveClinicalTrialRecord, type LivePubMedRecord, type LiveRegistryHistory } from "@/lib/webmcp-tools";
 import { createCaseReadTools, createPairBoundTools, type CaseToolDeps } from "@/lib/case-tools";
-import { LIVE_PUBLICATION_LIMITATION, buildLiveTrialPair, isLivePair } from "@/lib/live-pair";
+import { LIVE_PUBLICATION_LIMITATION, buildLiveTrialPair, isLivePair, listMeasures } from "@/lib/live-pair";
 import { diffIsReadable, wordDiff } from "@/lib/word-diff";
 
 const LABELS: Record<DiscrepancyKind, string> = {
@@ -64,8 +64,24 @@ const TOOL_ROSTER: Array<{ name: string; readOnly: boolean; gated?: boolean }> =
   { name: "export_review_receipt", readOnly: true, gated: true },
 ];
 
+/** A saved session is only restored when every part the page dereferences has the expected shape. */
+function isSavedSession(value: unknown): value is SavedSession {
+  if (!value || typeof value !== "object") return false;
+  const record = value as Record<string, unknown>;
+  const audit = record.audit as Record<string, unknown> | null | undefined;
+  if (audit != null && !(typeof audit === "object" && Array.isArray(audit.mappings) && Array.isArray(audit.history))) return false;
+  const pair = record.pair as Record<string, unknown> | null | undefined;
+  if (pair != null && !(typeof pair === "object" && Array.isArray(pair.registryOutcomes) && Array.isArray(pair.publicationOutcomes) && Array.isArray(pair.evidence))) return false;
+  if (record.activity != null && !Array.isArray(record.activity)) return false;
+  return true;
+}
+
 type HistoryChange = { version: number; date: string; to: string[]; exact?: boolean; after?: { version: number; date: string } };
-const changeText = (change: HistoryChange) => `${change.exact === false && change.after ? `between v${change.after.version} (${change.after.date}) and v${change.version} (${change.date})` : `v${change.version} (${change.date})`} → “${change.to.join("; ")}”`;
+const changeText = (change: HistoryChange) => `${change.exact === false && change.after ? `between v${change.after.version} (${change.after.date}) and v${change.version} (${change.date})` : `v${change.version} (${change.date})`} → “${listMeasures(change.to)}”`;
+const timeFrameText = (edits?: Array<{ version: number; date: string }>) => edits && edits.length > 0 ? ` Time frames were edited without changing the measures in ${edits.map((edit) => `v${edit.version} (${edit.date})`).join(", ")}.` : "";
+const predateText = (total: number, before: number, possible: number, publishedOn: string) => possible > 0
+  ? ` At least ${before} of ${total} changes predate the publication (${publishedOn}); ${possible} more ${possible === 1 ? "falls" : "fall"} in a window that straddles it.`
+  : ` ${before} of ${total} ${before === 1 ? "change predates" : "changes predate"} the publication (${publishedOn}).`;
 const countText = (count: number, complete: boolean) => `${count === 1 ? "once" : `${count} times`}${complete ? "" : " or more"}`;
 
 function summarizeArgs(name: string, input: Record<string, unknown>) {
@@ -153,6 +169,7 @@ export default function Workspace() {
   const selectedOutcome = [...activePair.registryOutcomes, ...activePair.publicationOutcomes].find((item) => item.id === selectedOutcomeId);
   const activeEvidenceIds = active?.evidenceIds ?? selectedOutcome?.evidenceIds ?? [];
   const evidence = activeEvidenceIds.map((id) => activePair.evidence.find((item) => item.id === id)).filter(Boolean);
+  const originalEntryCount = activePair.registryOutcomes.filter((outcome) => outcome.id.startsWith("registry-original-")).length;
   const primaryRegistryOutcomes = activePair.registryOutcomes.filter((item) => item.role === "primary");
   const collapseRegistry = live && !showAllRegistryOutcomes && activePair.registryOutcomes.length > 6 && primaryRegistryOutcomes.length > 0;
   const visibleRegistryOutcomes = collapseRegistry ? primaryRegistryOutcomes : activePair.registryOutcomes;
@@ -245,7 +262,12 @@ export default function Workspace() {
         if (!targetId) return current;
         restoredId = targetId;
         const next: AuditState = {
-          mappings: current.mappings.map((item) => item.id === targetId ? { ...item, status: "staged" } : item),
+          mappings: current.mappings.map((item) => {
+            if (item.id !== targetId) return item;
+            const restaged: Mapping = { ...item, status: "staged" };
+            delete restaged.reviewNote;
+            return restaged;
+          }),
           history: [...current.history, event("review_undone", "Latest decision returned to staging.", "reviewer", targetId)],
         };
         auditRef.current = next;
@@ -433,7 +455,11 @@ export default function Workspace() {
     let saved: SavedSession | null = null;
     try {
       const raw = sessionStorage.getItem(SESSION_KEY);
-      if (raw) saved = JSON.parse(raw) as SavedSession;
+      if (raw) {
+        const parsed: unknown = JSON.parse(raw);
+        if (isSavedSession(parsed)) saved = parsed;
+        else sessionStorage.removeItem(SESSION_KEY);
+      }
     } catch (error) {
       console.warn("Protocol Mirror could not read the previous session in this tab.", error);
     }
@@ -459,6 +485,9 @@ export default function Workspace() {
       } else if (nct) {
         setLoaderNct(nct);
         setLoaderError(`Add the PubMed identifier (PMID) of the report for ${nct} to load this pair.`);
+      } else if (pmid) {
+        setLoaderPmid(pmid);
+        setLoaderError(`Add the ClinicalTrials.gov identifier (NCT) of the trial reported in PMID ${pmid} to load this pair.`);
       } else if (!saved && !params.has("demo")) {
         void loadPairFromHuman(CURATED_PAIRS[0].nctId, CURATED_PAIRS[0].pmid, { quiet: true });
       }
@@ -493,7 +522,13 @@ export default function Workspace() {
 
   /** From a live case, one click returns to the demonstration case with its four example proposals. */
   const showExamples = useCallback(() => {
-    if (isLivePair(pairRef.current) && !switchPair(DEMO_PAIR, "Deterministic demonstration pair loaded.")) return;
+    const stagedBefore = auditRef.current.mappings.filter((item) => item.status === "staged").length;
+    if (isLivePair(pairRef.current)) {
+      if (!switchPair(DEMO_PAIR, "Deterministic demonstration pair loaded.")) return;
+      loadDemo();
+      if (stagedBefore > 0) setDecisionNotice(`${stagedBefore} staged ${stagedBefore === 1 ? "proposal" : "proposals"} from the previous case ${stagedBefore === 1 ? "was" : "were"} discarded because ${stagedBefore === 1 ? "it" : "they"} cited that case. Four evidence-linked proposals are staged for the demonstration case.`);
+      return;
+    }
     loadDemo();
   }, [switchPair, loadDemo]);
 
@@ -531,7 +566,7 @@ export default function Workspace() {
     if (!context) return;
     const controller = new AbortController();
     Promise.all(createPairBoundTools(activePair, caseDeps).map((tool) => context.registerTool(withActivity(tool), { signal: controller.signal })))
-      .catch((error: unknown) => console.error("WebMCP pair-bound tool registration failed.", error));
+      .catch((error: unknown) => { if (!controller.signal.aborted) console.error("WebMCP pair-bound tool registration failed.", error); });
     return () => controller.abort();
   }, [activePair, caseDeps, withActivity]);
 
@@ -547,7 +582,7 @@ export default function Workspace() {
       annotations: { readOnlyHint: true, untrustedContentHint: true },
       execute: () => createReviewReceipt(pairRef.current, auditRef.current),
     }), { signal: controller.signal }).catch((error: unknown) => {
-      console.error("WebMCP receipt tool registration failed after the human decision.", error);
+      if (!controller.signal.aborted) console.error("WebMCP receipt tool registration failed after the human decision.", error);
     });
     return () => controller.abort();
   }, [reviewedWorkAvailable, withActivity]);
@@ -635,7 +670,7 @@ export default function Workspace() {
         <div className="workspace-heading"><div><p className="section-kicker">Evidence table</p><h2 id="workspace-title" tabIndex={-1}>Registered intent <span aria-hidden="true">↔</span> reported record</h2></div><div className="legend"><span><i className="dot matched" />Matched</span><span><i className="dot flagged" />Flagged</span><span><i className="dot unreviewed" />Unreviewed</span></div></div>
         {audit.mappings.length > 0 && <div className="mobile-mapping-summary" aria-label="Proposed outcome relationships">{audit.mappings.map((mapping) => <button type="button" key={mapping.id} className={mapping.id === activeId ? "active" : ""} onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, activePair.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, activePair.publicationOutcomes)?.title : "Not reported"}</strong></button>)}</div>}
         <div className="comparison-grid">
-          <section className="outcome-column" aria-labelledby="registered-title"><ColumnTitle index="01" title="Registered outcomes" subtitle={live ? `ClinicalTrials.gov registry record · ${activePair.registryOutcomes.length} outcomes` : "ClinicalTrials.gov protocol record"} id="registered-title" />{activePair.registryHistory && <RegistryHistoryNote history={activePair.registryHistory} />}<div className="outcome-list">{visibleRegistryOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="registry" isMapped={registryMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} selectedOutcomeId={selectedOutcomeId} onSelect={inspectOutcome} />)}</div>{live && activePair.registryOutcomes.length > primaryRegistryOutcomes.length && primaryRegistryOutcomes.length > 0 && <button type="button" className="text-button outcome-toggle" onClick={() => setShowAllRegistryOutcomes((value) => !value)}>{collapseRegistry ? `Show ${activePair.registryOutcomes.length - primaryRegistryOutcomes.length} secondary and other outcomes` : "Show primary outcomes only"}</button>}</section>
+          <section className="outcome-column" aria-labelledby="registered-title"><ColumnTitle index="01" title="Registered outcomes" subtitle={live ? `ClinicalTrials.gov registry record · ${activePair.registryOutcomes.length - originalEntryCount} outcomes${originalEntryCount ? ` + ${originalEntryCount} from the original registration` : ""}` : "ClinicalTrials.gov protocol record"} id="registered-title" />{activePair.registryHistory && <RegistryHistoryNote history={activePair.registryHistory} />}<div className="outcome-list">{visibleRegistryOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="registry" isMapped={registryMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} selectedOutcomeId={selectedOutcomeId} onSelect={inspectOutcome} />)}</div>{live && activePair.registryOutcomes.length > primaryRegistryOutcomes.length && primaryRegistryOutcomes.length > 0 && <button type="button" className="text-button outcome-toggle" onClick={() => setShowAllRegistryOutcomes((value) => !value)}>{collapseRegistry ? `Show ${activePair.registryOutcomes.length - primaryRegistryOutcomes.length} secondary and other outcomes` : "Show primary outcomes only"}</button>}</section>
           <div className="evidence-spine" role="note" aria-label={`${audit.mappings.length} proposed relationships`}><strong>{audit.mappings.length}</strong><span>proposed relationships</span><div className="relationship-dots" aria-hidden="true">{audit.mappings.map((mapping) => <i className={mapping.status} key={mapping.id} />)}</div></div>
           <section className="outcome-column" aria-labelledby="reported-title"><ColumnTitle index="02" title={live ? "Reported evidence" : "Reported outcomes"} subtitle={live ? "PubMed abstract sections · not an extracted outcome list" : "Journal publication record"} id="reported-title" /><div className="outcome-list">{activePair.publicationOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="publication" isMapped={publicationMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} selectedOutcomeId={selectedOutcomeId} onSelect={inspectOutcome} />)}</div>{live && <p className="column-note">{LIVE_PUBLICATION_LIMITATION}</p>}</section>
         </div>
@@ -686,8 +721,8 @@ function RegistryHistoryStrip({ record, status, error }: { record: LiveRegistryH
   return <div className={`history-strip ${first ? "changed" : ""}`}>
     <span>ClinicalTrials.gov · {record.nctId} · registration history · {record.totalVersions} versions{record.complete ? "" : ` · ${record.comparedVersions.length} compared`}</span>
     {first
-      ? <p><strong>The registered primary outcome set changed {countText(record.changes.length, record.complete)}.</strong> {first.from.length === 0 ? `No primary outcome was listed when first registered (${record.original.date}).` : `First registered ${record.original.date}: “${first.from.join("; ")}”.`} {record.changes.map(changeText).join("; ")}.{first.from.length === 0 ? "" : " When this pair is reviewed, the original entry is included so the agent can pair it against the publication."}</p>
-      : <p><strong>The primary outcome did not change</strong> across the {record.complete ? record.totalVersions : `${record.comparedVersions.length} compared`} versions (first registered {record.original.date}, latest {record.latestVersion.date}).</p>}
+      ? <p><strong>The registered primary outcome set changed {countText(record.changes.length, record.complete)}.</strong> {first.from.length === 0 ? `No primary outcome was listed when first registered (${record.original.date}).` : `First registered ${record.original.date}: “${listMeasures(first.from)}”.`} {record.changes.map(changeText).join("; ")}.{timeFrameText(record.timeFrameEdits)}{first.from.length === 0 ? "" : " When this pair is reviewed, the original entry is included so the agent can pair it against the publication."}</p>
+      : <p><strong>The primary outcome measures did not change</strong> across the {record.complete ? record.totalVersions : `${record.comparedVersions.length} compared`} versions (first registered {record.original.date}, latest {record.latestVersion.date}).{timeFrameText(record.timeFrameEdits)}</p>}
     <small>{record.limitation} <a href={record.sourceUrl} target="_blank" rel="noreferrer">Open the registry history <Icon name="arrow" /></a></small>
   </div>;
 }
@@ -700,14 +735,14 @@ function RegistryHistoryNote({ history }: { history: NonNullable<TrialPair["regi
   return <p className={`registry-history-note ${first ? "changed" : ""}`}>
     <strong>{first
       ? `The registered primary outcome set changed ${countText(history.changes.length, complete)} across ${history.totalVersions} registration versions.`
-      : `Primary outcome unchanged across ${complete ? "" : `the ${compared} compared of `}${history.totalVersions} registration versions.`}</strong>
-    {first && typeof before === "number" && history.publishedOn ? ` ${before} of ${history.changes.length} ${before === 1 ? "change predates" : "changes predate"} the publication (${history.publishedOn}).` : ""}
+      : `Primary outcome measures unchanged across ${complete ? "" : `the ${compared} compared of `}${history.totalVersions} registration versions.`}</strong>
+    {first && typeof before === "number" && history.publishedOn ? predateText(history.changes.length, before, history.changesPossiblyBeforePublication ?? 0, history.publishedOn) : ""}
     {" "}
     {first
       ? first.from.length === 0
         ? `No primary outcome was listed when first registered (${history.originalDate}); primary outcomes first appear in v${first.version} (${first.date}).`
-        : `First registered ${history.originalDate}: “${first.from.join("; ")}”. ${history.changes.map(changeText).join("; ")}. The original entry is listed first below so it can be paired against the publication.`
-      : `First registered ${history.originalDate}; latest version ${history.latest.version} on ${history.latest.date}.`}
+        : `First registered ${history.originalDate}: “${listMeasures(first.from)}”. ${history.changes.map(changeText).join("; ")}.${timeFrameText(history.timeFrameEdits)} The original entry is listed first below so it can be paired against the publication.`
+      : `First registered ${history.originalDate}; latest version ${history.latest.version} on ${history.latest.date}.${timeFrameText(history.timeFrameEdits)}`}
     {complete ? "" : ` ${compared} of ${history.totalVersions} versions compared${history.unreadVersions?.length ? `; version${history.unreadVersions.length === 1 ? "" : "s"} ${history.unreadVersions.join(", ")} could not be read` : ""}.`}
     {" "}<a href={history.sourceUrl} target="_blank" rel="noreferrer">Open registry history</a>
   </p>;

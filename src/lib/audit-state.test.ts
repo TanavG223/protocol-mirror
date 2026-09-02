@@ -94,3 +94,17 @@ describe("human decision authority", () => {
     expect(hasReviewedWork({ mappings: [mapping("rejected", "rejected")], history: [] })).toBe(true);
   });
 });
+
+describe("decision notes", () => {
+  it("drops the previous decision's reason when a mapping is decided again", () => {
+    const audit = {
+      mappings: [{ id: "m1", registryOutcomeId: null, publicationOutcomeId: "p1", discrepancy: "introduced" as const, rationale: "r", evidenceIds: ["e1"], confidence: 0.6, status: "staged" as const, origin: "agent" as const, reviewNote: "Wrong pairing: stale reason" }],
+      history: [],
+    };
+    const accepted = transitionHumanDecision(audit, "m1", "m1", "accepted");
+    expect(accepted?.mappings[0].status).toBe("accepted");
+    expect(accepted?.mappings[0].reviewNote).toBeUndefined();
+    const rejected = transitionHumanDecision(audit, "m1", "m1", "rejected", "Not a real discrepancy");
+    expect(rejected?.mappings[0].reviewNote).toBe("Not a real discrepancy");
+  });
+});

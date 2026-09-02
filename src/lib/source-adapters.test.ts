@@ -155,6 +155,49 @@ describe("ClinicalTrials.gov registration history", () => {
     expect(result.limitation).toContain("6 of 12 versions were compared");
   });
 
+  it("never counts a time-frame edit as a primary-outcome change, but lists it when both time frames are specified", async () => {
+    const list = { changes: [
+      { version: 0, date: "2006-06-29", moduleLabels: [] },
+      { version: 3, date: "2008-01-10", moduleLabels: ["Outcome Measures"] },
+      { version: 5, date: "2009-10-21", moduleLabels: ["Outcome Measures"] },
+    ] };
+    const version = (timeFrame?: string) => ({ study: { protocolSection: { outcomesModule: { primaryOutcomes: [{ measure: "Number of ventilator-free days", ...(timeFrame ? { timeFrame } : {}) }] } } } });
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => {
+      if (url.endsWith("/history")) return new Response(JSON.stringify(list), { status: 200 });
+      if (url.endsWith("/history/0")) return new Response(JSON.stringify(version()), { status: 200 });
+      if (url.endsWith("/history/3")) return new Response(JSON.stringify(version("Day 28")), { status: 200 });
+      return new Response(JSON.stringify(version("Day 60")), { status: 200 });
+    }));
+    const result = await fetchRegistryHistory("NCT00347321");
+    expect(result.primaryOutcomeChanged).toBe(false);
+    expect(result.changes).toEqual([]);
+    expect(result.timeline.map((snapshot) => snapshot.version)).toEqual([0]);
+    // v0 → v3 only filled in a missing time frame (not an edit); v3 → v5 changed a specified one.
+    expect(result.timeFrameEdits).toEqual([{ version: 5, date: "2009-10-21" }]);
+    expect(result.complete).toBe(true);
+  });
+
+  it("compares measures order-insensitively and ignores capitalisation and spacing", async () => {
+    const list = { changes: [{ version: 0, date: "2020-01-01", moduleLabels: [] }, { version: 2, date: "2020-02-01", moduleLabels: ["Outcome Measures"] }] };
+    const version = (measures: string[]) => ({ study: { protocolSection: { outcomesModule: { primaryOutcomes: measures.map((measure) => ({ measure, timeFrame: "Day 28" })) } } } });
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => new Response(JSON.stringify(url.endsWith("/history") ? list : url.endsWith("/history/0") ? version(["Time to recovery", "All-cause mortality"]) : version(["all-cause  mortality", "Time To Recovery"])), { status: 200 })));
+    const result = await fetchRegistryHistory("NCT00000005");
+    expect(result.primaryOutcomeChanged).toBe(false);
+  });
+
+  it("marks the result incomplete instead of reporting a false 'unchanged' when the registry sends no module labels", async () => {
+    const list = { changes: [{ version: 0, date: "2020-01-01", moduleLabels: [] }, { version: 1, date: "2020-02-01", moduleLabels: [] }, { version: 2, date: "2020-03-01", moduleLabels: [] }] };
+    const version = (measure: string) => ({ study: { protocolSection: { outcomesModule: { primaryOutcomes: [{ measure, timeFrame: "Day 28" }] } } } });
+    const fetchMock = vi.fn(async (url: string) => new Response(JSON.stringify(url.endsWith("/history") ? list : version(url.endsWith("/history/2") ? "Mortality at day 90" : "Mortality")), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const result = await fetchRegistryHistory("NCT00000006");
+    expect(fetchMock.mock.calls.map(([url]) => String(url).split("/history")[1])).toEqual(["", "/0", "/2"]);
+    expect(result.complete).toBe(false);
+    expect(result.primaryOutcomeChanged).toBe(true);
+    expect(result.firstPrimaryChange).toMatchObject({ version: 2, exact: true });
+    expect(result.limitation).toContain("did not label");
+  });
+
   it("decodes the HTML-escaped text the history endpoint returns", async () => {
     const list = { changes: [{ version: 0, date: "2020-01-01", moduleLabels: [] }] };
     const version = { study: { protocolSection: { outcomesModule: { primaryOutcomes: [{ measure: "Death within the &#x27;no additional treatment&#x27; arm", timeFrame: "&lt;28 days", description: "Cause &amp; time of death" }] } } } };

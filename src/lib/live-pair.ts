@@ -9,9 +9,13 @@ const OUTCOME_ROLES = new Set<Outcome["role"]>(["primary", "secondary", "other"]
 const day = (iso: string) => (/^\d{4}-\d{2}-\d{2}/.test(iso) ? iso.slice(0, 10) : iso);
 const FULL_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
+/** A short, readable list of measures; long primary-outcome sets (some trials register 60+) are cut after a few. */
+export const listMeasures = (measures: string[], limit = 3) =>
+  measures.length <= limit ? measures.join("; ") : `${measures.slice(0, limit).join("; ")}; and ${measures.length - limit} more`;
+
 /** One sentence per registry change, honest about whether the date is exact. */
 export const describeRegistryChange = (change: { version: number; date: string; to: string[]; exact?: boolean; after?: { version: number; date: string } }) =>
-  `${change.exact === false && change.after ? `Changed between version ${change.after.version} (${change.after.date}) and version ${change.version} (${change.date})` : `Changed in version ${change.version} (${change.date})`} to: ${change.to.join("; ")}.`;
+  `${change.exact === false && change.after ? `Changed between version ${change.after.version} (${change.after.date}) and version ${change.version} (${change.date})` : `Changed in version ${change.version} (${change.date})`} to: ${listMeasures(change.to)}.`;
 
 /**
  * Turns the records an agent (or a person) fetched through the bounded adapters into a reviewable
@@ -59,7 +63,7 @@ export function buildLiveTrialPair(trial: LiveClinicalTrialRecord, article: Live
     ...(changed && history ? originalPrimaries.map((outcome, index) => ({
       id: `ev-registry-original-primary-${index + 1}`,
       source: "registry" as const,
-      sourceLabel: `ClinicalTrials.gov · original primary outcome · version 0, ${history.original.date} · ${outcome.timeFrame}`,
+      sourceLabel: `ClinicalTrials.gov · original primary outcome · version ${history.original.version}, ${history.original.date} · ${outcome.timeFrame}`,
       quote: outcome.measure,
       locator: `${outcome.locator}.measure`,
       url: history.sourceUrl,
@@ -83,7 +87,11 @@ export function buildLiveTrialPair(trial: LiveClinicalTrialRecord, article: Live
   ];
 
   const publishedOn = article.publishedOn ?? null;
-  const changesBeforePublication = publishedOn && FULL_DATE.test(publishedOn) ? historyChanges.filter((change) => change.date < publishedOn).length : null;
+  // A change is certainly before the paper when its (latest possible) date precedes it; an inexact
+  // change whose window straddles the publication date is counted separately, never as certain.
+  const fullDate = publishedOn && FULL_DATE.test(publishedOn) ? publishedOn : null;
+  const changesBeforePublication = fullDate ? historyChanges.filter((change) => change.date < fullDate).length : null;
+  const changesPossiblyBeforePublication = fullDate ? historyChanges.filter((change) => change.date >= fullDate && !change.exact && change.after.date < fullDate).length : 0;
 
   return {
     id: `live-${trial.nctId}-${article.pmid}`,
@@ -102,6 +110,8 @@ export function buildLiveTrialPair(trial: LiveClinicalTrialRecord, article: Live
         comparedVersions: history.comparedVersions,
         unreadVersions: history.unreadVersions.map((item) => item.version),
         changesBeforePublication,
+        changesPossiblyBeforePublication,
+        timeFrameEdits: history.timeFrameEdits ?? [],
         publishedOn,
         limitation: history.limitation,
         sourceUrl: history.sourceUrl,

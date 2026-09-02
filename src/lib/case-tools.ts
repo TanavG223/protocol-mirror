@@ -40,9 +40,11 @@ export function createCaseReadTools(deps: CaseToolDeps): WebMCP.ModelContextTool
         const audit = deps.getAudit();
         const live = pair.provenance === "live";
         const hint = deps.getIntakeHint();
+        if (input.outcomes !== undefined && input.outcomes !== "all" && input.outcomes !== "primary") throw new Error('outcomes must be "primary" or "all".');
         const outcomesShown = input.outcomes === "all" || input.outcomes === "primary" ? input.outcomes : live && pair.registryOutcomes.length > ENUM_LIMIT ? "primary" : "all";
         const registryOutcomes = outcomesShown === "primary" ? pair.registryOutcomes.filter((outcome) => outcome.role === "primary") : pair.registryOutcomes;
         const omitted = pair.registryOutcomes.length - registryOutcomes.length;
+        const originalEntries = pair.registryOutcomes.filter((outcome) => outcome.id.startsWith("registry-original-")).length;
         return {
           activeCase: live ? "live" : "demo",
           pair: {
@@ -51,7 +53,8 @@ export function createCaseReadTools(deps: CaseToolDeps): WebMCP.ModelContextTool
           },
           ...(live ? { publicationNote: LIVE_PUBLICATION_LIMITATION } : {}),
           registryOutcomesShown: outcomesShown,
-          registryOutcomeCount: pair.registryOutcomes.length,
+          registryOutcomeCount: pair.registryOutcomes.length - originalEntries,
+          ...(originalEntries > 0 ? { originalRegistrationEntries: originalEntries } : {}),
           ...(omitted > 0 ? { omittedRegistryOutcomes: omitted, registryOutcomesHint: `${omitted} secondary and other registry outcomes are omitted. Call get_audit_state with outcomes: "all" to list them.` } : {}),
           registryOutcomes: registryOutcomes.map((outcome) => compactOutcome(outcome, live)),
           publicationOutcomes: pair.publicationOutcomes.map((outcome) => compactOutcome(outcome, live)),

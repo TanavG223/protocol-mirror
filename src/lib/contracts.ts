@@ -47,8 +47,12 @@ export interface TrialPair {
     complete?: boolean;
     comparedVersions?: number[];
     unreadVersions?: number[];
-    /** How many of `changes` are dated before the publication; null when PubMed gives no full date. */
+    /** How many of `changes` are certainly dated before the publication; null when PubMed gives no full date. */
     changesBeforePublication?: number | null;
+    /** Inexact changes whose window straddles the publication date, so they may or may not predate it. */
+    changesPossiblyBeforePublication?: number;
+    /** Versions that edited a time frame without changing the measures; never counted as changes. */
+    timeFrameEdits?: Array<{ version: number; date: string }>;
     publishedOn?: string | null;
     limitation?: string;
     sourceUrl: string;

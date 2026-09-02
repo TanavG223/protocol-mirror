@@ -344,3 +344,8 @@ footer { max-width: 1480px; margin: auto; padding: 24px clamp(20px,4vw,64px); bo
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+.error-shell { max-width: 640px; margin: 96px auto; padding: 0 24px; display: grid; gap: 14px; }
+.error-shell h1 { font-family: var(--font-serif), serif; font-size: 34px; font-weight: 500; letter-spacing: -.03em; }
+.error-shell p { color: var(--muted); line-height: 1.5; }
+.error-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 8px; }

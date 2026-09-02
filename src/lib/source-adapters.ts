@@ -244,9 +244,20 @@ export interface RegistryPrimaryChange {
   after: { version: number; date: string };
 }
 
-const normalizeMeasure = (outcome: RegistryPrimaryOutcome) => `${outcome.measure} @ ${outcome.timeFrame}`.toLowerCase().replace(/\s+/g, " ").trim();
-const samePrimarySet = (a: RegistryPrimaryOutcome[], b: RegistryPrimaryOutcome[]) =>
-  a.length === b.length && a.every((outcome, index) => normalizeMeasure(outcome) === normalizeMeasure(b[index]));
+const normalizeText = (value: string) => value.toLowerCase().replace(/\s+/g, " ").trim();
+const UNSPECIFIED_TIME_FRAME = normalizeText("Not specified");
+const measureKey = (outcomes: RegistryPrimaryOutcome[]) => outcomes.map((outcome) => normalizeText(outcome.measure)).sort().join(" | ");
+/** Measures only, order-insensitive. A reworded or newly filled-in time frame is never counted as an outcome change. */
+const samePrimarySet = (a: RegistryPrimaryOutcome[], b: RegistryPrimaryOutcome[]) => measureKey(a) === measureKey(b);
+/** True when a measure present in both versions carries two different, both specified, time frames. */
+const timeFrameEdited = (previous: RegistryPrimaryOutcome[], next: RegistryPrimaryOutcome[]) => {
+  const before = new Map(previous.map((outcome) => [normalizeText(outcome.measure), normalizeText(outcome.timeFrame)]));
+  return next.some((outcome) => {
+    const was = before.get(normalizeText(outcome.measure));
+    const now = normalizeText(outcome.timeFrame);
+    return was !== undefined && was !== UNSPECIFIED_TIME_FRAME && now !== UNSPECIFIED_TIME_FRAME && was !== now;
+  });
+};
 
 async function fetchHistoryVersion(nctId: string, version: number, date: string): Promise<RegistryVersionSnapshot> {
   const response = await fetch(`https://clinicaltrials.gov/api/int/studies/${encodeURIComponent(nctId)}/history/${version}`, {
@@ -305,7 +316,12 @@ export async function fetchRegistryHistory(rawNctId: string) {
   const changes = [...parsed.data.changes].sort((a, b) => a.version - b.version);
   const first = changes[0];
   const last = changes[changes.length - 1];
-  const outcomeVersions = changes.filter((change) => change.version !== first.version && change.moduleLabels.some((label) => OUTCOME_MODULE_LABEL.test(label)));
+  // Without module labels there is no way to know which versions touched the outcomes, so only the
+  // latest version is compared and the result is marked incomplete rather than a false "unchanged".
+  const labelsAvailable = changes.some((change) => change.moduleLabels.length > 0);
+  const outcomeVersions = labelsAvailable
+    ? changes.filter((change) => change.version !== first.version && change.moduleLabels.some((label) => OUTCOME_MODULE_LABEL.test(label)))
+    : changes.length > 1 ? [last] : [];
 
   const original = await fetchHistoryVersion(nctId, first.version, first.date);
   const compared: RegistryVersionSnapshot[] = [original];
@@ -360,8 +376,11 @@ export async function fetchRegistryHistory(rawNctId: string) {
       after: { version: after.version, date: after.date },
     };
   });
+  const timeFrameEdits = ordered.slice(1)
+    .filter((snapshot, index) => samePrimarySet(snapshot.primaryOutcomes, ordered[index].primaryOutcomes) && timeFrameEdited(ordered[index].primaryOutcomes, snapshot.primaryOutcomes))
+    .map((snapshot) => ({ version: snapshot.version, date: snapshot.date }));
   const uncompared = outcomeVersions.filter((change) => !comparedSet.has(change.version));
-  const complete = uncompared.length === 0;
+  const complete = labelsAvailable && uncompared.length === 0;
 
   return {
     source: "ClinicalTrials.gov registration history",
@@ -377,12 +396,14 @@ export async function fetchRegistryHistory(rawNctId: string) {
     original,
     timeline,
     changes: primaryChanges,
+    timeFrameEdits,
     primaryOutcomeChanged: primaryChanges.length > 0,
     firstPrimaryChange: primaryChanges[0] ?? null,
     truncated: !complete,
     limitation: [
-      "Only primary outcome measures are compared across registration versions. A change is a registry fact, not a judgment; it may be legitimate and pre-specified elsewhere.",
-      complete ? "" : `${comparedVersions.length} of ${changes.length} versions were compared; ${uncompared.length} outcome-module version${uncompared.length === 1 ? " was" : "s were"} not, so a change made and reverted between compared versions would not appear here.`,
+      "Only primary outcome measures are compared across registration versions; time-frame edits are listed separately and never counted as changes. A change is a registry fact, not a judgment; it may be legitimate and pre-specified elsewhere.",
+      labelsAvailable ? "" : "The registry did not label which versions changed the Outcome Measures module, so only the original and latest versions were compared.",
+      !labelsAvailable || complete ? "" : `${comparedVersions.length} of ${changes.length} versions were compared; ${uncompared.length} outcome-module version${uncompared.length === 1 ? " was" : "s were"} not, so a change made and reverted between compared versions would not appear here.`,
       unreadVersions.length ? `Version${unreadVersions.length === 1 ? "" : "s"} ${unreadVersions.map((item) => item.version).join(", ")} could not be read.` : "",
     ].filter(Boolean).join(" "),
   };

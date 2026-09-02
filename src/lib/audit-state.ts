@@ -32,9 +32,14 @@ export function transitionHumanDecision(
   const note = reviewNote?.trim().slice(0, REVIEW_NOTE_MAX_CHARS);
 
   return {
-    mappings: audit.mappings.map((mapping) => mapping.id === requestedId
-      ? { ...mapping, status, ...(note ? { reviewNote: note } : {}) }
-      : mapping),
+    mappings: audit.mappings.map((mapping) => {
+      if (mapping.id !== requestedId) return mapping;
+      // A new decision never carries the previous decision's reason.
+      const decided: Mapping = { ...mapping, status };
+      delete decided.reviewNote;
+      if (note) decided.reviewNote = note;
+      return decided;
+    }),
     target,
     nextActiveId: audit.mappings.find((mapping) => mapping.status === "staged" && mapping.id !== requestedId)?.id ?? null,
   };

@@ -45,6 +45,8 @@ export interface LiveRegistryHistory {
   original: { version: number; date: string; primaryOutcomes: Array<{ measure: string; timeFrame: string; description: string; locator: string }> };
   timeline: Array<{ version: number; date: string; primaryOutcomes: Array<{ measure: string; timeFrame: string; description: string; locator: string }> }>;
   changes: LiveRegistryPrimaryChange[];
+  /** Compared versions in which measures stayed the same but a specified time frame was edited. */
+  timeFrameEdits: Array<{ version: number; date: string }>;
   primaryOutcomeChanged: boolean;
   firstPrimaryChange: LiveRegistryPrimaryChange | null;
   truncated: boolean;

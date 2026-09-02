@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildLiveTrialPair, isLivePair } from "./live-pair";
+import { buildLiveTrialPair, isLivePair, describeRegistryChange, listMeasures } from "./live-pair";
 import { validateMappingProposal } from "./proposal-validation";
 import { DEMO_PAIR } from "./demo-data";
 
@@ -75,7 +75,7 @@ describe("buildLiveTrialPair", () => {
       primaryOutcomeChanged: true,
       changes: [{ version: 14, date: "2020-04-16", from: ["Percentage of subjects reporting each severity rating on the 7-point ordinal scale"], to: ["Time to recovery"], exact: true, after: { version: 0, date: "2020-02-20" } }],
       comparedVersions: [0, 14],
-      unreadVersions: [],
+      unreadVersions: [], timeFrameEdits: [],
       complete: true,
       firstPrimaryChange: { version: 14, date: "2020-04-16", from: ["Percentage of subjects reporting each severity rating on the 7-point ordinal scale"], to: ["Time to recovery"], exact: true, after: { version: 0, date: "2020-02-20" } },
       truncated: false,
@@ -111,7 +111,7 @@ describe("buildLiveTrialPair", () => {
     const history = {
       source: "ClinicalTrials.gov registration history", sourceUrl: "https://clinicaltrials.gov/study/NCT00000001?tab=history", retrievedAt: "2026-09-02T00:00:00.000Z", nctId: "NCT00000001",
       totalVersions: 3, latestVersion: { version: 2, date: "2021-06-01" }, outcomeModuleVersions: [{ version: 1, date: "2019-01-10" }, { version: 2, date: "2021-06-01" }],
-      comparedVersions: [0, 1, 2], unreadVersions: [], complete: true,
+      comparedVersions: [0, 1, 2], unreadVersions: [], timeFrameEdits: [], complete: true,
       original: { version: 0, date: "2018-01-01", primaryOutcomes: [] },
       timeline: [], primaryOutcomeChanged: true, truncated: false, limitation: "x",
       changes: [
@@ -124,8 +124,16 @@ describe("buildLiveTrialPair", () => {
     expect(pair.registryOutcomes.some((outcome) => outcome.id.startsWith("registry-original-primary"))).toBe(false);
     expect(pair.registryHistory?.primaryOutcomeChanged).toBe(true);
     expect(pair.registryHistory?.changesBeforePublication).toBe(1);
+    expect(pair.registryHistory?.changesPossiblyBeforePublication).toBe(1);
     expect(pair.registryHistory?.changes[1]).toMatchObject({ exact: false, after: { version: 1, date: "2019-01-10" } });
     expect(pair.publishedOn).toBe("2020-05-22");
     expect(pair.publicationDate).toBe("2020-05-22");
+  });
+
+  it("cuts long measure lists in card text while the full lists stay in registryHistory", () => {
+    const many = Array.from({ length: 12 }, (_, i) => `Outcome ${i + 1}`);
+    expect(listMeasures(many)).toBe("Outcome 1; Outcome 2; Outcome 3; and 9 more");
+    expect(listMeasures(["A", "B"])).toBe("A; B");
+    expect(describeRegistryChange({ version: 6, date: "2020-07-15", to: many, exact: true })).toContain("and 9 more");
   });
 });

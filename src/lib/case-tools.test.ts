@@ -70,7 +70,9 @@ describe("case tools", () => {
     expect(byDefault.registryOutcomesShown).toBe("primary");
     expect(byDefault.registryOutcomes.map((item) => item.id)).toEqual(["registry-original-primary-1"]);
     expect(byDefault.omittedRegistryOutcomes).toBe(25);
-    expect(byDefault.registryOutcomeCount).toBe(26);
+    expect(byDefault.registryOutcomeCount).toBe(25);
+    expect((byDefault as { originalRegistrationEntries?: number }).originalRegistrationEntries).toBe(1);
+    await expect(auditTool.execute({ outcomes: "bogus" }, options)).rejects.toThrow('outcomes must be "primary" or "all".');
     expect(byDefault.registryOutcomesHint).toContain('outcomes: "all"');
     const asString = await auditTool.execute(JSON.stringify({ outcomes: "all" }) as unknown as Record<string, unknown>, options) as { registryOutcomes: unknown[] };
     expect(asString.registryOutcomes).toHaveLength(26);
