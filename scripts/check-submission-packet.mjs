@@ -139,7 +139,7 @@ requireAll(combinedJudgeCopy, [
 ], "judge-facing benchmark claims");
 
 requireAll(packet, ["113.30 seconds", "Kokoro-82M", "project owner must still watch and approve", "final public YouTube URL remains pending"], `${paths.packet} media boundary`);
-requireAll(packet, ["Google Chrome 152", "has not yet been run against the new real-pair loop"], `${paths.packet} browser-verification boundary`);
+requireAll(packet, ["Google Chrome 152", "No other agent client has been tested."], `${paths.packet} browser-verification boundary`);
 requireAll(requirements, ["owner watch and public upload remain", "Missing"], `${paths.requirements} media status`);
 requireAll(manifest, ["not evidence of owner editorial approval, a Devpost entry, or a YouTube upload", "Owner-only gates still open"], `${paths.manifest} external-state boundary`);
 
