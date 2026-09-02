@@ -23,7 +23,7 @@ Goal: a judge opening the live URL, the video, the README or the Devpost page se
 | 4 | Domain-first hero; CTA scrolls to the queue; "Uncertain" label; readable benchmark cards; `release-preflight.sh:85` grep updated | Claude | done (0b49388) |
 | 5 | ClinicalTrials.gov `?fields=` projection (fixes NCT04368728 502); upstream 400 → `invalid_identifier` | Claude | done (0b49388); NCT04368728 returns 200 |
 | 6 | `scripts/webmcp-smoke.mjs`: headless Chrome 152 + `--enable-features=WebMCPTesting` over CDP; drives `executeTool` through the full loop; asserts 6 → 7 → 6 and `generatedFrom: live_sources`; `npm run smoke:webmcp` | Claude | done (e754444); Chromium passes tool input as JSON strings, executors accept both |
-| 7 | Session tool-call log (`role="log"`) and a 7-chip tool roster with `export_review_receipt` locked until a decision | Claude | in progress |
+| 7 | Session tool-call log (`role="log"`) and a 7-chip tool roster with `export_review_receipt` locked until a decision | Claude | done (eb3f520) |
 | 8 | Copy: Chen citation ("no restriction by journal"), README six-step judge path with pasteable prompts, Devpost text organized by the four required questions, test-count literal refreshed everywhere `check-submission-packet.mjs` enforces it | Claude | pending |
 | 9 | Final `npm run check`, honesty grep, push, live checks (badge, NCT04368728 200), hand-off report | Claude | pending |
 | 10 | Conditional: `load_trial_pair` as an eighth tool | Claude | only if 6 and 7 are done |

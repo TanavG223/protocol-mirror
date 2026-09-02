@@ -210,6 +210,12 @@ try {
   log(`receipt ok: ${receipt.generatedFrom}; locators ${receipt.evidence.map((span) => span.locator).join(" | ")}`);
   await evaluate("window.scrollTo(0, 0)");
   await snap("04-seven-tools-after-decision", 720);
+  await evaluate(`document.querySelector(".activity-log")?.scrollIntoView({ block: "start" })`);
+  await snap("05-session-log", 900);
+  await evaluate(`document.querySelector("#evidence-drawer")?.scrollIntoView({ block: "start" })`);
+  await snap("06-evidence-drawer", 900);
+  await evaluate(`document.querySelector(".reality-check")?.scrollIntoView({ block: "start" })`);
+  await snap("07-benchmark", 900);
 
   await waitFor(clickText("Undo last decision"), "the Undo button");
   await waitFor(`${badgeText}.includes("6 tools")`, "the badge to return to 6 tools");

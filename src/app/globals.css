@@ -174,7 +174,8 @@ main { max-width: 1480px; margin: auto; }
 .review-dock { margin: 0 clamp(20px,4vw,64px) 70px; padding: 34px; border: 1px solid var(--ink); background: #e8e5dc; box-shadow: 7px 7px 0 var(--ink); }
 .review-dock:focus-visible { outline: 4px solid var(--blue-focus); outline-offset: 5px; }
 .review-dock-heading h2 span { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--amber); color: white; font-family: var(--font-sans); font-size: 12px; vertical-align: middle; }
-.decision-notice { max-width: 650px; margin-top: 7px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.decision-notice { max-width: 650px; margin-top: 7px; color: #4d5451; font-size: 13px; line-height: 1.45; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .text-button { min-height: 44px; padding: 0 4px; border: 0; background: transparent; color: var(--blue); display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; cursor: pointer; }
 .text-button:disabled { color: #999; cursor: not-allowed; }
 .review-dock-actions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 12px 20px; }

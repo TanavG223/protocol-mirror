@@ -417,7 +417,7 @@ export default function Workspace() {
       workspaceTitle?.scrollIntoView({ block: "start" });
     }}>Skip to comparison workspace</a>
     <header className="site-header">
-      <a className="brand" href="#top" aria-label="Protocol Mirror home"><span className="brand-mark" aria-hidden="true"><span>P</span><span>M</span></span><span>Protocol Mirror</span></a>
+      <a className="brand" href="#top"><span className="brand-mark" aria-hidden="true"><span>P</span><span>M</span></span><span>Protocol Mirror</span></a>
       <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? `WebMCP connected · ${reviewedWorkAvailable ? 7 : 6} tools` : "WebMCP preview"}</span></div>
     </header>
     <main id="top">
@@ -532,5 +532,5 @@ function ColumnTitle({ index, title, subtitle, id }: { index: string; title: str
 function OutcomeCard({ outcome, side, isMapped, mappings, activeId, selectedOutcomeId, onSelect }: { outcome: Outcome; side: "registry" | "publication"; isMapped: boolean; mappings: Mapping[]; activeId: string | null; selectedOutcomeId: string | null; onSelect: (outcomeId: string, mappingId?: string) => void }) {
   const mapping = [...mappings].reverse().find((item) => side === "registry" ? item.registryOutcomeId === outcome.id : item.publicationOutcomeId === outcome.id);
   const isActive = mapping ? mapping.id === activeId : selectedOutcomeId === outcome.id;
-  return <article className={`outcome-card ${isActive ? "active" : ""}`}><button type="button" onClick={() => onSelect(outcome.id, mapping?.id)} aria-pressed={isActive} aria-controls="evidence-drawer" aria-label={`Inspect source evidence for ${outcome.title}${mapping ? `, ${LABELS[mapping.discrepancy]}` : ", not yet mapped"}`}><div className="outcome-meta"><span className={`role ${outcome.role}`}>{outcome.role}</span><span>{outcome.timeFrame}</span></div><h4>{outcome.title}</h4><p>{outcome.description}</p><div className="outcome-status"><span className={`status-line ${mapping?.status ?? "unreviewed"}`} /><span>{mapping ? `${LABELS[mapping.discrepancy]} · ${mapping.status}` : isMapped ? "Mapped" : "Inspect source span"}</span>{mapping && <span className="confidence">{Math.round(mapping.confidence * 100)}%</span>}</div></button></article>;
+  return <article className={`outcome-card ${isActive ? "active" : ""}`}><button type="button" onClick={() => onSelect(outcome.id, mapping?.id)} aria-pressed={isActive} aria-controls="evidence-drawer"><span className="sr-only">Inspect source evidence for </span><div className="outcome-meta"><span className={`role ${outcome.role}`}>{outcome.role}</span><span>{outcome.timeFrame}</span></div><h4>{outcome.title}</h4><p>{outcome.description}</p><div className="outcome-status"><span className={`status-line ${mapping?.status ?? "unreviewed"}`} /><span>{mapping ? `${LABELS[mapping.discrepancy]} · ${mapping.status}` : isMapped ? "Mapped" : "Inspect source span"}</span>{mapping && <span className="confidence">{Math.round(mapping.confidence * 100)}%</span>}</div></button></article>;
 }
