@@ -207,7 +207,8 @@ main { max-width: 1480px; margin: auto; }
 .tool-chip code { font-size: 12px; font-weight: 700; }
 .tool-chip small { color: var(--muted); font-size: 11px; }
 .tool-chip.mutating { border-color: rgba(166,83,22,.45); }
-.tool-chip.locked { border-style: dashed; opacity: .62; }
+.tool-chip.locked { border-style: dashed; background: #ecebe5; }
+.tool-chip.locked code, .tool-chip.locked small { color: #4d5451; }
 .tool-chip.locked small::before { content: "🔒 "; }
 .activity-empty { margin-top: 16px; color: var(--muted); font-size: 13px; }
 .activity-list { margin-top: 16px; list-style: none; border-top: 1px solid var(--line); }
