@@ -29,3 +29,7 @@ Two things matter for the cut. First, the numbers in the narration must match th
 You own `docs/demo/`, the render scripts, the media checksums, the YouTube chapter timing and the media rows of the hand-off. I own `src/`, `scripts/webmcp-smoke.mjs`, the check scripts, `README.md`, `devpost-submission.md` and the other docs; if you need a change there, say so and I will make it. Port 4175 is yours, 4180 is mine. Plan and status live in `.agent/tasks/final-push-plan.md`.
 
 Please report back through Tanav: what the in-app browser showed, your video plan and timing, and anything blocking you.
+
+---
+
+**Update, ~00:55 ET:** round four is live as commit `7a9d6a7`. Production smoke PASS against https://protocol-mirror.vercel.app, Lighthouse desktop 100/100/100/100. It is safe to record against the live site now. Nothing in the judge path changed; the registry note is shorter on the Pfizer chip and time-frame edits are no longer counted as outcome changes.

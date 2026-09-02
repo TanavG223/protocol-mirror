@@ -194,3 +194,7 @@ Scope of this run: it is browser-implementation evidence for Google Chrome 152 w
 ## 2026-09-02 — the same smoke against the public deployment (commit d77e447)
 
 `node scripts/webmcp-smoke.mjs --url=https://protocol-mirror.vercel.app` ran the assertion list above, unchanged, against the Vercel deployment of commit `d77e447` in Google Chrome 152.0.7977.65 headless with `--enable-features=WebMCPTesting`, and printed `WEBMCP_SMOKE=PASS`. In the same session `GET https://protocol-mirror.vercel.app/api/clinical-trials/NCT04368728/history` returned 200 in 1.1 s (53 versions; 5 compared; first primary-outcome change exact at version 6, 2020-07-15), and Lighthouse desktop reported performance 100, accessibility 100, best practices 100, SEO 100. The deterministic suite was 70 passing tests at the time of this run. The Codex/ChatGPT in-app browser has still not been run against this loop.
+
+## 2026-09-02 — round four on the public deployment (commit 7a9d6a7)
+
+Same smoke, same Chrome build, against the Vercel deployment of `7a9d6a7`: `WEBMCP_SMOKE=PASS`. The deployment was confirmed by `GET /api/clinical-trials/NCT00347321/history` reporting `primaryOutcomeChanged: false` with a `timeFrameEdits` array (the previous build counted a time-frame-only edit as a change). Lighthouse desktop: performance 100, accessibility 100, best practices 100, SEO 100. Deterministic suite: 75 passing tests.
