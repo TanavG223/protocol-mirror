@@ -95,6 +95,7 @@ main { max-width: 1480px; margin: auto; }
 .intake-actions { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; }
 .intake-actions p { max-width: 640px; color: var(--muted); font-size: 13px; line-height: 1.5; }
 .intake-actions p strong { color: var(--green); }
+.intake-actions .intake-notice { flex-basis: 100%; margin-top: 0; }
 .outcome-toggle { margin-top: 10px; }
 .column-note { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); color: var(--muted); font-size: 12px; line-height: 1.5; }
 .quotes cite .evidence-origin.live { color: var(--green); }
@@ -196,6 +197,29 @@ main { max-width: 1480px; margin: auto; }
 .review-actions button:active { filter: brightness(.88); }
 .review-actions .reject { color: var(--red); }
 .review-actions .accept { background: var(--ink); color: white; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.activity-log { margin: 0 clamp(20px,4vw,64px) 40px; padding: 28px 34px; border: 1px solid var(--line); background: var(--surface); }
+.activity-heading h2 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(22px,2.4vw,32px); letter-spacing: -.03em; }
+.activity-heading .muted { margin-top: 6px; font-size: 13px; }
+.tool-roster { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; list-style: none; }
+.tool-chip { display: grid; gap: 2px; padding: 7px 10px; border: 1px solid var(--line); background: var(--paper); }
+.tool-chip code { font-size: 12px; font-weight: 700; }
+.tool-chip small { color: var(--muted); font-size: 11px; }
+.tool-chip.mutating { border-color: rgba(166,83,22,.45); }
+.tool-chip.locked { border-style: dashed; opacity: .62; }
+.tool-chip.locked small::before { content: "🔒 "; }
+.activity-empty { margin-top: 16px; color: var(--muted); font-size: 13px; }
+.activity-list { margin-top: 16px; list-style: none; border-top: 1px solid var(--line); }
+.activity-list li { display: grid; grid-template-columns: 80px minmax(0,auto) minmax(0,1fr) auto; align-items: baseline; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(133,138,134,.35); font-size: 13px; }
+.activity-list li.failed code, .activity-list li.failed .activity-summary { color: var(--red); }
+.activity-list .actor { padding: 2px 6px; border-radius: 2px; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; text-align: center; }
+.activity-list .actor.agent { background: var(--blue-soft); color: var(--blue); }
+.activity-list .actor.reviewer { background: var(--green-soft); color: var(--green); }
+.activity-list .actor.system { background: #e3e3df; color: var(--muted); }
+.activity-list code { font-size: 12px; font-weight: 700; }
+.activity-list strong { font-weight: 600; }
+.activity-summary { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.activity-list time { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.activity-more { color: var(--muted); font-size: 12px; }
 .evidence-panel { margin: 0 clamp(20px,4vw,64px) 90px; padding: 34px; border-top: 4px solid var(--blue); background: var(--surface); box-shadow: var(--shadow); }
 .evidence-content { display: grid; grid-template-columns: .7fr 1.3fr; gap: 36px; }
 .rationale { padding-right: 30px; border-right: 1px solid var(--line); }
@@ -268,6 +292,7 @@ footer { max-width: 1480px; margin: auto; padding: 24px clamp(20px,4vw,64px); bo
   .mobile-mapping-summary button { grid-template-columns: 1fr 20px 1fr; } .mobile-mapping-summary button .classification { grid-column: 1/-1; }
   .review-card-main { grid-template-columns: 1fr 24px 1fr; padding: 14px; } .review-card-main .classification, .review-card-main small { grid-column: 1/-1; }
   .quotes { grid-template-columns: 1fr; } footer, .footer-meta { align-items: flex-start; flex-direction: column; } .footer-meta { gap: 4px; text-align: left; }
+  .activity-log { padding: 20px 16px; } .activity-list li { grid-template-columns: 70px 1fr; } .activity-list .activity-summary { grid-column: 2; white-space: normal; } .activity-list time { grid-column: 2; }
   .reality-check { margin-top: 34px; padding: 24px 18px; box-shadow: 5px 5px 0 var(--blue); }
   .reality-metrics { grid-template-columns: 1fr; }
   .reality-metrics article { border-right: 0; border-bottom: 1px solid #5b6661; }

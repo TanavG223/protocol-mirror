@@ -42,6 +42,42 @@ const getModelContext = () => document.modelContext ?? navigator.modelContext;
 
 type LiveSourceStatus = "idle" | "loading" | "success" | "error";
 
+/** One row in the session's visible tool-call log. Kept out of the audit trail so receipts and get_audit_state stay unchanged. */
+interface ActivityEntry {
+  id: string;
+  at: string;
+  actor: "agent" | "reviewer" | "system";
+  tool?: string;
+  summary: string;
+  ok: boolean;
+}
+
+const TOOL_ROSTER: Array<{ name: string; readOnly: boolean; gated?: boolean }> = [
+  { name: "get_live_clinical_trial", readOnly: true },
+  { name: "get_live_pubmed_article", readOnly: true },
+  { name: "get_audit_state", readOnly: true },
+  { name: "get_evidence_spans", readOnly: true },
+  { name: "propose_outcome_mapping", readOnly: false },
+  { name: "request_human_review", readOnly: false },
+  { name: "export_review_receipt", readOnly: true, gated: true },
+];
+
+function summarizeArgs(name: string, input: Record<string, unknown>) {
+  switch (name) {
+    case "get_live_clinical_trial": return String(input.nctId ?? "");
+    case "get_live_pubmed_article": return `PMID ${String(input.pmid ?? "")}`;
+    case "get_evidence_spans": return Array.isArray(input.evidenceIds) ? `${input.evidenceIds.length} span${input.evidenceIds.length === 1 ? "" : "s"} · ${String(input.evidenceIds[0] ?? "")}` : "";
+    case "propose_outcome_mapping": return `${String(input.discrepancy ?? "")} · ${String(input.registryOutcomeId ?? "∅")} → ${String(input.publicationOutcomeId ?? "∅")}${typeof input.confidence === "number" ? ` · ${Math.round(input.confidence * 100)}%` : ""}`;
+    case "request_human_review": return String(input.mappingId ?? "");
+    default: return "";
+  }
+}
+
+const parseToolInput = (input: unknown): Record<string, unknown> => {
+  if (typeof input === "string") { try { const parsed: unknown = JSON.parse(input); return parsed && typeof parsed === "object" ? parsed as Record<string, unknown> : {}; } catch { return {}; } }
+  return input && typeof input === "object" ? input as Record<string, unknown> : {};
+};
+
 export default function Workspace() {
   const [activePair, setActivePair] = useState<TrialPair>(DEMO_PAIR);
   const [audit, setAudit] = useState<AuditState>(INITIAL_AUDIT);
@@ -60,6 +96,8 @@ export default function Workspace() {
   const [loaderPmid, setLoaderPmid] = useState("");
   const [loaderBusy, setLoaderBusy] = useState(false);
   const [loaderError, setLoaderError] = useState<string | null>(null);
+  const [activity, setActivity] = useState<ActivityEntry[]>([]);
+  const [intakeNotice, setIntakeNotice] = useState<string | null>(null);
   const counter = useRef(10);
   const auditRef = useRef(audit);
   const pairRef = useRef(activePair);
@@ -90,6 +128,26 @@ export default function Workspace() {
   const event = useCallback((action: string, detail: string, actor: AuditEvent["actor"], subjectId?: string): AuditEvent => ({
     id: `event-${++counter.current}`, action, detail, actor, subjectId,
   }), []);
+
+  const logActivity = useCallback((entry: Omit<ActivityEntry, "id" | "at">) => {
+    setActivity((current) => [...current, { ...entry, id: `act-${++counter.current}`, at: new Date().toISOString() }]);
+  }, []);
+
+  /** Wraps a tool so every agent call, successful or not, shows up in the session log. */
+  const withActivity = useCallback((tool: WebMCP.ModelContextTool): WebMCP.ModelContextTool => ({
+    ...tool,
+    execute: async (input: unknown, options: unknown) => {
+      const summary = summarizeArgs(tool.name, parseToolInput(input));
+      try {
+        const result = await (tool.execute as (input: unknown, options: unknown) => unknown)(input, options);
+        logActivity({ actor: "agent", tool: tool.name, summary, ok: true });
+        return result;
+      } catch (error) {
+        logActivity({ actor: "agent", tool: tool.name, summary: `${summary ? `${summary} · ` : ""}${error instanceof Error ? error.message : "failed"}`, ok: false });
+        throw error;
+      }
+    },
+  }), [logActivity]);
 
   const stage = useCallback((proposal: Omit<Mapping, "id" | "status" | "origin">) => {
     const mapping: Mapping = { ...proposal, id: `map-${++counter.current}`, status: "staged", origin: "agent" };
@@ -125,11 +183,13 @@ export default function Workspace() {
         return next;
       });
     });
+    if (!notice) return;
     setActiveId(nextActiveId);
     setSelectedOutcomeId(null);
-    if (notice) setDecisionNotice(notice);
+    setDecisionNotice(notice);
+    logActivity({ actor: "reviewer", summary: `${status === "accepted" ? "Accepted" : "Rejected"} ${id} in the review queue`, ok: true });
     requestAnimationFrame(() => reviewRef.current?.focus());
-  }, [activeId, event]);
+  }, [activeId, event, logActivity]);
 
   const undo = useCallback(() => {
     let restoredId: string | null = null;
@@ -150,16 +210,22 @@ export default function Workspace() {
       setActiveId(restoredId);
       setSelectedOutcomeId(null);
       setDecisionNotice("The latest human decision was undone and returned to review.");
+      logActivity({ actor: "reviewer", summary: `Undid the decision on ${restoredId}`, ok: true });
     }
-  }, [event]);
+  }, [event, logActivity]);
 
   /** Makes `pair` the reviewable case. Refused while reviewed decisions exist; staged proposals are dropped with a notice. */
   const switchPair = useCallback((pair: TrialPair, detail: string) => {
     const prepared = prepareCaseSwitch(auditRef.current, event("pair_loaded", detail, "system"));
     if (!prepared) {
-      setDecisionNotice("Reviewed decisions are never discarded silently. Undo them before loading a different case.");
+      const reason = "Reviewed decisions are never discarded silently. Undo them in the review queue before loading a different case.";
+      setDecisionNotice(reason);
+      setIntakeNotice(reason);
+      setLoaderError(reason);
       return false;
     }
+    setIntakeNotice(null);
+    setLoaderError(null);
     flushSync(() => {
       auditRef.current = prepared.audit;
       pairRef.current = pair;
@@ -172,13 +238,21 @@ export default function Workspace() {
     setDecisionNotice(prepared.discardedStaged
       ? `${prepared.discardedStaged} staged ${prepared.discardedStaged === 1 ? "proposal was" : "proposals were"} discarded because ${prepared.discardedStaged === 1 ? "it" : "they"} cited the previous case.`
       : isLivePair(pair) ? "Live pair loaded. No proposals yet: ask the agent to inspect it, or stage one yourself." : "Demonstration case restored.");
+    logActivity({ actor: "reviewer", summary: isLivePair(pair) ? `Made ${pair.nctId} / PMID ${pair.pmid} the active case` : "Returned to the demonstration case", ok: true });
     return true;
-  }, [event]);
+  }, [event, logActivity]);
 
-  const promoteLivePair = useCallback(() => {
-    const trial = intakeRef.current.trial;
-    const article = intakeRef.current.article;
+  /** Promotes the given records, or the ones currently shown in the intake cards, to the active case. */
+  const promoteLivePair = useCallback((records?: { trial: LiveClinicalTrialRecord; article: LivePubMedRecord }) => {
+    const trial = records?.trial ?? intakeRef.current.trial;
+    const article = records?.article ?? intakeRef.current.article;
     if (!trial || !article) return false;
+    if (article.abstractSections.length === 0) {
+      const reason = `PMID ${article.pmid} has no abstract text to review. Choose a publication whose PubMed record includes an abstract.`;
+      setIntakeNotice(reason);
+      setLoaderError(reason);
+      return false;
+    }
     const switched = switchPair(buildLiveTrialPair(trial, article), `Live pair loaded: ${trial.nctId} (ClinicalTrials.gov) and PMID ${article.pmid} (PubMed), retrieved ${article.retrievedAt}.`);
     if (switched) requestAnimationFrame(() => document.getElementById("workspace-title")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }));
     return switched;
@@ -210,8 +284,11 @@ export default function Workspace() {
     setLoaderPmid(trimmedPmid);
     const readers = createLiveSourceReaders(fetch, liveCallbacks);
     try {
-      await Promise.all([readers.clinicalTrial(trimmedNct), readers.pubMedArticle(trimmedPmid)]);
-      promoteLivePair();
+      // Promote exactly the two records this request resolved, never whatever the intake cards
+      // happen to hold, so a concurrent agent fetch can never be fused into this pair.
+      const [trialResult, articleResult] = await Promise.all([readers.clinicalTrial(trimmedNct), readers.pubMedArticle(trimmedPmid)]);
+      if (!trialResult.data || !articleResult.data) throw new Error("The source adapters returned no records.");
+      promoteLivePair({ trial: trialResult.data, article: articleResult.data });
     } catch (error) {
       setLoaderError(error instanceof Error ? error.message : "The records could not be retrieved.");
     } finally {
@@ -241,12 +318,13 @@ export default function Workspace() {
     setActiveId("map-primary-demo");
     setSelectedOutcomeId(null);
     setDecisionNotice("Four evidence-linked proposals are staged. Inspect the active proposal before deciding.");
+    logActivity({ actor: "system", summary: "Loaded the four example proposals for the demonstration case", ok: true });
     requestAnimationFrame(() => {
       const reviewDock = reviewRef.current;
       reviewDock?.focus();
       reviewDock?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
     });
-  }, [event]);
+  }, [event, logActivity]);
 
   const selectMapping = useCallback((mappingId: string) => {
     setSelectedOutcomeId(null);
@@ -287,41 +365,42 @@ export default function Workspace() {
     const context = getModelContext();
     if (!context) return;
     const controller = new AbortController();
-    Promise.all([...createLiveSourceTools(fetch, liveCallbacks), ...createCaseReadTools(caseDeps)].map((tool) => context.registerTool(tool, { signal: controller.signal })))
-      .then(() => setWebMcp("connected"))
+    Promise.all([...createLiveSourceTools(fetch, liveCallbacks), ...createCaseReadTools(caseDeps)].map((tool) => context.registerTool(withActivity(tool), { signal: controller.signal })))
+      .then(() => { if (!controller.signal.aborted) setWebMcp("connected"); })
       .catch((error: unknown) => {
+        if (controller.signal.aborted) return; // React StrictMode replays effects; the aborted first pass is not a failure.
         console.error("WebMCP tool registration failed; the page stays in preview mode.", error);
         setWebMcp("preview");
       });
     return () => controller.abort();
-  }, [caseDeps, liveCallbacks]);
+  }, [caseDeps, liveCallbacks, withActivity]);
 
   // Effect B: tools bound to the active pair's identifiers. Re-registered whenever the case changes.
   useEffect(() => {
     const context = getModelContext();
     if (!context) return;
     const controller = new AbortController();
-    Promise.all(createPairBoundTools(activePair, caseDeps).map((tool) => context.registerTool(tool, { signal: controller.signal })))
+    Promise.all(createPairBoundTools(activePair, caseDeps).map((tool) => context.registerTool(withActivity(tool), { signal: controller.signal })))
       .catch((error: unknown) => console.error("WebMCP pair-bound tool registration failed.", error));
     return () => controller.abort();
-  }, [activePair, caseDeps]);
+  }, [activePair, caseDeps, withActivity]);
 
   // Effect C: the receipt tool exists only while a human decision exists.
   useEffect(() => {
     const context = getModelContext();
     if (!context || !reviewedWorkAvailable) return;
     const controller = new AbortController();
-    context.registerTool({
+    context.registerTool(withActivity({
       name: "export_review_receipt", title: "Export reviewed audit receipt",
       description: "Export human-reviewed decisions with evidence locators and audit trail. Staged proposals are excluded.",
       inputSchema: { type: "object", properties: {}, additionalProperties: false },
       annotations: { readOnlyHint: true, untrustedContentHint: true },
       execute: () => createReviewReceipt(pairRef.current, auditRef.current),
-    }, { signal: controller.signal }).catch((error: unknown) => {
+    }), { signal: controller.signal }).catch((error: unknown) => {
       console.error("WebMCP receipt tool registration failed after the human decision.", error);
     });
     return () => controller.abort();
-  }, [reviewedWorkAvailable]);
+  }, [reviewedWorkAvailable, withActivity]);
 
   const registryMapped = useMemo(() => new Set(audit.mappings.map((item) => item.registryOutcomeId)), [audit.mappings]);
   const publicationMapped = useMemo(() => new Set(audit.mappings.map((item) => item.publicationOutcomeId)), [audit.mappings]);
@@ -382,7 +461,8 @@ export default function Workspace() {
           {liveIntakeReady && <div className="intake-actions">
             {liveIntakeIsActive
               ? <p role="status"><strong>This pair is the active case.</strong> Evidence and proposal tools are bound to its identifiers; only you can accept or reject.</p>
-              : <><p>Make these two records the reviewable case. Staged proposals from the previous case are discarded; reviewed decisions block the switch until undone.</p><button type="button" className="primary-action" onClick={promoteLivePair}><Icon name="check" /> Review this pair</button></>}
+              : <><p>Make these two records the reviewable case. Staged proposals from the previous case are discarded; reviewed decisions block the switch until undone.</p><button type="button" className="primary-action" onClick={() => promoteLivePair()}><Icon name="check" /> Review this pair</button></>}
+            {intakeNotice && !liveIntakeIsActive && <p className="loader-error intake-notice" role="alert">{intakeNotice}</p>}
           </div>}
         </section>}
       </section>
@@ -411,6 +491,18 @@ export default function Workspace() {
       <section className="review-dock" aria-labelledby="review-title" ref={reviewRef} tabIndex={-1}>
         <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title">Review queue <span>{staged.length}</span></h2><p className="decision-notice" role="status" aria-live="polite">{decisionNotice}</p></div><div className="review-dock-actions">{receiptDownloadHref && <a className="text-button" href={receiptDownloadHref} download={`${activePair.id}-review-receipt.json`}><Icon name="download" /> Download reviewed receipt JSON</a>}<button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div></div>
         {staged.length === 0 ? <div className="empty-review"><Icon name="spark" /><div><strong>The queue is clear.</strong><p>{live ? "Ask an agent to inspect this real pair with WebMCP and stage a proposal, or return to the demonstration case." : "Ask an agent to inspect the case with WebMCP, or stage the guided demonstration."}</p></div></div> : <div className="review-cards">{staged.map((mapping) => { const isActive = mapping.id === activeId; const registryTitle = mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, activePair.registryOutcomes)?.title : "No registered counterpart"; const publicationTitle = mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, activePair.publicationOutcomes)?.title : "Not reported"; const mappingName = `${LABELS[mapping.discrepancy]} proposal from ${registryTitle} to ${publicationTitle}`; return <article className={`review-card ${isActive ? "active" : ""}`} key={mapping.id}><button className="review-card-main" type="button" aria-pressed={isActive} aria-controls="evidence-drawer" onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{registryTitle}</strong><span className="mapping-arrow"><Icon name="arrow" /></span><strong>{publicationTitle}</strong><small>{Math.round(mapping.confidence * 100)}% agent confidence · {mapping.evidenceIds.length} source {mapping.evidenceIds.length === 1 ? "span" : "spans"}{!isActive && " · inspect before deciding"}</small></button><div className="review-actions"><button type="button" className="reject" disabled={!isActive} aria-label={`Reject ${mappingName}`} onClick={() => decide(mapping.id, "rejected")}>Reject</button><button type="button" className="accept" disabled={!isActive} aria-label={`Accept ${mappingName}`} onClick={() => decide(mapping.id, "accepted")}><Icon name="check" />Accept</button></div></article>; })}</div>}
+      </section>
+      <section className="activity-log" aria-labelledby="activity-title">
+        <div className="activity-heading"><div><p className="section-kicker">This session</p><h2 id="activity-title">What the agent called, what you decided.</h2><p className="muted">In-page and not persisted. The seventh tool stays locked until your first decision.</p></div></div>
+        <ul className="tool-roster" aria-label="WebMCP tools on this page">
+          {TOOL_ROSTER.map((tool) => { const locked = Boolean(tool.gated) && !reviewedWorkAvailable; return <li key={tool.name} className={`tool-chip ${locked ? "locked" : ""} ${tool.readOnly ? "read-only" : "mutating"}`}><code>{tool.name}</code><small>{locked ? "locked until you decide" : tool.readOnly ? "read-only" : "stages only"}</small></li>; })}
+        </ul>
+        {activity.length === 0
+          ? <p className="activity-empty">No tool calls yet this session. Ask your agent to call <code>get_audit_state</code>, or load a real pair above.</p>
+          : <ol className="activity-list" role="log" aria-label="Tool calls and human decisions, newest first">
+            {[...activity].reverse().slice(0, 12).map((entry) => <li key={entry.id} className={entry.ok ? "" : "failed"}><span className={`actor ${entry.actor}`}>{entry.actor}</span>{entry.tool ? <code>{entry.tool}</code> : <strong>{entry.summary}</strong>}{entry.tool && <span className="activity-summary">{entry.summary}</span>}<time dateTime={entry.at}>{new Date(entry.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</time></li>)}
+            {activity.length > 12 && <li className="activity-more">+{activity.length - 12} earlier</li>}
+          </ol>}
       </section>
       <section className="evidence-panel" id="evidence-drawer" aria-labelledby="evidence-title" aria-live="polite">
         <div className="evidence-heading"><div><p className="section-kicker">Inspectable reasoning</p><h2 id="evidence-title">{active ? "Proposal evidence" : selectedOutcome ? "Source evidence" : "Evidence drawer"}</h2></div>{active && <span className={`classification ${active.discrepancy}`}>{LABELS[active.discrepancy]}</span>}</div>

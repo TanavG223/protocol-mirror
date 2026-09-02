@@ -20,10 +20,10 @@ Goal: a judge opening the live URL, the video, the README or the Devpost page se
 | 1 | `document.modelContext ?? navigator.modelContext`, console errors instead of silent catches, no tool count in preview mode | Claude | done (db4ea41) |
 | 2 | Real pair becomes the reviewable case: "Review this pair" after both live fetches; pair-bound tools re-register on the new ids; honest labels (abstract sections, live provenance); 43-outcome layout; switch guard; enum threshold 20 | Claude | done (e754444); smoke passes locally in headless Chrome 152 |
 | 3 | Human-side loading: curated real pairs (ACTT-1 NCT04280705/32445440, Pfizer BNT162b2 NCT04368728/33301246, RECOVERY dexamethasone NCT04381936/32678530) as one-click chips plus an NCT/PMID form, so a judge in plain Chrome can load a real case without an agent | Claude | done (e754444) |
-| 4 | Domain-first hero; CTA scrolls to the queue; "Uncertain" label; readable benchmark cards; `release-preflight.sh:85` grep updated | Claude | in progress |
-| 5 | ClinicalTrials.gov `?fields=` projection (fixes NCT04368728 502); upstream 400 → `invalid_identifier` | Claude | in progress |
+| 4 | Domain-first hero; CTA scrolls to the queue; "Uncertain" label; readable benchmark cards; `release-preflight.sh:85` grep updated | Claude | done (0b49388) |
+| 5 | ClinicalTrials.gov `?fields=` projection (fixes NCT04368728 502); upstream 400 → `invalid_identifier` | Claude | done (0b49388); NCT04368728 returns 200 |
 | 6 | `scripts/webmcp-smoke.mjs`: headless Chrome 152 + `--enable-features=WebMCPTesting` over CDP; drives `executeTool` through the full loop; asserts 6 → 7 → 6 and `generatedFrom: live_sources`; `npm run smoke:webmcp` | Claude | done (e754444); Chromium passes tool input as JSON strings, executors accept both |
-| 7 | Session tool-call log (`role="log"`) and a 7-chip tool roster with `export_review_receipt` locked until a decision | Claude | pending |
+| 7 | Session tool-call log (`role="log"`) and a 7-chip tool roster with `export_review_receipt` locked until a decision | Claude | in progress |
 | 8 | Copy: Chen citation ("no restriction by journal"), README six-step judge path with pasteable prompts, Devpost text organized by the four required questions, test-count literal refreshed everywhere `check-submission-packet.mjs` enforces it | Claude | pending |
 | 9 | Final `npm run check`, honesty grep, push, live checks (badge, NCT04368728 200), hand-off report | Claude | pending |
 | 10 | Conditional: `load_trial_pair` as an eighth tool | Claude | only if 6 and 7 are done |
