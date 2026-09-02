@@ -643,10 +643,10 @@ export default function Workspace() {
         </ul>
         {activity.length === 0
           ? <p className="activity-empty">No tool calls yet this session. Ask your agent to call <code>get_audit_state</code>, or load a real pair above.</p>
-          : <ol className="activity-list" role="log" aria-label="Tool calls and human decisions, newest first">
+          : <div role="log" aria-label="Tool calls and human decisions, newest first"><ol className="activity-list">
             {[...activity].reverse().slice(0, 12).map((entry) => <li key={entry.id} className={entry.ok ? "" : "failed"}><span className={`actor ${entry.actor}`}>{entry.actor}</span>{entry.tool ? <code>{entry.tool}</code> : <strong>{entry.summary}</strong>}{entry.tool && <span className="activity-summary">{entry.summary}</span>}<time dateTime={entry.at}>{new Date(entry.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</time></li>)}
             {activity.length > 12 && <li className="activity-more">+{activity.length - 12} earlier</li>}
-          </ol>}
+          </ol></div>}
       </section>
       <section className="evidence-panel" id="evidence-drawer" aria-labelledby="evidence-title" aria-live="polite">
         <div className="evidence-heading"><div><p className="section-kicker">Inspectable reasoning</p><h2 id="evidence-title">{active ? "Proposal evidence" : selectedOutcome ? "Source evidence" : "Evidence drawer"}</h2></div>{active && <span className={`classification ${active.discrepancy}`}>{LABELS[active.discrepancy]}</span>}</div>
