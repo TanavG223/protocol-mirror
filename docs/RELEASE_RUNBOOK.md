@@ -85,7 +85,7 @@ Judge-evidence summary for the current candidate:
 
 | Judge evidence | Verified result |
 | --- | --- |
-| Automated release checks | 62 tests, lint, TypeScript, and an optimized build pass |
+| Automated release checks | 70 tests, lint, TypeScript, and an optimized build pass |
 | WebMCP metadata contract | Eight unique tools, three registration call sites, signal cleanup, same-origin exposure, annotations, and Chrome's character budgets enforced |
 | Real WebMCP lifecycle | Seven initial tools; a human decision alone exposes the eighth; undo removes it. Driven end to end by `npm run smoke:webmcp` in Google Chrome 152 |
 | Real-pair loop | The page opens on a real pair with its ClinicalTrials.gov registration history; the original registered primary outcome is listed first; a pair can also be promoted from the agent side or the human loader, and pair-bound tools re-register on the new identifiers |

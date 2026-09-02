@@ -61,7 +61,7 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 - Deterministic offline demonstration data plus bounded live-source adapters
 - Evidence-side validation that rejects cross-record IDs, unrelated citations, duplicates, and unknown evidence
 - Restrictive production response headers, bounded upstream payloads, and entity-safe XML parsing
-- 62 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
+- 70 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
 - Reviewer-visible live-source intake and a human-downloadable reviewed JSON receipt
 - A balanced 24-pair real-world source and grounding benchmark with raw outputs from two named local models
 - A production-mode Codex-browser rehearsal at desktop and 390-pixel mobile widths with no horizontal overflow or browser errors

@@ -13,9 +13,9 @@ This criterion is equal-weight with the other three and is the first tie-break.
 - [x] Agent cannot call the human accept/reject action
 - [x] Codex browser reported the expected before-and-after tool counts (earlier flow, 2026-08-30/31)
 - [x] `npm run smoke:webmcp` drives the real-pair loop end to end through `getTools()`/`executeTool()` in Google Chrome 152 with the WebMCP flag, locally and against the public deployment
-- [x] `get_registry_history` compares the original registration against the publication; the smoke asserts the whole registration-history loop against a local production build (2026-09-02)
+- [x] `get_registry_history` compares the original registration against the publication; the smoke asserts the whole registration-history loop against a local production build and against the Vercel deployment (2026-09-02, commit d77e447)
 - [x] Two-way review: a rejection reason and a reviewer note return to the agent through `get_audit_state`
-- [ ] Production smoke run of the registration-history loop against https://protocol-mirror.vercel.app
+- [x] Production smoke run of the registration-history loop against https://protocol-mirror.vercel.app (2026-09-02, commit d77e447; Lighthouse desktop 100/100/100/100 the same night)
 - [x] A real ClinicalTrials.gov/PubMed pair becomes the reviewable case; pair-bound tools re-register on the new identifiers
 - [ ] Codex/ChatGPT in-app browser run of the new real-pair loop
 - [x] Both live ClinicalTrials.gov and PubMed tools exercised through the real WebMCP surface

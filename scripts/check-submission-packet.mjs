@@ -79,7 +79,6 @@ const bannedCurrentCopy = [
   ["seventh tool", "export_review_receipt is the eighth tool"],
   ["six initial", "seven tools are registered before a human decision"],
   ["seven WebMCP tools", "there are eight WebMCP tools"],
-  ["passed against the live URL", "the production smoke of the registration-history loop has not been recorded"],
 ];
 
 requireAll(packet, requiredPacketSections, paths.packet);
@@ -87,7 +86,7 @@ requireAll(requirements, criteria, paths.requirements);
 requireAll(scorecard, criteria, paths.scorecard);
 requireAll(packet, [publicApp, publicRepo, scopeSentence], paths.packet);
 requireAll(draft, [publicApp, publicRepo, "Truthful-claim guardrail"], paths.draft);
-requireAll(readme, [publicApp, publicRepo, scopeSentence, "Five-minute judge path", "chrome://flags/#enable-webmcp-testing", "npm run smoke:webmcp", "62 tests"], paths.readme);
+requireAll(readme, [publicApp, publicRepo, scopeSentence, "Five-minute judge path", "chrome://flags/#enable-webmcp-testing", "npm run smoke:webmcp", "70 tests"], paths.readme);
 requireAll(readme, ["The eight WebMCP tools", "get_registry_history", "WebMCP connected · 7 tools", "8 tools", "Registration history"], `${paths.readme} eight-tool surface`);
 requireAll(packet, ["Eight tools are registered", "get_registry_history", "reviewerFeedback", "reviewerNotes"], `${paths.packet} eight-tool surface`);
 requireAll(manifest, ["Owner-only gates still open", "without establishing universal hallucination or clinical-accuracy claims"], paths.manifest);

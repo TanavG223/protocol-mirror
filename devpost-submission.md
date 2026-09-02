@@ -43,7 +43,7 @@ No login, API key, or paid service. Open https://protocol-mirror.vercel.app in C
 5. Paste: *Call export_review_receipt and list its mappings, locators and audit events.* It reports `generatedFrom: "live_sources"` and cites the `history/0.` original-registration locator. Click **Undo last decision**; the receipt tool is unregistered and the header returns to 7 tools.
 6. Click **Reject** on a proposal and pick a reason, or send a line through **Note to the agent**. Paste: *Call get_audit_state and read reviewerFeedback and reviewerNotes.* Your words come back to the agent, which can revise and re-propose.
 
-Locally: `npm ci && npm run check` runs the WebMCP conformance gate, ESLint, 62 tests, TypeScript and the production build. `npm run smoke:webmcp` drives the whole loop above through `document.modelContext.getTools()` / `executeTool()` in headless Google Chrome with `--enable-features=WebMCPTesting`; it passed against a local production build on Sep 2, 2026 with Chrome 152.0.7977.65, and the run against the live URL is pending.
+Locally: `npm ci && npm run check` runs the WebMCP conformance gate, ESLint, 70 tests, TypeScript and the production build. `npm run smoke:webmcp` drives the whole loop above through `document.modelContext.getTools()` / `executeTool()` in headless Google Chrome with `--enable-features=WebMCPTesting`; it passed against a local production build and against https://protocol-mirror.vercel.app on Sep 2, 2026 with Chrome 152.0.7977.65.
 
 ## Verified compatibility
 

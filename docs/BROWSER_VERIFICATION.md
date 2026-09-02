@@ -189,4 +189,8 @@ Asserted, in order:
 
 Implementation note: Chromium's in-page `executeTool()` passes tool input to the executor as a JSON string. The executors accept both objects and JSON strings, and the smoke run exercises that path.
 
-Scope of this run: it is browser-implementation evidence for Google Chrome 152 with the WebMCP testing flag against a local production build. **The Codex/ChatGPT in-app browser has not been run against this registration-history loop**; the Codex in-app browser sections above cover the earlier flow on 2026-08-30 and 2026-08-31. The deterministic suite is 62 passing tests at the time of this run.
+Scope of this run: it is browser-implementation evidence for Google Chrome 152 with the WebMCP testing flag against a local production build. **The Codex/ChatGPT in-app browser has not been run against this registration-history loop**; the Codex in-app browser sections above cover the earlier flow on 2026-08-30 and 2026-08-31. The deterministic suite was 62 passing tests at the time of this run.
+
+## 2026-09-02 — the same smoke against the public deployment (commit d77e447)
+
+`node scripts/webmcp-smoke.mjs --url=https://protocol-mirror.vercel.app` ran the assertion list above, unchanged, against the Vercel deployment of commit `d77e447` in Google Chrome 152.0.7977.65 headless with `--enable-features=WebMCPTesting`, and printed `WEBMCP_SMOKE=PASS`. In the same session `GET https://protocol-mirror.vercel.app/api/clinical-trials/NCT04368728/history` returned 200 in 1.1 s (53 versions; 5 compared; first primary-outcome change exact at version 6, 2020-07-15), and Lighthouse desktop reported performance 100, accessibility 100, best practices 100, SEO 100. The deterministic suite was 70 passing tests at the time of this run. The Codex/ChatGPT in-app browser has still not been run against this loop.

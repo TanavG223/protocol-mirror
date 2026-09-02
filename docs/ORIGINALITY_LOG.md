@@ -25,11 +25,11 @@ No source code from another hackathon entry was copied. The fictional demonstrat
 Claims allowed now:
 
 - The production build compiles.
-- The current deterministic contract suite contains 62 passing tests, including registration-history parsing, the word-level span difference, the real-world grounding scorer, and tracked-artifact integrity.
+- The current deterministic contract suite contains 70 passing tests, including registration-history parsing, the word-level span difference, the real-world grounding scorer, and tracked-artifact integrity.
 - A reproducible 24-pair benchmark records 48 successful live WebMCP source reads and two blinded local-model runs with opposite directional biases.
 - The page registers WebMCP tools when `document.modelContext` is available, falling back to `navigator.modelContext`; the Codex in-app browser exposed the expected initial tool surface, both live adapters returned public source records, and the reviewed decision exposed the gated receipt tool during verification of the earlier flow on 2026-08-30/31.
 - A real ClinicalTrials.gov/PubMed pair can be promoted to the reviewable case from either the agent side or a human-side loader; `scripts/webmcp-smoke.mjs` drove that full loop through `document.modelContext.getTools()`/`executeTool()` in Google Chrome 152.0.7977.65 with `--enable-features=WebMCPTesting` on 2026-09-01, against both a local production build and the public deployment.
-- `get_registry_history` reads the public ClinicalTrials.gov registration-version list through a bounded server route and reports the originally registered primary outcomes and the versions in which they changed; `scripts/webmcp-smoke.mjs` drove that loop end to end against a local production build in Google Chrome 152.0.7977.65 on 2026-09-02.
+- `get_registry_history` reads the public ClinicalTrials.gov registration-version list through a bounded server route and reports the originally registered primary outcomes and the versions in which they changed; `scripts/webmcp-smoke.mjs` drove that loop end to end against a local production build and against https://protocol-mirror.vercel.app in Google Chrome 152.0.7977.65 on 2026-09-02 (commit d77e447).
 - Agent writes create staged proposals only.
 - A reviewer's rejection reason and free-text note are readable by the agent through `get_audit_state`.
 - Live-source reads expose loading, success, failure, and recovery to the human reviewer without converting source data or errors into reviewed findings.
@@ -42,4 +42,3 @@ Claims not yet allowed:
 - Performance on a representative clinical corpus beyond the documented 24-pair, abstract-limited grounding benchmark
 - Compatibility in every browser
 - Codex/ChatGPT in-app browser verification of the real-pair loop; only the earlier flow was exercised there
-- A production smoke run of the registration-history loop against https://protocol-mirror.vercel.app; only a local production build has been driven end to end so far
