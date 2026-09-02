@@ -27,6 +27,11 @@ function Icon({ name }: { name: "spark" | "check" | "arrow" | "quote" | "undo" |
 
 const outcomeById = (id: string | null, outcomes: Outcome[]) => outcomes.find((item) => item.id === id);
 
+// The specification exposes WebMCP on document.modelContext; browsers that implemented the
+// earlier draft expose the same interface on navigator.modelContext. Prefer the current
+// location and fall back so a judge on an older WebMCP-capable Chrome still sees the tools.
+const getModelContext = () => document.modelContext ?? navigator.modelContext;
+
 export default function Workspace() {
   const [audit, setAudit] = useState<AuditState>(INITIAL_AUDIT);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -158,7 +163,7 @@ export default function Workspace() {
   }, [selectMapping]);
 
   useEffect(() => {
-    const context = document.modelContext;
+    const context = getModelContext();
     if (!context) return;
     const controller = new AbortController();
     const registryOutcomeIds = DEMO_PAIR.registryOutcomes.map((item) => item.id);
@@ -215,12 +220,15 @@ export default function Workspace() {
       ]);
       setWebMcp("connected");
     };
-    register().catch(() => setWebMcp("preview"));
+    register().catch((error: unknown) => {
+      console.error("WebMCP tool registration failed; the page stays in preview mode.", error);
+      setWebMcp("preview");
+    });
     return () => controller.abort();
   }, [stage]);
 
   useEffect(() => {
-    const context = document.modelContext;
+    const context = getModelContext();
     if (!context || !reviewedWorkAvailable) return;
     const controller = new AbortController();
     context.registerTool({
@@ -229,7 +237,9 @@ export default function Workspace() {
       inputSchema: { type: "object", properties: {}, additionalProperties: false },
       annotations: { readOnlyHint: true, untrustedContentHint: true },
       execute: () => createReviewReceipt(DEMO_PAIR, auditRef.current),
-    }, { signal: controller.signal }).catch(() => undefined);
+    }, { signal: controller.signal }).catch((error: unknown) => {
+      console.error("WebMCP receipt tool registration failed after the human decision.", error);
+    });
     return () => controller.abort();
   }, [reviewedWorkAvailable]);
 
@@ -250,7 +260,9 @@ export default function Workspace() {
     <main id="top">
       <section className="case-header" aria-labelledby="case-title">
         <div className="eyebrow case-reveal"><span>Case 04</span><span aria-hidden="true">/</span><span>Outcome integrity review</span></div>
-        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>AI assembles evidence.</span><span>A human decides.</span></h1><p className="case-subtitle">A WebMCP collaboration loop where an agent retrieves, compares, cites, and stages evidence—then packages the reviewed result after a human adjudicates it.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={loadDemo}><Icon name="spark" /> Stage guided review</button><p><strong>{reviewedWorkAvailable ? "7 tools" : "6 tools"}</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Agent export unlocked" : "Human decision unlocks export"}</p></div></div>
+        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>AI assembles evidence.</span><span>A human decides.</span></h1><p className="case-subtitle">A WebMCP collaboration loop where an agent retrieves, compares, cites, and stages evidence—then packages the reviewed result after a human adjudicates it.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={loadDemo}><Icon name="spark" /> Stage guided review</button><p>{webMcp === "connected"
+          ? <><strong>{reviewedWorkAvailable ? "7 tools" : "6 tools"}</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Agent export unlocked" : "Human decision unlocks export"}</>
+          : <><strong>WebMCP preview</strong><span aria-hidden="true">→</span>Tools appear when an agent connects</>}</p></div></div>
         <ol className="agent-rail case-reveal" aria-label="Accountable WebMCP workflow">
           <li><span>01</span><strong>Inspect exact spans</strong><small>Source text stays untrusted</small></li>
           <li><span>02</span><strong>Stage a proposal</strong><small>Schema-bound and evidence-linked</small></li>
