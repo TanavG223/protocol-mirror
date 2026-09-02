@@ -32,6 +32,17 @@ export interface TrialPair {
   provenance?: "demo" | "live";
   /** ISO timestamp of the live retrieval; absent for the fictional case. */
   retrievedAt?: string;
+  /** Summary of the registration history when it was retrieved for a live pair. */
+  registryHistory?: {
+    totalVersions: number;
+    originalDate: string;
+    latest: { version: number; date: string };
+    primaryOutcomeChanged: boolean;
+    firstPrimaryChange: { version: number; date: string; from: string[]; to: string[] } | null;
+    /** Every version in which the primary outcome set differed from the previous one. */
+    changes: Array<{ version: number; date: string; to: string[] }>;
+    sourceUrl: string;
+  };
   nctId: string;
   pmid: string;
   title: string;
@@ -56,6 +67,8 @@ export interface Mapping {
   confidence: number;
   status: ReviewStatus;
   origin: "demo" | "agent" | "human";
+  /** Optional reason the reviewer gave when rejecting; readable by the agent through get_audit_state. */
+  reviewNote?: string;
 }
 
 export interface AuditEvent {

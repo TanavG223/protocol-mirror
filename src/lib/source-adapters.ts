@@ -174,6 +174,115 @@ export async function fetchPubMedArticle(rawPmid: string) {
   };
 }
 
+const MAX_HISTORY_LIST_BYTES = 1_000_000;
+const MAX_HISTORY_VERSIONS = 6;
+const OUTCOME_MODULE_LABEL = /outcome measures$/i;
+
+const HistoryList = z.object({
+  changes: z.array(z.object({
+    version: z.number().int().nonnegative(),
+    date: z.string().max(40),
+    moduleLabels: z.array(z.string().max(80)).max(40).optional().default([]),
+  })).min(1).max(2_000),
+});
+
+const HistoryVersion = z.object({
+  study: z.object({
+    protocolSection: z.object({
+      outcomesModule: z.object({ primaryOutcomes: z.array(CtgovOutcome).max(250).optional().default([]) }).optional(),
+    }),
+  }),
+});
+
+export interface RegistryPrimaryOutcome { measure: string; timeFrame: string; description: string; locator: string }
+export interface RegistryVersionSnapshot { version: number; date: string; primaryOutcomes: RegistryPrimaryOutcome[] }
+
+const normalizeMeasure = (outcome: RegistryPrimaryOutcome) => `${outcome.measure} @ ${outcome.timeFrame}`.toLowerCase().replace(/\s+/g, " ").trim();
+const samePrimarySet = (a: RegistryPrimaryOutcome[], b: RegistryPrimaryOutcome[]) =>
+  a.length === b.length && a.every((outcome, index) => normalizeMeasure(outcome) === normalizeMeasure(b[index]));
+
+async function fetchHistoryVersion(nctId: string, version: number, date: string): Promise<RegistryVersionSnapshot> {
+  const response = await fetch(`https://clinicaltrials.gov/api/int/studies/${encodeURIComponent(nctId)}/history/${version}`, {
+    headers: { Accept: "application/json", "User-Agent": "ProtocolMirror/0.1 research-transparency-demo" },
+    next: { revalidate: 60 * 60 * 12 },
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!response.ok) throw new SourceAdapterError("ClinicalTrials.gov registration history is temporarily unavailable.", 502, "upstream_error");
+  let payload: unknown;
+  try {
+    payload = JSON.parse(await readBoundedText(response, MAX_CLINICAL_TRIAL_BYTES, "ClinicalTrials.gov history"));
+  } catch (error) {
+    if (error instanceof SourceAdapterError) throw error;
+    throw new SourceAdapterError("ClinicalTrials.gov history returned malformed JSON.", 502, "invalid_upstream_data");
+  }
+  const parsed = HistoryVersion.safeParse(payload);
+  if (!parsed.success) throw new SourceAdapterError("ClinicalTrials.gov history returned an unexpected record shape.", 502, "invalid_upstream_data");
+  const primaryOutcomes = (parsed.data.study.protocolSection.outcomesModule?.primaryOutcomes ?? []).map((outcome, index) => ({
+    measure: outcome.measure,
+    timeFrame: outcome.timeFrame,
+    description: outcome.description,
+    locator: `history/${version}.protocolSection.outcomesModule.primaryOutcomes[${index}]`,
+  }));
+  return { version, date, primaryOutcomes };
+}
+
+/**
+ * Every registration version is public. This reads the version list, fetches the original
+ * registration plus the versions in which the Outcome Measures module changed (bounded), and
+ * reports whether and when the primary outcome set was altered. Only primary outcomes are diffed.
+ */
+export async function fetchRegistryHistory(rawNctId: string) {
+  const nctId = parseNctId(rawNctId);
+  const response = await fetch(`https://clinicaltrials.gov/api/int/studies/${encodeURIComponent(nctId)}/history`, {
+    headers: { Accept: "application/json", "User-Agent": "ProtocolMirror/0.1 research-transparency-demo" },
+    next: { revalidate: 60 * 60 * 12 },
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (response.status === 404) throw new SourceAdapterError(`No ClinicalTrials.gov registration history was found for ${nctId}.`, 404, "not_found");
+  if (!response.ok) throw new SourceAdapterError("ClinicalTrials.gov registration history is temporarily unavailable.", 502, "upstream_error");
+  let payload: unknown;
+  try {
+    payload = JSON.parse(await readBoundedText(response, MAX_HISTORY_LIST_BYTES, "ClinicalTrials.gov history"));
+  } catch (error) {
+    if (error instanceof SourceAdapterError) throw error;
+    throw new SourceAdapterError("ClinicalTrials.gov history returned malformed JSON.", 502, "invalid_upstream_data");
+  }
+  const parsed = HistoryList.safeParse(payload);
+  if (!parsed.success) throw new SourceAdapterError("ClinicalTrials.gov history returned an unexpected list shape.", 502, "invalid_upstream_data");
+
+  const changes = [...parsed.data.changes].sort((a, b) => a.version - b.version);
+  const first = changes[0];
+  const last = changes[changes.length - 1];
+  const outcomeVersions = changes.filter((change) => change.version !== first.version && change.moduleLabels.some((label) => OUTCOME_MODULE_LABEL.test(label)));
+  const truncated = outcomeVersions.length > MAX_HISTORY_VERSIONS;
+  const selected = truncated ? [...outcomeVersions.slice(0, MAX_HISTORY_VERSIONS - 1), outcomeVersions[outcomeVersions.length - 1]] : outcomeVersions;
+
+  const snapshots = await Promise.all([first, ...selected].map((change) => fetchHistoryVersion(nctId, change.version, change.date)));
+  const timeline = snapshots.filter((snapshot, index) => index === 0 || !samePrimarySet(snapshot.primaryOutcomes, snapshots[index - 1].primaryOutcomes));
+  const firstChange = timeline.length > 1 ? timeline[1] : null;
+
+  return {
+    source: "ClinicalTrials.gov registration history",
+    sourceUrl: `https://clinicaltrials.gov/study/${nctId}?tab=history`,
+    retrievedAt: new Date().toISOString(),
+    nctId,
+    totalVersions: changes.length,
+    latestVersion: { version: last.version, date: last.date },
+    outcomeModuleVersions: outcomeVersions.map((change) => ({ version: change.version, date: change.date })),
+    original: snapshots[0],
+    timeline,
+    primaryOutcomeChanged: firstChange !== null,
+    firstPrimaryChange: firstChange ? {
+      version: firstChange.version,
+      date: firstChange.date,
+      from: snapshots[0].primaryOutcomes.map((outcome) => outcome.measure),
+      to: firstChange.primaryOutcomes.map((outcome) => outcome.measure),
+    } : null,
+    truncated,
+    limitation: "Only primary outcome measures are compared across registration versions. A change is a registry fact, not a judgment; it may be legitimate and pre-specified elsewhere.",
+  };
+}
+
 export function sourceErrorResponse(error: unknown) {
   if (error instanceof SourceAdapterError) return Response.json({ ok: false, error: { code: error.code, message: error.message } }, { status: error.status });
   if (error instanceof DOMException && error.name === "TimeoutError") return Response.json({ ok: false, error: { code: "upstream_timeout", message: "The upstream source timed out. Use the deterministic demo and retry later." } }, { status: 504 });

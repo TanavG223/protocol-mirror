@@ -4,9 +4,9 @@ import { createLiveSourceTools } from "./webmcp-tools";
 const options = { signal: new AbortController().signal };
 
 describe("live source WebMCP tools", () => {
-  it("exposes the two bounded read-only adapters", () => {
+  it("exposes the three bounded read-only adapters", () => {
     const tools = createLiveSourceTools();
-    expect(tools.map((tool) => tool.name)).toEqual(["get_live_clinical_trial", "get_live_pubmed_article"]);
+    expect(tools.map((tool) => tool.name)).toEqual(["get_live_clinical_trial", "get_live_pubmed_article", "get_registry_history"]);
     expect(tools.every((tool) => tool.annotations?.readOnlyHint && tool.annotations?.untrustedContentHint)).toBe(true);
   });
 

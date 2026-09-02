@@ -58,6 +58,38 @@ describe("buildLiveTrialPair", () => {
     expect(pair.registryUpdated).toBe("2026-09-01");
   });
 
+  it("adds the original primary outcomes as registry entries when the registration history shows a change", () => {
+    const history = {
+      source: "ClinicalTrials.gov registration history",
+      sourceUrl: "https://clinicaltrials.gov/study/NCT04280705?tab=history",
+      retrievedAt: "2026-09-02T00:02:00.000Z",
+      nctId: "NCT04280705",
+      totalVersions: 25,
+      latestVersion: { version: 24, date: "2022-03-09" },
+      outcomeModuleVersions: [{ version: 14, date: "2020-04-16" }],
+      original: { version: 0, date: "2020-02-20", primaryOutcomes: [{ measure: "Percentage of subjects reporting each severity rating on the 7-point ordinal scale", timeFrame: "Day 15", description: "No description supplied by the registry.", locator: "history/0.protocolSection.outcomesModule.primaryOutcomes[0]" }] },
+      timeline: [
+        { version: 0, date: "2020-02-20", primaryOutcomes: [{ measure: "Percentage of subjects reporting each severity rating on the 7-point ordinal scale", timeFrame: "Day 15", description: "No description supplied by the registry.", locator: "history/0.protocolSection.outcomesModule.primaryOutcomes[0]" }] },
+        { version: 14, date: "2020-04-16", primaryOutcomes: [{ measure: "Time to recovery", timeFrame: "Day 1 through Day 29", description: "No description supplied by the registry.", locator: "history/14.protocolSection.outcomesModule.primaryOutcomes[0]" }] },
+      ],
+      primaryOutcomeChanged: true,
+      firstPrimaryChange: { version: 14, date: "2020-04-16", from: ["Percentage of subjects reporting each severity rating on the 7-point ordinal scale"], to: ["Time to recovery"] },
+      truncated: false,
+      limitation: "Only primary outcome measures are compared.",
+    };
+    const withHistory = buildLiveTrialPair(trial, article, history);
+    expect(withHistory.registryOutcomes[0]).toMatchObject({ id: "registry-original-primary-1", role: "primary", title: "Percentage of subjects reporting each severity rating on the 7-point ordinal scale" });
+    expect(withHistory.registryOutcomes[0].description).toContain("Changed in version 14 (2020-04-16) to: Time to recovery");
+    expect(withHistory.registryHistory?.changes).toEqual([{ version: 14, date: "2020-04-16", to: ["Time to recovery"] }]);
+    expect(withHistory.evidence.find((span) => span.id === "ev-registry-original-primary-1")).toMatchObject({ locator: "history/0.protocolSection.outcomesModule.primaryOutcomes[0].measure", url: history.sourceUrl });
+    expect(withHistory.registryHistory?.primaryOutcomeChanged).toBe(true);
+    expect(withHistory.registryOutcomes.map((item) => item.id)).toContain("registry-primary-1");
+
+    const unchanged = buildLiveTrialPair(trial, article, { ...history, primaryOutcomeChanged: false, firstPrimaryChange: null });
+    expect(unchanged.registryOutcomes[0].id).toBe("registry-primary-1");
+    expect(unchanged.registryHistory?.primaryOutcomeChanged).toBe(false);
+  });
+
   it("produces a pair the existing proposal validator accepts with real ids", () => {
     const proposal = validateMappingProposal({
       registryOutcomeId: "registry-primary-1",

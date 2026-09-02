@@ -7,6 +7,7 @@ const expectedTools = [
   "get_evidence_spans",
   "get_live_clinical_trial",
   "get_live_pubmed_article",
+  "get_registry_history",
   "propose_outcome_mapping",
   "request_human_review",
 ];
@@ -17,6 +18,7 @@ const readOnlyTools = new Set([
   "get_evidence_spans",
   "get_live_clinical_trial",
   "get_live_pubmed_article",
+  "get_registry_history",
 ]);
 
 const untrustedOutputTools = new Set(readOnlyTools);

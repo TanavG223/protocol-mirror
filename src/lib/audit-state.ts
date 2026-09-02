@@ -17,21 +17,40 @@ export function hasReviewedWork(audit: AuditState) {
   return audit.mappings.some((mapping) => mapping.status !== "staged");
 }
 
+export const REVIEW_NOTE_MAX_CHARS = 240;
+
 export function transitionHumanDecision(
   audit: AuditState,
   activeId: string | null,
   requestedId: string,
   status: "accepted" | "rejected",
+  reviewNote?: string,
 ): { mappings: Mapping[]; target: Mapping; nextActiveId: string | null } | null {
   if (requestedId !== activeId) return null;
   const target = audit.mappings.find((mapping) => mapping.id === requestedId);
   if (!target || target.status !== "staged") return null;
+  const note = reviewNote?.trim().slice(0, REVIEW_NOTE_MAX_CHARS);
 
   return {
-    mappings: audit.mappings.map((mapping) => mapping.id === requestedId ? { ...mapping, status } : mapping),
+    mappings: audit.mappings.map((mapping) => mapping.id === requestedId
+      ? { ...mapping, status, ...(note ? { reviewNote: note } : {}) }
+      : mapping),
     target,
     nextActiveId: audit.mappings.find((mapping) => mapping.status === "staged" && mapping.id !== requestedId)?.id ?? null,
   };
+}
+
+/** Rejected proposals with the reviewer's reason, in the shape an agent needs to try again. */
+export function reviewerFeedback(audit: AuditState) {
+  return audit.mappings
+    .filter((mapping) => mapping.status === "rejected")
+    .map((mapping) => ({
+      mappingId: mapping.id,
+      registryOutcomeId: mapping.registryOutcomeId,
+      publicationOutcomeId: mapping.publicationOutcomeId,
+      discrepancy: mapping.discrepancy,
+      reviewerNote: mapping.reviewNote ?? "Rejected without a stated reason.",
+    }));
 }
 
 /**

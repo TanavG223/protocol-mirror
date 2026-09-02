@@ -25,6 +25,22 @@ export interface LivePubMedRecord {
   limitation: string;
 }
 
+export interface LiveRegistryHistory {
+  source: string;
+  sourceUrl: string;
+  retrievedAt: string;
+  nctId: string;
+  totalVersions: number;
+  latestVersion: { version: number; date: string };
+  outcomeModuleVersions: Array<{ version: number; date: string }>;
+  original: { version: number; date: string; primaryOutcomes: Array<{ measure: string; timeFrame: string; description: string; locator: string }> };
+  timeline: Array<{ version: number; date: string; primaryOutcomes: Array<{ measure: string; timeFrame: string; description: string; locator: string }> }>;
+  primaryOutcomeChanged: boolean;
+  firstPrimaryChange: { version: number; date: string; from: string[]; to: string[] } | null;
+  truncated: boolean;
+  limitation: string;
+}
+
 export interface LiveSourceCallbacks {
   onClinicalTrialStart?: () => void;
   onClinicalTrial?: (record: LiveClinicalTrialRecord) => void;
@@ -32,6 +48,9 @@ export interface LiveSourceCallbacks {
   onPubMedArticleStart?: () => void;
   onPubMedArticle?: (record: LivePubMedRecord) => void;
   onPubMedArticleError?: (message: string) => void;
+  onRegistryHistoryStart?: () => void;
+  onRegistryHistory?: (record: LiveRegistryHistory) => void;
+  onRegistryHistoryError?: (message: string) => void;
 }
 
 export const isValidNctId = (value: unknown): value is string => typeof value === "string" && NCT_PATTERN.test(value);
@@ -102,6 +121,20 @@ export function createLiveSourceReaders(fetcher: Fetcher = fetch, callbacks: Liv
         throw error;
       }
     },
+    async registryHistory(nctId: string, signal?: AbortSignal) {
+      if (!isValidNctId(nctId)) throw new Error("nctId must match NCT followed by exactly eight digits.");
+      callbacks.onRegistryHistoryStart?.();
+      try {
+        const response = await fetcher(`/api/clinical-trials/${encodeURIComponent(nctId.toUpperCase())}/history`, { headers: { Accept: "application/json" }, signal });
+        const result = await readSourceResponse<LiveRegistryHistory>(response);
+        if (!result.data) throw new Error("The source adapter returned no registration history.");
+        callbacks.onRegistryHistory?.(result.data);
+        return result;
+      } catch (error) {
+        callbacks.onRegistryHistoryError?.(errorMessage(error));
+        throw error;
+      }
+    },
   };
 }
 
@@ -140,6 +173,23 @@ export function createLiveSourceTools(fetcher: Fetcher = fetch, callbacks: LiveS
         const input = normalizeToolInput(rawInput);
         if (!isValidPmid(input.pmid)) throw new Error("pmid must contain one to nine digits.");
         return readers.pubMedArticle(input.pmid, options?.signal);
+      },
+    },
+    {
+      name: "get_registry_history",
+      title: "Compare registration versions",
+      description: "Read a trial's ClinicalTrials.gov registration history: the original primary outcomes, every version where they changed, and when. Registry facts, not judgments.",
+      inputSchema: {
+        type: "object",
+        properties: { nctId: { type: "string", description: "A ClinicalTrials.gov identifier such as NCT04280705.", pattern: "^NCT[0-9]{8}$" } },
+        required: ["nctId"],
+        additionalProperties: false,
+      },
+      annotations: { readOnlyHint: true, untrustedContentHint: true },
+      execute: async (rawInput: unknown, options?: { signal?: AbortSignal }) => {
+        const input = normalizeToolInput(rawInput);
+        if (!isValidNctId(input.nctId)) throw new Error("nctId must match NCT followed by exactly eight digits.");
+        return readers.registryHistory(input.nctId, options?.signal);
       },
     },
   ];

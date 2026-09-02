@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { AuditState } from "./contracts";
-import { findLatestReviewedMappingId, hasReviewedWork, prepareCaseSwitch, transitionHumanDecision } from "./audit-state";
+import { findLatestReviewedMappingId, hasReviewedWork, prepareCaseSwitch, reviewerFeedback, transitionHumanDecision } from "./audit-state";
 
 describe("prepareCaseSwitch", () => {
   const loaded = { id: "e9", action: "pair_loaded", detail: "Live pair loaded.", actor: "system" as const };
@@ -75,6 +75,17 @@ describe("human decision authority", () => {
     expect(result?.mappings.find((item) => item.id === "active")?.status).toBe("accepted");
     expect(result?.mappings.find((item) => item.id === "next")?.status).toBe("staged");
     expect(result?.nextActiveId).toBe("next");
+  });
+
+  it("records the reviewer's reason on a rejection and exposes it as feedback for the agent", () => {
+    const result = transitionHumanDecision(audit, "active", "active", "rejected", "  The abstract sentence describes methods, not a reported result.  ");
+    const rejected = result?.mappings.find((item) => item.id === "active");
+    expect(rejected?.status).toBe("rejected");
+    expect(rejected?.reviewNote).toBe("The abstract sentence describes methods, not a reported result.");
+    expect(reviewerFeedback({ mappings: result!.mappings, history: [] })).toEqual([
+      expect.objectContaining({ mappingId: "active", discrepancy: "matched", reviewerNote: "The abstract sentence describes methods, not a reported result." }),
+    ]);
+    expect(reviewerFeedback({ mappings: [mapping("silent", "rejected")], history: [] })[0].reviewerNote).toMatch(/without a stated reason/);
   });
 
   it("exposes reviewed work only after an accepted or rejected decision exists", () => {

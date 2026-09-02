@@ -2,6 +2,7 @@ import type { AuditState, Mapping, Outcome, TrialPair } from "./contracts";
 import { LIVE_PUBLICATION_LIMITATION } from "./live-pair";
 import { validateMappingProposal } from "./proposal-validation";
 import { normalizeToolInput } from "./webmcp-tools";
+import { reviewerFeedback } from "./audit-state";
 
 /** Above this many identifiers a JSON-schema enum stops helping the agent and starts bloating the tool list. */
 export const ENUM_LIMIT = 20;
@@ -47,7 +48,10 @@ export function createCaseReadTools(deps: CaseToolDeps): WebMCP.ModelContextTool
           ...(live ? { publicationNote: LIVE_PUBLICATION_LIMITATION } : {}),
           registryOutcomes: pair.registryOutcomes.map((outcome) => compactOutcome(outcome, live)),
           publicationOutcomes: pair.publicationOutcomes.map((outcome) => compactOutcome(outcome, live)),
+          ...(pair.registryHistory ? { registryHistory: pair.registryHistory } : {}),
           mappings: audit.mappings,
+          reviewerFeedback: reviewerFeedback(audit),
+          reviewerNotes: audit.history.filter((item) => item.action === "reviewer_note").slice(-5).map((item) => ({ mappingId: item.subjectId ?? null, note: item.detail })),
           history: audit.history,
           ...(hint ? { intake: hint } : {}),
           instruction: SOURCE_INSTRUCTION,

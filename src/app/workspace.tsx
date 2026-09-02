@@ -6,9 +6,10 @@ import type { AuditEvent, AuditState, DiscrepancyKind, Mapping, Outcome, TrialPa
 import { createReviewReceipt } from "@/lib/review-receipt";
 import { findLatestReviewedMappingId, hasReviewedWork, prepareCaseSwitch, transitionHumanDecision } from "@/lib/audit-state";
 import { useWorkspaceMotion } from "@/lib/use-workspace-motion";
-import { createLiveSourceReaders, createLiveSourceTools, isValidNctId, isValidPmid, type LiveClinicalTrialRecord, type LivePubMedRecord } from "@/lib/webmcp-tools";
+import { createLiveSourceReaders, createLiveSourceTools, isValidNctId, isValidPmid, type LiveClinicalTrialRecord, type LivePubMedRecord, type LiveRegistryHistory } from "@/lib/webmcp-tools";
 import { createCaseReadTools, createPairBoundTools, type CaseToolDeps } from "@/lib/case-tools";
 import { LIVE_PUBLICATION_LIMITATION, buildLiveTrialPair, isLivePair } from "@/lib/live-pair";
+import { diffIsReadable, wordDiff } from "@/lib/word-diff";
 
 const LABELS: Record<DiscrepancyKind, string> = {
   matched: "Matched", omitted: "Omitted", downgraded: "Downgraded",
@@ -55,6 +56,7 @@ interface ActivityEntry {
 const TOOL_ROSTER: Array<{ name: string; readOnly: boolean; gated?: boolean }> = [
   { name: "get_live_clinical_trial", readOnly: true },
   { name: "get_live_pubmed_article", readOnly: true },
+  { name: "get_registry_history", readOnly: true },
   { name: "get_audit_state", readOnly: true },
   { name: "get_evidence_spans", readOnly: true },
   { name: "propose_outcome_mapping", readOnly: false },
@@ -66,11 +68,32 @@ function summarizeArgs(name: string, input: Record<string, unknown>) {
   switch (name) {
     case "get_live_clinical_trial": return String(input.nctId ?? "");
     case "get_live_pubmed_article": return `PMID ${String(input.pmid ?? "")}`;
+    case "get_registry_history": return `${String(input.nctId ?? "")} · registration versions`;
     case "get_evidence_spans": return Array.isArray(input.evidenceIds) ? `${input.evidenceIds.length} span${input.evidenceIds.length === 1 ? "" : "s"} · ${String(input.evidenceIds[0] ?? "")}` : "";
     case "propose_outcome_mapping": return `${String(input.discrepancy ?? "")} · ${String(input.registryOutcomeId ?? "∅")} → ${String(input.publicationOutcomeId ?? "∅")}${typeof input.confidence === "number" ? ` · ${Math.round(input.confidence * 100)}%` : ""}`;
     case "request_human_review": return String(input.mappingId ?? "");
     default: return "";
   }
+}
+
+const REJECT_REASONS = [
+  "Wrong pairing",
+  "Evidence does not support this category",
+  "Not a real discrepancy",
+  "Section defines the outcome; it does not report a result",
+  "Other",
+];
+
+const SESSION_KEY = "protocol-mirror.session.v1";
+interface SavedSession {
+  pair: TrialPair | null;
+  audit: AuditState;
+  activity: ActivityEntry[];
+  activeId: string | null;
+  liveTrial: LiveClinicalTrialRecord | null;
+  liveArticle: LivePubMedRecord | null;
+  liveHistory?: LiveRegistryHistory | null;
+  counter: number;
 }
 
 const parseToolInput = (input: unknown): Record<string, unknown> => {
@@ -91,6 +114,10 @@ export default function Workspace() {
   const [liveArticleStatus, setLiveArticleStatus] = useState<LiveSourceStatus>("idle");
   const [liveTrialError, setLiveTrialError] = useState<string | null>(null);
   const [liveArticleError, setLiveArticleError] = useState<string | null>(null);
+  const [liveHistory, setLiveHistory] = useState<LiveRegistryHistory | null>(null);
+  const [liveHistoryStatus, setLiveHistoryStatus] = useState<LiveSourceStatus>("idle");
+  const [liveHistoryError, setLiveHistoryError] = useState<string | null>(null);
+  const [noteDraft, setNoteDraft] = useState("");
   const [showAllRegistryOutcomes, setShowAllRegistryOutcomes] = useState(false);
   const [loaderNct, setLoaderNct] = useState("");
   const [loaderPmid, setLoaderPmid] = useState("");
@@ -98,10 +125,12 @@ export default function Workspace() {
   const [loaderError, setLoaderError] = useState<string | null>(null);
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
   const [intakeNotice, setIntakeNotice] = useState<string | null>(null);
+  const [rejecting, setRejecting] = useState<{ id: string; reason: string; text: string } | null>(null);
+  const skipSaveRef = useRef(true);
   const counter = useRef(10);
   const auditRef = useRef(audit);
   const pairRef = useRef(activePair);
-  const intakeRef = useRef<{ trial: LiveClinicalTrialRecord | null; article: LivePubMedRecord | null }>({ trial: null, article: null });
+  const intakeRef = useRef<{ trial: LiveClinicalTrialRecord | null; article: LivePubMedRecord | null; history: LiveRegistryHistory | null }>({ trial: null, article: null, history: null });
   const reviewRef = useRef<HTMLElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
 
@@ -121,6 +150,15 @@ export default function Workspace() {
   const primaryRegistryOutcomes = activePair.registryOutcomes.filter((item) => item.role === "primary");
   const collapseRegistry = live && !showAllRegistryOutcomes && activePair.registryOutcomes.length > 6 && primaryRegistryOutcomes.length > 0;
   const visibleRegistryOutcomes = collapseRegistry ? primaryRegistryOutcomes : activePair.registryOutcomes;
+  const spanDiff = useMemo(() => {
+    if (!active) return null;
+    const left = evidence.find((item) => item?.source === "registry");
+    const right = evidence.find((item) => item?.source === "publication");
+    if (!left || !right) return null;
+    return diffIsReadable(left.quote, right.quote)
+      ? { parts: wordDiff(left.quote, right.quote), note: "" }
+      : { parts: null, note: "One quotation is long; compare the two spans side by side." };
+  }, [active, evidence]);
   const liveIntakeReady = Boolean(liveTrial && liveArticle);
   const liveIntakeIsActive = liveIntakeReady && activePair.id === `live-${liveTrial!.nctId}-${liveArticle!.pmid}`;
   useWorkspaceMotion(shellRef, staged.length, activeId, reviewed.length);
@@ -166,28 +204,30 @@ export default function Workspace() {
     return mapping;
   }, [event]);
 
-  const decide = useCallback((id: string, status: "accepted" | "rejected") => {
+  const decide = useCallback((id: string, status: "accepted" | "rejected", reviewNote?: string) => {
     let nextActiveId: string | null = null;
     let notice = "";
+    const note = reviewNote?.trim();
     flushSync(() => {
       setAudit((current) => {
-        const transition = transitionHumanDecision(current, activeId, id, status);
+        const transition = transitionHumanDecision(current, activeId, id, status, note);
         if (!transition) return current;
         nextActiveId = transition.nextActiveId;
-        notice = `${LABELS[transition.target.discrepancy]} proposal ${status}. ${nextActiveId ? "The next proposal is ready for inspection." : "The human review queue is clear."}`;
+        notice = `${LABELS[transition.target.discrepancy]} proposal ${status}.${note ? " Your reason is readable by the agent through get_audit_state." : ""} ${nextActiveId ? "The next proposal is ready for inspection." : "The human review queue is clear."}`;
         const next: AuditState = {
           mappings: transition.mappings,
-          history: [...current.history, event(`mapping_${status}`, `${LABELS[transition.target.discrepancy]} proposal ${status} by reviewer.`, "reviewer", transition.target.id)],
+          history: [...current.history, event(`mapping_${status}`, `${LABELS[transition.target.discrepancy]} proposal ${status} by reviewer${note ? `: ${note}` : "."}`, "reviewer", transition.target.id)],
         };
         auditRef.current = next;
         return next;
       });
     });
     if (!notice) return;
+    setRejecting(null);
     setActiveId(nextActiveId);
     setSelectedOutcomeId(null);
     setDecisionNotice(notice);
-    logActivity({ actor: "reviewer", summary: `${status === "accepted" ? "Accepted" : "Rejected"} ${id} in the review queue`, ok: true });
+    logActivity({ actor: "reviewer", summary: `${status === "accepted" ? "Accepted" : "Rejected"} ${id}${note ? ` · ${note}` : ""}`, ok: true });
     requestAnimationFrame(() => reviewRef.current?.focus());
   }, [activeId, event, logActivity]);
 
@@ -243,17 +283,19 @@ export default function Workspace() {
   }, [event, logActivity]);
 
   /** Promotes the given records, or the ones currently shown in the intake cards, to the active case. */
-  const promoteLivePair = useCallback((records?: { trial: LiveClinicalTrialRecord; article: LivePubMedRecord }) => {
+  const promoteLivePair = useCallback((records?: { trial: LiveClinicalTrialRecord; article: LivePubMedRecord; history?: LiveRegistryHistory | null }) => {
     const trial = records?.trial ?? intakeRef.current.trial;
     const article = records?.article ?? intakeRef.current.article;
     if (!trial || !article) return false;
+    const knownHistory = records && "history" in records ? records.history ?? null : intakeRef.current.history;
+    const history = knownHistory && knownHistory.nctId === trial.nctId ? knownHistory : null;
     if (article.abstractSections.length === 0) {
       const reason = `PMID ${article.pmid} has no abstract text to review. Choose a publication whose PubMed record includes an abstract.`;
       setIntakeNotice(reason);
       setLoaderError(reason);
       return false;
     }
-    const switched = switchPair(buildLiveTrialPair(trial, article), `Live pair loaded: ${trial.nctId} (ClinicalTrials.gov) and PMID ${article.pmid} (PubMed), retrieved ${article.retrievedAt}.`);
+    const switched = switchPair(buildLiveTrialPair(trial, article, history), `Live pair loaded: ${trial.nctId} (ClinicalTrials.gov) and PMID ${article.pmid} (PubMed), retrieved ${article.retrievedAt}.${history ? ` Registration history: ${history.totalVersions} versions${history.primaryOutcomeChanged && history.firstPrimaryChange ? `, primary outcome changed in version ${history.firstPrimaryChange.version} on ${history.firstPrimaryChange.date}` : ", primary outcome unchanged"}.` : ""}`);
     if (switched) requestAnimationFrame(() => document.getElementById("workspace-title")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }));
     return switched;
   }, [switchPair]);
@@ -269,10 +311,13 @@ export default function Workspace() {
     onPubMedArticleStart: () => { intakeRef.current.article = null; setLiveArticle(null); setLiveArticleError(null); setLiveArticleStatus("loading"); },
     onPubMedArticle: (record: LivePubMedRecord) => { intakeRef.current.article = record; setLiveArticle(record); setLiveArticleStatus("success"); },
     onPubMedArticleError: (message: string) => { setLiveArticleError(message); setLiveArticleStatus("error"); },
+    onRegistryHistoryStart: () => { intakeRef.current.history = null; setLiveHistory(null); setLiveHistoryError(null); setLiveHistoryStatus("loading"); },
+    onRegistryHistory: (record: LiveRegistryHistory) => { intakeRef.current.history = record; setLiveHistory(record); setLiveHistoryStatus("success"); },
+    onRegistryHistoryError: (message: string) => { setLiveHistoryError(message); setLiveHistoryStatus("error"); },
   }), []);
 
   /** The human-side path: the same bounded readers the agent tools use, then the same promotion step. */
-  const loadPairFromHuman = useCallback(async (nctId: string, pmid: string) => {
+  const loadPairFromHuman = useCallback(async (nctId: string, pmid: string, options: { quiet?: boolean } = {}) => {
     const trimmedNct = nctId.trim().toUpperCase();
     const trimmedPmid = pmid.trim();
     if (!isValidNctId(trimmedNct)) { setLoaderError("Enter a ClinicalTrials.gov identifier such as NCT04280705."); return; }
@@ -284,13 +329,19 @@ export default function Workspace() {
     setLoaderPmid(trimmedPmid);
     const readers = createLiveSourceReaders(fetch, liveCallbacks);
     try {
-      // Promote exactly the two records this request resolved, never whatever the intake cards
-      // happen to hold, so a concurrent agent fetch can never be fused into this pair.
-      const [trialResult, articleResult] = await Promise.all([readers.clinicalTrial(trimmedNct), readers.pubMedArticle(trimmedPmid)]);
+      // Promote exactly the records this request resolved, never whatever the intake cards happen to
+      // hold, so a concurrent agent fetch can never be fused into this pair. Registration history is
+      // best effort: the pair still loads if the history endpoint is unavailable.
+      const [trialResult, articleResult, historyResult] = await Promise.all([
+        readers.clinicalTrial(trimmedNct),
+        readers.pubMedArticle(trimmedPmid),
+        readers.registryHistory(trimmedNct).catch(() => null),
+      ]);
       if (!trialResult.data || !articleResult.data) throw new Error("The source adapters returned no records.");
-      promoteLivePair({ trial: trialResult.data, article: articleResult.data });
+      promoteLivePair({ trial: trialResult.data, article: articleResult.data, history: historyResult?.data ?? null });
     } catch (error) {
-      setLoaderError(error instanceof Error ? error.message : "The records could not be retrieved.");
+      if (!options.quiet) setLoaderError(error instanceof Error ? error.message : "The records could not be retrieved.");
+      else console.warn("Protocol Mirror kept the demonstration case because the default real trial could not be loaded.", error);
     } finally {
       setLoaderBusy(false);
     }
@@ -346,6 +397,96 @@ export default function Workspace() {
     reviewDock?.focus();
     reviewDock?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
   }, []);
+
+  /** Forget everything kept in this tab and return to the empty demonstration case. */
+  const clearSession = useCallback(() => {
+    try { sessionStorage.removeItem(SESSION_KEY); } catch { /* ignore */ }
+    flushSync(() => {
+      auditRef.current = INITIAL_AUDIT;
+      pairRef.current = DEMO_PAIR;
+      intakeRef.current = { trial: null, article: null, history: null };
+      setActivePair(DEMO_PAIR);
+      setAudit(INITIAL_AUDIT);
+      setActivity([]);
+      setActiveId(null);
+      setSelectedOutcomeId(null);
+      setRejecting(null);
+      setNoteDraft("");
+      setLiveTrial(null); setLiveArticle(null); setLiveHistory(null);
+      setLiveTrialStatus("idle"); setLiveArticleStatus("idle"); setLiveHistoryStatus("idle");
+      setLiveTrialError(null); setLiveArticleError(null); setLiveHistoryError(null);
+      setIntakeNotice(null); setLoaderError(null);
+      setShowAllRegistryOutcomes(false);
+    });
+    setDecisionNotice("Session cleared. The demonstration case is loaded with no proposals.");
+  }, []);
+
+  // Restore this tab's session once, honour ?nct=&pmid= deep links, and otherwise open on a real trial
+  // (ACTT-1) so the first thing a visitor sees is public data rather than the fictional teaching case.
+  useEffect(() => {
+    let saved: SavedSession | null = null;
+    try {
+      const raw = sessionStorage.getItem(SESSION_KEY);
+      if (raw) saved = JSON.parse(raw) as SavedSession;
+    } catch (error) {
+      console.warn("Protocol Mirror could not read the previous session in this tab.", error);
+    }
+    const params = new URLSearchParams(window.location.search);
+    const nct = params.get("nct")?.trim().toUpperCase();
+    const pmid = params.get("pmid")?.trim();
+    const restoredPairId = saved?.pair?.provenance === "live" ? saved.pair.id : null;
+    queueMicrotask(() => {
+      if (saved) {
+        counter.current = Math.max(counter.current, Number(saved.counter) || 10);
+        if (saved.pair && saved.pair.provenance === "live") { pairRef.current = saved.pair; setActivePair(saved.pair); }
+        if (saved.audit && Array.isArray(saved.audit.mappings)) { auditRef.current = saved.audit; setAudit(saved.audit); }
+        setActivity(Array.isArray(saved.activity) ? saved.activity : []);
+        setActiveId(saved.activeId ?? null);
+        if (saved.liveTrial) { intakeRef.current.trial = saved.liveTrial; setLiveTrial(saved.liveTrial); setLiveTrialStatus("success"); }
+        if (saved.liveArticle) { intakeRef.current.article = saved.liveArticle; setLiveArticle(saved.liveArticle); setLiveArticleStatus("success"); }
+        if (saved.liveHistory) { intakeRef.current.history = saved.liveHistory; setLiveHistory(saved.liveHistory); setLiveHistoryStatus("success"); }
+        if (restoredPairId || saved.audit?.mappings?.length) setDecisionNotice("Session restored in this tab. Use Clear session to start over.");
+      }
+      skipSaveRef.current = false;
+      if (nct && pmid) {
+        if (restoredPairId !== `live-${nct}-${pmid}`) void loadPairFromHuman(nct, pmid);
+      } else if (!saved && !params.has("demo")) {
+        void loadPairFromHuman(CURATED_PAIRS[0].nctId, CURATED_PAIRS[0].pmid, { quiet: true });
+      }
+    });
+  }, [loadPairFromHuman]);
+
+  // Keep the session in this tab so a reload during a review does not lose the case.
+  useEffect(() => {
+    if (skipSaveRef.current) return;
+    try {
+      const isDefault = !isLivePair(activePair) && audit.mappings.length === 0 && activity.length === 0 && !liveTrial && !liveArticle;
+      if (isDefault) { sessionStorage.removeItem(SESSION_KEY); return; }
+      const saved: SavedSession = { pair: isLivePair(activePair) ? activePair : null, audit, activity, activeId, liveTrial, liveArticle, liveHistory, counter: counter.current };
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(saved));
+    } catch { /* private mode or quota: the session simply is not kept */ }
+  }, [activePair, audit, activity, activeId, liveTrial, liveArticle, liveHistory]);
+
+  /** A note for the agent: lands in the audit history and in get_audit_state.reviewerNotes. */
+  const sendNoteToAgent = useCallback((text: string) => {
+    const note = text.trim().slice(0, 240);
+    if (!note) return;
+    const subjectId = activeId ?? undefined;
+    setAudit((current) => {
+      const next: AuditState = { mappings: current.mappings, history: [...current.history, event("reviewer_note", note, "reviewer", subjectId)] };
+      auditRef.current = next;
+      return next;
+    });
+    setNoteDraft("");
+    setDecisionNotice("Your note is now readable by the agent through get_audit_state (reviewerNotes).");
+    logActivity({ actor: "reviewer", summary: `Note to the agent${subjectId ? ` about ${subjectId}` : ""}: ${note}`, ok: true });
+  }, [activeId, event, logActivity]);
+
+  /** From a live case, one click returns to the demonstration case with its four example proposals. */
+  const showExamples = useCallback(() => {
+    if (isLivePair(pairRef.current) && !switchPair(DEMO_PAIR, "Deterministic demonstration pair loaded.")) return;
+    loadDemo();
+  }, [switchPair, loadDemo]);
 
   const caseDeps = useMemo<CaseToolDeps>(() => ({
     getPair: () => pairRef.current,
@@ -418,14 +559,14 @@ export default function Workspace() {
     }}>Skip to comparison workspace</a>
     <header className="site-header">
       <a className="brand" href="#top"><span className="brand-mark" aria-hidden="true"><span>P</span><span>M</span></span><span>Protocol Mirror</span></a>
-      <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? `WebMCP connected · ${reviewedWorkAvailable ? 7 : 6} tools` : "WebMCP preview"}</span></div>
+      <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? `WebMCP connected · ${reviewedWorkAvailable ? 8 : 7} tools` : "WebMCP preview"}</span></div>
     </header>
     <main id="top">
       <section className="case-header" aria-labelledby="case-title">
         <div className="eyebrow case-reveal"><span>Clinical-trial outcome check</span><span aria-hidden="true">/</span><span>ClinicalTrials.gov registry vs PubMed publication</span></div>
-        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>Did the trial publish</span><span>what it registered?</span></h1><p className="case-subtitle">Load a real ClinicalTrials.gov record and its PubMed report. Your agent quotes the exact registered and reported text through WebMCP and stages each match or discrepancy for you. AI assembles evidence. A human decides.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={loadDemo} disabled={live} title={live ? "Return to the demonstration case to load the example proposals" : undefined}><Icon name="spark" /> Load 4 example proposals</button><p>{webMcp === "connected"
-          ? <><strong>{reviewedWorkAvailable ? "7 tools" : "6 tools"}</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Agent export unlocked" : "Your decision unlocks export"}</>
-          : <><strong>WebMCP preview</strong><span aria-hidden="true">→</span>Tools appear when an agent connects</>}</p></div></div>
+        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>Did the trial publish</span><span>what it registered?</span></h1><p className="case-subtitle">Load a real ClinicalTrials.gov record and its PubMed report. Your agent quotes the exact registered and reported text through WebMCP and stages each match or discrepancy for you. AI assembles evidence. A human decides.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={showExamples} disabled={reviewedWorkAvailable && live} title={reviewedWorkAvailable && live ? "Undo the reviewed decisions before switching to the demonstration case" : undefined}><Icon name="spark" /> {live ? "See 4 example proposals (demo case)" : "Load 4 example proposals"}</button><p>{webMcp === "connected"
+          ? <><strong>{reviewedWorkAvailable ? "8 tools" : "7 tools"}</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Agent export unlocked" : "Your decision unlocks export"}</>
+          : <><strong>WebMCP preview</strong><span aria-hidden="true">→</span>Tools appear when an agent connects</>}</p>{webMcp !== "connected" && <small className="preview-hint">No agent is connected. Open this page in ChatGPT&apos;s in-app browser, or in Chrome 152+ with <code>chrome://flags/#enable-webmcp-testing</code>. Loading a real trial and reviewing by hand work without one.</small>}</div></div>
         <ol className="agent-rail case-reveal" aria-label="How a review runs">
           <li><span>01</span><strong>Agent reads both records</strong><small>Exact registry and abstract text, flagged as untrusted</small></li>
           <li><span>02</span><strong>Agent proposes with citations</strong><small>Matched, omitted, introduced, or uncertain, each with quoted spans</small></li>
@@ -458,6 +599,8 @@ export default function Workspace() {
             <LiveTrialCard record={liveTrial} status={liveTrialStatus} error={liveTrialError} />
             <LiveArticleCard record={liveArticle} status={liveArticleStatus} error={liveArticleError} />
           </div>
+          <RegistryHistoryStrip record={liveHistory} status={liveHistoryStatus} error={liveHistoryError} />
+          {liveIntakeReady && !liveHistory && liveHistoryStatus === "idle" && <p className="history-hint">Tip: ask the agent to call <code>get_registry_history</code> before reviewing so the original registered outcomes are included, or load the pair from the form above, which fetches the history automatically.</p>}
           {liveIntakeReady && <div className="intake-actions">
             {liveIntakeIsActive
               ? <p role="status"><strong>This pair is the active case.</strong> Evidence and proposal tools are bound to its identifiers; only you can accept or reject.</p>
@@ -483,17 +626,18 @@ export default function Workspace() {
         <div className="workspace-heading"><div><p className="section-kicker">Evidence table</p><h2 id="workspace-title" tabIndex={-1}>Registered intent <span aria-hidden="true">↔</span> reported record</h2></div><div className="legend"><span><i className="dot matched" />Matched</span><span><i className="dot flagged" />Flagged</span><span><i className="dot unreviewed" />Unreviewed</span></div></div>
         {audit.mappings.length > 0 && <div className="mobile-mapping-summary" aria-label="Proposed outcome relationships">{audit.mappings.map((mapping) => <button type="button" key={mapping.id} className={mapping.id === activeId ? "active" : ""} onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, activePair.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, activePair.publicationOutcomes)?.title : "Not reported"}</strong></button>)}</div>}
         <div className="comparison-grid">
-          <section className="outcome-column" aria-labelledby="registered-title"><ColumnTitle index="01" title="Registered outcomes" subtitle={live ? `ClinicalTrials.gov registry record · ${activePair.registryOutcomes.length} outcomes` : "ClinicalTrials.gov protocol record"} id="registered-title" /><div className="outcome-list">{visibleRegistryOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="registry" isMapped={registryMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} selectedOutcomeId={selectedOutcomeId} onSelect={inspectOutcome} />)}</div>{live && activePair.registryOutcomes.length > primaryRegistryOutcomes.length && primaryRegistryOutcomes.length > 0 && <button type="button" className="text-button outcome-toggle" onClick={() => setShowAllRegistryOutcomes((value) => !value)}>{collapseRegistry ? `Show ${activePair.registryOutcomes.length - primaryRegistryOutcomes.length} secondary and other outcomes` : "Show primary outcomes only"}</button>}</section>
+          <section className="outcome-column" aria-labelledby="registered-title"><ColumnTitle index="01" title="Registered outcomes" subtitle={live ? `ClinicalTrials.gov registry record · ${activePair.registryOutcomes.length} outcomes` : "ClinicalTrials.gov protocol record"} id="registered-title" />{activePair.registryHistory && <p className={`registry-history-note ${activePair.registryHistory.primaryOutcomeChanged ? "changed" : ""}`}><strong>{activePair.registryHistory.primaryOutcomeChanged && activePair.registryHistory.firstPrimaryChange ? `Primary outcome changed ${activePair.registryHistory.changes.length === 1 ? "once" : `${activePair.registryHistory.changes.length} times`} across ${activePair.registryHistory.totalVersions} registration versions.` : `Primary outcome unchanged across ${activePair.registryHistory.totalVersions} registration versions.`}</strong> {activePair.registryHistory.primaryOutcomeChanged && activePair.registryHistory.firstPrimaryChange ? <>First registered {activePair.registryHistory.originalDate}: “{activePair.registryHistory.firstPrimaryChange.from.join("; ")}”. {activePair.registryHistory.changes.map((change) => `v${change.version} (${change.date}) → “${change.to.join("; ")}”`).join("; ")}. The original entry is listed first below so it can be paired against the publication.</> : `First registered ${activePair.registryHistory.originalDate}; latest version ${activePair.registryHistory.latest.version} on ${activePair.registryHistory.latest.date}.`} <a href={activePair.registryHistory.sourceUrl} target="_blank" rel="noreferrer">Open registry history</a></p>}<div className="outcome-list">{visibleRegistryOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="registry" isMapped={registryMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} selectedOutcomeId={selectedOutcomeId} onSelect={inspectOutcome} />)}</div>{live && activePair.registryOutcomes.length > primaryRegistryOutcomes.length && primaryRegistryOutcomes.length > 0 && <button type="button" className="text-button outcome-toggle" onClick={() => setShowAllRegistryOutcomes((value) => !value)}>{collapseRegistry ? `Show ${activePair.registryOutcomes.length - primaryRegistryOutcomes.length} secondary and other outcomes` : "Show primary outcomes only"}</button>}</section>
           <div className="evidence-spine" role="note" aria-label={`${audit.mappings.length} proposed relationships`}><strong>{audit.mappings.length}</strong><span>proposed relationships</span><div className="relationship-dots" aria-hidden="true">{audit.mappings.map((mapping) => <i className={mapping.status} key={mapping.id} />)}</div></div>
           <section className="outcome-column" aria-labelledby="reported-title"><ColumnTitle index="02" title={live ? "Reported evidence" : "Reported outcomes"} subtitle={live ? "PubMed abstract sections · not an extracted outcome list" : "Journal publication record"} id="reported-title" /><div className="outcome-list">{activePair.publicationOutcomes.map((outcome) => <OutcomeCard key={outcome.id} outcome={outcome} side="publication" isMapped={publicationMapped.has(outcome.id)} mappings={audit.mappings} activeId={activeId} selectedOutcomeId={selectedOutcomeId} onSelect={inspectOutcome} />)}</div>{live && <p className="column-note">{LIVE_PUBLICATION_LIMITATION}</p>}</section>
         </div>
       </section>
       <section className="review-dock" aria-labelledby="review-title" ref={reviewRef} tabIndex={-1}>
         <div className="review-dock-heading"><div><p className="section-kicker">Human checkpoint</p><h2 id="review-title">Review queue <span>{staged.length}</span></h2><p className="decision-notice" role="status" aria-live="polite">{decisionNotice}</p></div><div className="review-dock-actions">{receiptDownloadHref && <a className="text-button" href={receiptDownloadHref} download={`${activePair.id}-review-receipt.json`}><Icon name="download" /> Download reviewed receipt JSON</a>}<button className="text-button" type="button" onClick={undo} disabled={!audit.mappings.some((item) => item.status !== "staged")}><Icon name="undo" /> Undo last decision</button></div></div>
-        {staged.length === 0 ? <div className="empty-review"><Icon name="spark" /><div><strong>The queue is clear.</strong><p>{live ? "Ask an agent to inspect this real pair with WebMCP and stage a proposal, or return to the demonstration case." : "Ask an agent to inspect the case with WebMCP, or stage the guided demonstration."}</p></div></div> : <div className="review-cards">{staged.map((mapping) => { const isActive = mapping.id === activeId; const registryTitle = mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, activePair.registryOutcomes)?.title : "No registered counterpart"; const publicationTitle = mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, activePair.publicationOutcomes)?.title : "Not reported"; const mappingName = `${LABELS[mapping.discrepancy]} proposal from ${registryTitle} to ${publicationTitle}`; return <article className={`review-card ${isActive ? "active" : ""}`} key={mapping.id}><button className="review-card-main" type="button" aria-pressed={isActive} aria-controls="evidence-drawer" onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{registryTitle}</strong><span className="mapping-arrow"><Icon name="arrow" /></span><strong>{publicationTitle}</strong><small>{Math.round(mapping.confidence * 100)}% agent confidence · {mapping.evidenceIds.length} source {mapping.evidenceIds.length === 1 ? "span" : "spans"}{!isActive && " · inspect before deciding"}</small></button><div className="review-actions"><button type="button" className="reject" disabled={!isActive} aria-label={`Reject ${mappingName}`} onClick={() => decide(mapping.id, "rejected")}>Reject</button><button type="button" className="accept" disabled={!isActive} aria-label={`Accept ${mappingName}`} onClick={() => decide(mapping.id, "accepted")}><Icon name="check" />Accept</button></div></article>; })}</div>}
+        <form className="agent-note-form" onSubmit={(submitEvent) => { submitEvent.preventDefault(); sendNoteToAgent(noteDraft); }}><label><span>Note to the agent{active ? ` about ${active.id}` : ""}</span><input value={noteDraft} maxLength={240} onChange={(changeEvent) => setNoteDraft(changeEvent.target.value)} placeholder="e.g. Compare the original primary outcome, not the current one, against the RESULTS section" /></label><button type="submit" className="text-button" disabled={!noteDraft.trim()}>Send to agent <Icon name="arrow" /></button></form>
+        {staged.length === 0 ? <div className="empty-review"><Icon name="spark" /><div><strong>The queue is clear.</strong><p>{live ? "Ask an agent to inspect this real pair with WebMCP and stage a proposal, or return to the demonstration case." : "Ask an agent to inspect the case with WebMCP, or stage the guided demonstration."}</p></div></div> : <div className="review-cards">{staged.map((mapping) => { const isActive = mapping.id === activeId; const registryTitle = mapping.registryOutcomeId ? outcomeById(mapping.registryOutcomeId, activePair.registryOutcomes)?.title : "No registered counterpart"; const publicationTitle = mapping.publicationOutcomeId ? outcomeById(mapping.publicationOutcomeId, activePair.publicationOutcomes)?.title : "Not reported"; const mappingName = `${LABELS[mapping.discrepancy]} proposal from ${registryTitle} to ${publicationTitle}`; return <article className={`review-card ${isActive ? "active" : ""}`} key={mapping.id}><button className="review-card-main" type="button" aria-pressed={isActive} aria-controls="evidence-drawer" onClick={() => selectMapping(mapping.id)}><span className={`classification ${mapping.discrepancy}`}>{LABELS[mapping.discrepancy]}</span><strong>{registryTitle}</strong><span className="mapping-arrow"><Icon name="arrow" /></span><strong>{publicationTitle}</strong><small>{Math.round(mapping.confidence * 100)}% agent confidence · {mapping.evidenceIds.length} source {mapping.evidenceIds.length === 1 ? "span" : "spans"}{!isActive && " · inspect before deciding"}</small></button><div className="review-actions"><button type="button" className="reject" disabled={!isActive} aria-expanded={rejecting?.id === mapping.id} aria-label={`Reject ${mappingName}`} onClick={() => setRejecting((current) => current?.id === mapping.id ? null : { id: mapping.id, reason: REJECT_REASONS[0], text: "" })}>Reject</button><button type="button" className="accept" disabled={!isActive} aria-label={`Accept ${mappingName}`} onClick={() => decide(mapping.id, "accepted")}><Icon name="check" />Accept</button></div>{isActive && rejecting?.id === mapping.id && <form className="reject-form" onSubmit={(submitEvent) => { submitEvent.preventDefault(); decide(mapping.id, "rejected", rejecting.text.trim() ? `${rejecting.reason}: ${rejecting.text.trim()}` : rejecting.reason); }}><label><span>Why reject? The agent can read this and try again.</span><select value={rejecting.reason} onChange={(changeEvent) => setRejecting({ ...rejecting, reason: changeEvent.target.value })}>{REJECT_REASONS.map((reason) => <option key={reason} value={reason}>{reason}</option>)}</select></label><label><span>Detail (optional)</span><input value={rejecting.text} maxLength={200} onChange={(changeEvent) => setRejecting({ ...rejecting, text: changeEvent.target.value })} placeholder="e.g. the METHODS sentence defines the outcome; it does not report a result" /></label><div className="reject-form-actions"><button type="submit" className="text-button danger">Confirm reject</button><button type="button" className="text-button" onClick={() => setRejecting(null)}>Cancel</button></div></form>}</article>; })}</div>}
       </section>
       <section className="activity-log" aria-labelledby="activity-title">
-        <div className="activity-heading"><div><p className="section-kicker">This session</p><h2 id="activity-title">What the agent called, what you decided.</h2><p className="muted">In-page and not persisted. The seventh tool stays locked until your first decision.</p></div></div>
+        <div className="activity-heading"><div><p className="section-kicker">This session</p><h2 id="activity-title">What the agent called, what you decided.</h2><p className="muted">Kept in this browser tab only, so a reload does not lose the case. The receipt tool stays locked until your first decision.</p></div><button type="button" className="text-button" onClick={clearSession}><Icon name="undo" /> Clear session</button></div>
         <ul className="tool-roster" aria-label="WebMCP tools on this page">
           {TOOL_ROSTER.map((tool) => { const locked = Boolean(tool.gated) && !reviewedWorkAvailable; return <li key={tool.name} className={`tool-chip ${locked ? "locked" : ""} ${tool.readOnly ? "read-only" : "mutating"}`}><code>{tool.name}</code><small>{locked ? "locked until you decide" : tool.readOnly ? "read-only" : "stages only"}</small></li>; })}
         </ul>
@@ -506,7 +650,7 @@ export default function Workspace() {
       </section>
       <section className="evidence-panel" id="evidence-drawer" aria-labelledby="evidence-title" aria-live="polite">
         <div className="evidence-heading"><div><p className="section-kicker">Inspectable reasoning</p><h2 id="evidence-title">{active ? "Proposal evidence" : selectedOutcome ? "Source evidence" : "Evidence drawer"}</h2></div>{active && <span className={`classification ${active.discrepancy}`}>{LABELS[active.discrepancy]}</span>}</div>
-        {active || selectedOutcome ? <div className="evidence-content"><div className="rationale"><span>{active ? "Agent rationale" : "Selected outcome"}</span>{active && <div className="evidence-mapping-identity"><strong>{active.registryOutcomeId ? outcomeById(active.registryOutcomeId, activePair.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{active.publicationOutcomeId ? outcomeById(active.publicationOutcomeId, activePair.publicationOutcomes)?.title : "Not reported"}</strong></div>}<p>{active ? active.rationale : selectedOutcome?.title}</p><small>{active ? "Proposal only · source text is treated as untrusted data" : "Direct source inspection · no mapping or inference required"}</small></div><div className="quotes">{evidence.map((item) => item && <blockquote key={item.id}><Icon name="quote" /><p>“{item.quote}”</p><cite><span className={`evidence-origin ${live ? "live" : ""}`}>{live ? "Live source span" : "Fictional demonstration span"}</span>{item.sourceLabel}<span>{item.locator}</span></cite><a href={item.url} target="_blank" rel="noreferrer" aria-label={live ? `Open the exact ${item.source} record for this span` : `Visit the ${item.source} database; this fictional demonstration span has no public record page`}>{live ? "Open exact record" : "Visit source database"} <Icon name="arrow" /></a></blockquote>)}</div></div> : <p className="muted">Select any outcome to inspect its exact source span, or select a staged proposal to inspect the agent rationale.</p>}
+        {active || selectedOutcome ? <div className="evidence-content"><div className="rationale"><span>{active ? "Agent rationale" : "Selected outcome"}</span>{active && <div className="evidence-mapping-identity"><strong>{active.registryOutcomeId ? outcomeById(active.registryOutcomeId, activePair.registryOutcomes)?.title : "No registered counterpart"}</strong><Icon name="arrow" /><strong>{active.publicationOutcomeId ? outcomeById(active.publicationOutcomeId, activePair.publicationOutcomes)?.title : "Not reported"}</strong></div>}<p>{active ? active.rationale : selectedOutcome?.title}</p><small>{active ? "Proposal only · source text is treated as untrusted data" : "Direct source inspection · no mapping or inference required"}</small>{active?.reviewNote && <p className="review-note"><span>Your reason</span>{active.reviewNote}</p>}{spanDiff && <div className="span-diff"><span>Word-level difference</span>{spanDiff.parts ? <p>{spanDiff.parts.map((part, index) => <em key={index} className={`diff-${part.kind}`}>{part.text}</em>)}</p> : <p className="muted">{spanDiff.note}</p>}<small>Amber: only in the registry text. Blue: only in the publication text.</small></div>}</div><div className="quotes">{evidence.map((item) => item && <blockquote key={item.id}><Icon name="quote" /><p>“{item.quote}”</p><cite><span className={`evidence-origin ${live ? "live" : ""}`}>{live ? "Live source span" : "Fictional demonstration span"}</span>{item.sourceLabel}<span>{item.locator}</span></cite><a href={item.url} target="_blank" rel="noreferrer" aria-label={live ? `Open the exact ${item.source} record for this span` : `Visit the ${item.source} database; this fictional demonstration span has no public record page`}>{live ? "Open exact record" : "Visit source database"} <Icon name="arrow" /></a></blockquote>)}</div></div> : <p className="muted">Select any outcome to inspect its exact source span, or select a staged proposal to inspect the agent rationale.</p>}
       </section>
     </main>
     <footer><p>Protocol Mirror is a research transparency aid—not medical advice or a finding of misconduct.</p><div className="footer-meta"><p>{accepted.length} accepted · {audit.history.length} auditable {audit.history.length === 1 ? "event" : "events"} · {live ? "live public records" : "deterministic demo data"}</p><a href="https://github.com/TanavG223/protocol-mirror" target="_blank" rel="noreferrer">Public source · MIT <Icon name="arrow" /></a></div></footer>
@@ -523,6 +667,20 @@ function LiveArticleCard({ record, status, error }: { record: LivePubMedRecord |
   if (status === "error") return <article className="live-source-card error" role="alert"><span>PubMed · read unavailable</span><strong>The article record was not added.</strong><p>{error}</p><small>The current review case remains available.</small></article>;
   if (!record) return <article className="live-source-card pending" aria-busy={status === "loading"}><span>PubMed</span><strong>{status === "loading" ? "Retrieving the bounded article record…" : "Awaiting an article read"}</strong><p>{status === "loading" ? "Waiting for the fixed-host adapter." : "Ask the agent to fetch a bounded PMID record, or load one above."}</p></article>;
   return <article className="live-source-card"><span>PubMed · retrieved</span><h3>{record.title}</h3><p><strong>PMID {record.pmid}</strong> · {record.abstractSections.length} abstract sections · {record.journal}</p><ul>{record.abstractSections.slice(0, 3).map((section) => <li key={section.id}><span>section</span>{section.label}</li>)}</ul><small>{record.limitation}</small><a href={record.sourceUrl} target="_blank" rel="noreferrer">Open exact article record <Icon name="arrow" /></a></article>;
+}
+
+function RegistryHistoryStrip({ record, status, error }: { record: LiveRegistryHistory | null; status: LiveSourceStatus; error: string | null }) {
+  if (status === "idle") return null;
+  if (status === "error") return <p className="history-strip error" role="alert"><strong>Registration history unavailable.</strong> {error} The current registry record is still reviewable.</p>;
+  if (!record) return <p className="history-strip pending" aria-busy="true">Reading the registration versions…</p>;
+  const change = record.firstPrimaryChange;
+  return <div className={`history-strip ${record.primaryOutcomeChanged ? "changed" : ""}`}>
+    <span>ClinicalTrials.gov · registration history · {record.totalVersions} versions</span>
+    {record.primaryOutcomeChanged && change
+      ? <p><strong>The primary outcome changed {record.timeline.length - 1 === 1 ? "once" : `${record.timeline.length - 1} times`}.</strong> First registered {record.original.date}: “{change.from.join("; ")}”. {record.timeline.slice(1).map((snapshot) => `v${snapshot.version} (${snapshot.date}) → “${snapshot.primaryOutcomes.map((item) => item.measure).join("; ")}”`).join("; ")}. When this pair is reviewed, the original entry is included so the agent can pair it against the publication.</p>
+      : <p><strong>The primary outcome did not change</strong> across {record.totalVersions} versions (first registered {record.original.date}, latest {record.latestVersion.date}).</p>}
+    <small>{record.limitation} <a href={record.sourceUrl} target="_blank" rel="noreferrer">Open the registry history <Icon name="arrow" /></a></small>
+  </div>;
 }
 
 function ColumnTitle({ index, title, subtitle, id }: { index: string; title: string; subtitle: string; id: string }) {
