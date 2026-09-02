@@ -16,6 +16,7 @@ The principal trust boundaries are:
 - ClinicalTrials.gov and PubMed identifiers are validated before URL construction.
 - Upstream responses have strict byte limits, timeouts, shape constraints, and stable fail-closed error envelopes.
 - XML entity processing is disabled for PubMed input.
+- The registration-history route `GET /api/clinical-trials/[nctId]/history` reuses the same identifier validation and fail-closed envelope, bounds the version-list body, caps the run at the original plus eight version fetches of at most 8 MB each (an unreadable version is reported, not fatal), decodes character references without entity expansion, and caches upstream reads for twelve hours.
 - WebMCP schemas reject extra properties, bound arrays and text, constrain identifiers to the loaded case, and label source text as untrusted.
 - Runtime proposal validation repeats the important schema checks and rejects unknown, unrelated, excessive, or duplicate evidence IDs.
 - An agent can only stage a proposal and focus its review card. Accept and reject remain human-only UI actions.

@@ -9,7 +9,7 @@ This expanded 2:45–2:55 sequence remains a fallback recording plan. Record at 
 ## Before recording
 
 1. Open a fresh production session and confirm the header says **WebMCP connected**.
-2. Confirm the header says **WebMCP connected · 6 tools** and the initial tool list does not contain `export_review_receipt`.
+2. Confirm the header says **WebMCP connected · 7 tools** and the initial tool list does not contain `export_review_receipt`.
 3. Keep `docs/screenshots/01-hero.jpg` available as a fallback title frame.
 4. Use the exact prompts below so the workflow is reproducible.
 
@@ -37,7 +37,7 @@ Show `docs/screenshots/07-real-world-benchmark.png` or the live **Real-world str
 
 ## 0:55–1:10 — The WebMCP workspace
 
-Show the **6 tools** indicator, then ask for the deterministic case's exact systolic-blood-pressure evidence spans. “Protocol Mirror turns the page into a shared, typed workspace. Source text is explicitly untrusted, and live intake never becomes a reviewed finding automatically.”
+Show the **7 tools** indicator, then ask for the deterministic case's exact systolic-blood-pressure evidence spans. “Protocol Mirror turns the page into a shared, typed workspace. Source text is explicitly untrusted, and live intake never becomes a reviewed finding automatically.”
 
 ## 1:10–1:45 — Agent stages, human decides
 
@@ -63,7 +63,7 @@ Use this prompt:
 
 > Export the current reviewed receipt and summarize only what the receipt actually contains. Explicitly confirm whether staged proposals were excluded.
 
-“The seventh tool is dynamically available only when reviewed work exists. Its receipt excludes staged proposals and preserves the exact cited evidence locator plus the audit trail. The human can download the same reviewed JSON directly from the checkpoint.”
+“The eighth tool is dynamically available only when reviewed work exists. Its receipt excludes staged proposals and preserves the exact cited evidence locator plus the audit trail. The human can download the same reviewed JSON directly from the checkpoint.”
 
 ## 2:30–2:48 — Live sources and honest boundary
 
@@ -79,7 +79,7 @@ Briefly show the architecture section in the repository README or the validated 
 
 - Runtime is under three minutes and narration is audible.
 - A real live-source tool action and its visible page result appear in the first 10–15 seconds.
-- The WebMCP connected state, benchmark disclaimer, exact evidence, staged proposal, keyboard-focus handoff, human-only decision, dynamic seventh tool, reviewed receipt, and human JSON download are all visible.
+- The WebMCP connected state, benchmark disclaimer, exact evidence, staged proposal, keyboard-focus handoff, human-only decision, dynamic eighth tool, reviewed receipt, and human JSON download are all visible.
 - The recording never calls an agent tool to accept or reject a proposal.
 - No clinical-validation, misconduct-detection, or measured-accuracy claim is made.
 - The source repository and live-app URLs are included in the video description.

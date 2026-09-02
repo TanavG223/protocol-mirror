@@ -32,15 +32,25 @@ export interface TrialPair {
   provenance?: "demo" | "live";
   /** ISO timestamp of the live retrieval; absent for the fictional case. */
   retrievedAt?: string;
+  /** Earliest publication date PubMed states for a live pair; absent for the fictional case or when PubMed gives none. */
+  publishedOn?: string | null;
   /** Summary of the registration history when it was retrieved for a live pair. */
   registryHistory?: {
     totalVersions: number;
     originalDate: string;
     latest: { version: number; date: string };
     primaryOutcomeChanged: boolean;
-    firstPrimaryChange: { version: number; date: string; from: string[]; to: string[] } | null;
-    /** Every version in which the primary outcome set differed from the previous one. */
-    changes: Array<{ version: number; date: string; to: string[] }>;
+    firstPrimaryChange: { version: number; date: string; from: string[]; to: string[]; exact?: boolean; after?: { version: number; date: string } } | null;
+    /** Every compared version in which the primary outcome set differed from the previous compared one. `exact: false` means versions in between were not compared. */
+    changes: Array<{ version: number; date: string; to: string[]; exact?: boolean; after?: { version: number; date: string } }>;
+    /** True when every outcome-module version was compared. */
+    complete?: boolean;
+    comparedVersions?: number[];
+    unreadVersions?: number[];
+    /** How many of `changes` are dated before the publication; null when PubMed gives no full date. */
+    changesBeforePublication?: number | null;
+    publishedOn?: string | null;
+    limitation?: string;
     sourceUrl: string;
   };
   nctId: string;

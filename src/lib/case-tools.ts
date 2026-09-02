@@ -31,14 +31,18 @@ export function createCaseReadTools(deps: CaseToolDeps): WebMCP.ModelContextTool
   return [
     {
       name: "get_audit_state", title: "Read audit state",
-      description: "Read the trial-publication pair, stable outcome IDs, proposals, decisions, and audit-event summary. Use before proposing changes.",
-      inputSchema: { type: "object", properties: {}, additionalProperties: false },
+      description: "Read the trial-publication pair, stable outcome IDs, proposals, decisions, reviewer feedback, and audit-event summary. Use before proposing changes.",
+      inputSchema: { type: "object", properties: { outcomes: { type: "string", enum: ["primary", "all"], description: "primary (the default for live records with more than 20 outcomes) or all, which adds secondary and other registry outcomes." } }, additionalProperties: false },
       annotations: { readOnlyHint: true, untrustedContentHint: true },
-      execute: async () => {
+      execute: async (rawInput?: unknown) => {
+        const input = rawInput === undefined ? {} : normalizeToolInput(rawInput);
         const pair = deps.getPair();
         const audit = deps.getAudit();
         const live = pair.provenance === "live";
         const hint = deps.getIntakeHint();
+        const outcomesShown = input.outcomes === "all" || input.outcomes === "primary" ? input.outcomes : live && pair.registryOutcomes.length > ENUM_LIMIT ? "primary" : "all";
+        const registryOutcomes = outcomesShown === "primary" ? pair.registryOutcomes.filter((outcome) => outcome.role === "primary") : pair.registryOutcomes;
+        const omitted = pair.registryOutcomes.length - registryOutcomes.length;
         return {
           activeCase: live ? "live" : "demo",
           pair: {
@@ -46,7 +50,10 @@ export function createCaseReadTools(deps: CaseToolDeps): WebMCP.ModelContextTool
             registryUrl: pair.registryUrl, publicationUrl: pair.publicationUrl, ...(pair.retrievedAt ? { retrievedAt: pair.retrievedAt } : {}),
           },
           ...(live ? { publicationNote: LIVE_PUBLICATION_LIMITATION } : {}),
-          registryOutcomes: pair.registryOutcomes.map((outcome) => compactOutcome(outcome, live)),
+          registryOutcomesShown: outcomesShown,
+          registryOutcomeCount: pair.registryOutcomes.length,
+          ...(omitted > 0 ? { omittedRegistryOutcomes: omitted, registryOutcomesHint: `${omitted} secondary and other registry outcomes are omitted. Call get_audit_state with outcomes: "all" to list them.` } : {}),
+          registryOutcomes: registryOutcomes.map((outcome) => compactOutcome(outcome, live)),
           publicationOutcomes: pair.publicationOutcomes.map((outcome) => compactOutcome(outcome, live)),
           ...(pair.registryHistory ? { registryHistory: pair.registryHistory } : {}),
           mappings: audit.mappings,

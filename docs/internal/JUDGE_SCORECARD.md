@@ -18,7 +18,7 @@ The local increase reflects five concrete changes: agent-retrieved ClinicalTrial
 
 **Protocol Mirror uses WebMCP for a complete collaboration loop: the agent investigates, cites, proposes, and packages proof; the human adjudicates the consequential claim.**
 
-The strongest precise distinction is not simply “human in the loop,” nor is it an agent reduced to passive summarization. The agent performs the investigation through six typed capabilities: it retrieves live records, reads structured case state, inspects exact evidence, stages a proposal, and requests attention. A visible human action adjudicates the proposal and changes the application state; the agent then receives a seventh capability that exports the reviewed receipt. Live-source text is visible but cannot silently become a reviewed finding.
+The strongest precise distinction is not simply “human in the loop,” nor is it an agent reduced to passive summarization. The agent performs the investigation through seven typed capabilities: it retrieves live records, reads structured case state, inspects exact evidence, stages a proposal, and requests attention. A visible human action adjudicates the proposal and changes the application state; the agent then receives a seventh capability that exports the reviewed receipt. Live-source text is visible but cannot silently become a reviewed finding.
 
 Among the public entries reviewed, Protocol Mirror was the only clinical-trial registry-versus-publication transparency workspace. It combines exact source locators, bounded public-source adapters, a deterministic offline judging path, dynamic tool availability, a reviewed-only receipt, and undo without requiring an account, hardware, or external setup.
 
@@ -40,7 +40,7 @@ This table compares visible public artifacts only. It does not establish that an
 1. Deploy the already-tested local release candidate, then repeat the six-to-seven-tool and mobile checks on the permanent URL.
 2. Recut the demo so a real live-source tool call and the resulting reviewer-visible record appear in the first 10–15 seconds.
 3. Show the attempted authority boundary explicitly: no agent accept/reject tool exists; only the human click changes the capability surface.
-4. Show the seventh tool and the human JSON download, then inspect the reviewed-only evidence locators.
+4. Show the eighth tool and the human JSON download, then inspect the reviewed-only evidence locators.
 5. Have the owner watch the new rights-documented benchmark-forward master, then watch the processed public YouTube version with sound and captions before adding its URL to Devpost.
 6. Complete the owner-only eligibility, project-status, country, learning, career-value, rules, preview, and final-submit confirmations before the official deadline.
 

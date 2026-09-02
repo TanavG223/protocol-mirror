@@ -67,12 +67,12 @@ Ten winners receive $3,500 cash each ($35,000 total) plus the sponsor benefits l
 | Requirement | Evidence | Status |
 | --- | --- | --- |
 | New or meaningfully extended project during the event period | Public Git history begins 2026-08-29, but the owner must attest New versus Existing and originality | Owner confirmation required |
-| Non-trivial WebMCP implementation | Six initial state-aware tools, dynamic seventh receipt tool, schemas, authority boundary, live public-source and review rehearsal | Ready |
+| Non-trivial WebMCP implementation | Seven initial state-aware tools, dynamic eighth receipt tool, schemas, authority boundary, live public-source and review rehearsal | Ready |
 | Public source and functional instructions | Public repository, README, lockfile, CI | Ready |
 | Detectable open-source license | GitHub API reports MIT; top-level `LICENSE` is tracked | Ready |
-| Screenshots | Seven production-mode desktop/mobile assets, including permanent seven-tool reviewed state and the benchmark panel | Ready |
+| Screenshots | Eight production-mode desktop/mobile assets, including the eight-tool reviewed state and the benchmark panel | Ready |
 | Text description | Root `devpost-submission.md` packet | Ready |
-| Working live URL | `https://protocol-mirror.vercel.app`; six-before/seven-after tool lifecycle and live source reads verified in Codex browser | Ready |
+| Working live URL | `https://protocol-mirror.vercel.app`; seven-before/eight-after tool lifecycle and live source reads verified in headless Chrome 152 (the earlier six/seven lifecycle was verified in the Codex browser) | Ready |
 | Public YouTube demo under three minutes with audio | Verified 1:53.30 benchmark-forward constant-60-fps local candidate uses documented Apache-2.0 Kokoro-82M narration and has aligned captions; owner watch and public upload remain | Missing |
 | Devpost registration | Authenticated integration reported `registered` and `submissions_open` on 2026-09-01 at 13:54 UTC | Ready |
 | Devpost project/form access | Authenticated list contained three unrelated projects and no Protocol Mirror project; creation and final field review remain | Missing |

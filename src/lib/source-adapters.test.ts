@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   SourceAdapterError,
   fetchClinicalTrial,
+  decodePredefinedEntities,
   fetchPubMedArticle,
   fetchRegistryHistory,
   parseNctId,
@@ -99,7 +100,9 @@ describe("ClinicalTrials.gov registration history", () => {
     expect(result.totalVersions).toBe(4);
     expect(result.original.primaryOutcomes[0]).toMatchObject({ measure: "7-point ordinal scale", locator: "history/0.protocolSection.outcomesModule.primaryOutcomes[0]" });
     expect(result.primaryOutcomeChanged).toBe(true);
-    expect(result.firstPrimaryChange).toEqual({ version: 14, date: "2020-04-16", from: ["7-point ordinal scale"], to: ["Time to recovery"] });
+    expect(result.firstPrimaryChange).toMatchObject({ version: 14, date: "2020-04-16", from: ["7-point ordinal scale"], to: ["Time to recovery"], exact: true, after: { version: 9, date: "2020-03-20" } });
+    expect(result.complete).toBe(true);
+    expect(result.comparedVersions).toEqual([0, 9, 14]);
     expect(result.timeline.map((snapshot) => snapshot.version)).toEqual([0, 14]);
     expect(result.sourceUrl).toBe("https://clinicaltrials.gov/study/NCT04280705?tab=history");
   });
@@ -112,6 +115,52 @@ describe("ClinicalTrials.gov registration history", () => {
     expect(result.primaryOutcomeChanged).toBe(false);
     expect(result.firstPrimaryChange).toBeNull();
     expect(result.timeline).toHaveLength(1);
+  });
+
+  it("keeps the history when one version cannot be read and marks the change inexact", async () => {
+    const list = { changes: [
+      { version: 0, date: "2020-01-01", moduleLabels: [] },
+      { version: 3, date: "2020-02-01", moduleLabels: ["Outcome Measures"] },
+      { version: 5, date: "2020-03-01", moduleLabels: ["Outcome Measures"] },
+    ] };
+    const version = (measure: string) => ({ study: { protocolSection: { outcomesModule: { primaryOutcomes: [{ measure, timeFrame: "Day 28" }] } } } });
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => {
+      if (url.endsWith("/history")) return new Response(JSON.stringify(list), { status: 200 });
+      if (url.endsWith("/history/3")) return new Response("{}", { status: 200, headers: { "content-length": "9000000" } });
+      return new Response(JSON.stringify(version(url.endsWith("/history/0") ? "Mortality" : "Time to discharge")), { status: 200 });
+    }));
+    const result = await fetchRegistryHistory("NCT00000002");
+    expect(result.unreadVersions).toEqual([{ version: 3, date: "2020-02-01" }]);
+    expect(result.complete).toBe(false);
+    expect(result.primaryOutcomeChanged).toBe(true);
+    expect(result.firstPrimaryChange).toMatchObject({ version: 5, exact: false, after: { version: 0, date: "2020-01-01" } });
+    expect(result.limitation).toContain("Version 3 could not be read");
+  });
+
+  it("samples long histories: original, newest outcome version, then a bisection that dates the first change", async () => {
+    const list = { changes: [{ version: 0, date: "2020-01-01", moduleLabels: [] }, ...Array.from({ length: 11 }, (_, i) => ({ version: i + 1, date: `2020-${String(i + 2).padStart(2, "0")}-01`, moduleLabels: ["Outcome Measures"] }))] };
+    const version = (measure: string) => ({ study: { protocolSection: { outcomesModule: { primaryOutcomes: [{ measure, timeFrame: "Week 4" }] } } } });
+    const fetchMock = vi.fn(async (url: string) => {
+      if (url.endsWith("/history")) return new Response(JSON.stringify(list), { status: 200 });
+      const number = Number(url.split("/history/")[1]);
+      return new Response(JSON.stringify(version(number >= 7 ? "Composite endpoint" : "Mortality")), { status: 200 });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const result = await fetchRegistryHistory("NCT00000003");
+    expect(fetchMock.mock.calls.map(([url]) => Number(String(url).split("/history/")[1])).filter(Number.isFinite)).toEqual([0, 11, 5, 8, 6, 7]);
+    expect(result.complete).toBe(false);
+    expect(result.comparedVersions).toEqual([0, 5, 6, 7, 8, 11]);
+    expect(result.changes).toHaveLength(1);
+    expect(result.firstPrimaryChange).toMatchObject({ version: 7, date: "2020-08-01", exact: true, after: { version: 6 } });
+    expect(result.limitation).toContain("6 of 12 versions were compared");
+  });
+
+  it("decodes the HTML-escaped text the history endpoint returns", async () => {
+    const list = { changes: [{ version: 0, date: "2020-01-01", moduleLabels: [] }] };
+    const version = { study: { protocolSection: { outcomesModule: { primaryOutcomes: [{ measure: "Death within the &#x27;no additional treatment&#x27; arm", timeFrame: "&lt;28 days", description: "Cause &amp; time of death" }] } } } };
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => new Response(JSON.stringify(url.endsWith("/history") ? list : version), { status: 200 })));
+    const result = await fetchRegistryHistory("NCT00000004");
+    expect(result.original.primaryOutcomes[0]).toMatchObject({ measure: "Death within the 'no additional treatment' arm", timeFrame: "<28 days", description: "Cause & time of death" });
   });
 
   it("fails closed on an unexpected history shape", async () => {
@@ -165,5 +214,27 @@ describe("safe error responses", () => {
     const response = sourceErrorResponse(new SourceAdapterError("No study found.", 404, "not_found"));
     expect(response.status).toBe(404);
     expect(await response.json()).toEqual({ ok: false, error: { code: "not_found", message: "No study found." } });
+  });
+});
+
+describe("entity decoding", () => {
+  it("decodes numeric references and predefined entities one level deep", () => {
+    expect(decodePredefinedEntities("the &#x27;no additional treatment&#x27; arm &amp; P&lt;0.001 &#8804; 5 &amp;lt;")).toBe("the 'no additional treatment' arm & P<0.001 ≤ 5 &lt;");
+  });
+});
+
+describe("PubMed publication date", () => {
+  const xml = (dates: string) => `<PubmedArticleSet><PubmedArticle><MedlineCitation><PMID>1</PMID><Article><Journal><Title>J</Title><JournalIssue>${dates.includes("PubDate") ? dates.match(/<PubDate>.*<\/PubDate>/)?.[0] ?? "" : ""}</JournalIssue></Journal><ArticleTitle>T</ArticleTitle><Abstract><AbstractText Label="RESULTS">x</AbstractText></Abstract>${dates.replace(/<PubDate>.*<\/PubDate>/, "")}</Article></MedlineCitation></PubmedArticle></PubmedArticleSet>`;
+
+  it("prefers the electronic article date", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(xml('<PubDate><Year>2020</Year><Month>Nov</Month><Day>5</Day></PubDate><ArticleDate DateType="Electronic"><Year>2020</Year><Month>05</Month><Day>22</Day></ArticleDate>'), { status: 200 })));
+    expect((await fetchPubMedArticle("32445440")).publishedOn).toBe("2020-05-22");
+  });
+
+  it("falls back to the issue date and tolerates partial dates", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(xml("<PubDate><Year>2020</Year><Month>Nov</Month></PubDate>"), { status: 200 })));
+    expect((await fetchPubMedArticle("1")).publishedOn).toBe("2020-11");
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(xml(""), { status: 200 })));
+    expect((await fetchPubMedArticle("1")).publishedOn).toBeNull();
   });
 });

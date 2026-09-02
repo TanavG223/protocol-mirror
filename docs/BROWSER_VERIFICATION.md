@@ -166,3 +166,27 @@ Asserted, in order:
 Implementation note: Chromium's in-page `executeTool()` passes tool input to the executor as a JSON string. The executors accept both objects and JSON strings, and the smoke run exercises that path.
 
 Scope of this run: it is browser-implementation evidence for Google Chrome 152 with the WebMCP testing flag. **The Codex/ChatGPT in-app browser has not yet been run against this real-pair loop**; the Codex in-app browser sections above cover the earlier flow (fictional case, six-to-seven tools, live intake cards) on 2026-08-30 and 2026-08-31. The deterministic suite is 54 passing tests at the time of this run.
+
+## 2026-09-02 — headless Chrome 152 smoke of the registration-history loop
+
+`npm run smoke:webmcp` (`scripts/webmcp-smoke.mjs`) launched Google Chrome 152.0.7977.65 headless with `--enable-features=WebMCPTesting` and drove the page's own tools through `document.modelContext.getTools()` and `document.modelContext.executeTool()` over the DevTools protocol. It PASSED against a local production build of commit `6921ea1`. **The run against `https://protocol-mirror.vercel.app` is being executed separately and is not recorded here; do not claim a production pass for this loop until that record exists.** Every human action in the run is a real DOM click, not a tool call.
+
+Asserted, in order:
+
+- The page registers exactly 7 tools before any decision, including the new `get_registry_history`, and the header badge reports **7 tools**.
+- The page opens on a real trial without any human action: ACTT-1 `NCT04280705` with its ClinicalTrials.gov registration history, and the originally registered primary outcome listed first in the registry column.
+- A human DOM click on **Return to demonstration case** returns to the fictional teaching case.
+- The agent fetched the trial (`get_live_clinical_trial`), the publication (`get_live_pubmed_article`) and the registration history (`get_registry_history`), which reported the version in which the primary outcome first changed, with its "from" and "to" measures.
+- A human DOM click on **Review this pair** promoted the real pair; both the original primary outcome (7-point ordinal scale) and the current one (time to recovery) rendered in the registry column.
+- `get_audit_state` reported `activeCase: "live"` with the requested NCT and its `registryHistory`; `get_evidence_spans` returned two live spans — the original primary outcome and the publication's RESULTS abstract section — with their locators.
+- `propose_outcome_mapping` returned `staged_for_human_review`; `request_human_review` returned `decisionAuthority: "human_reviewer_only"`; `export_review_receipt` was still absent from the tool list.
+- A human DOM click on **Accept** moved the badge to **8 tools** and registered `export_review_receipt`. The receipt reported `generatedFrom: "live_sources"` with exactly one reviewed mapping and its two evidence spans, one of which cites a `history/0.` original-registration locator.
+- A human DOM click on **Undo last decision** unregistered `export_review_receipt` and returned the badge to **7 tools**.
+- A human rejection with a selected reason came back to the agent through `get_audit_state.reviewerFeedback`.
+- A human **Note to the agent** came back through `get_audit_state.reviewerNotes`.
+- A page reload restored the live case, the staged proposal and the reviewer note from the tab's `sessionStorage`; **Clear session** reset the workspace to the empty demonstration case.
+- A `?nct=&pmid=` deep link loaded the requested pair.
+
+Implementation note: Chromium's in-page `executeTool()` passes tool input to the executor as a JSON string. The executors accept both objects and JSON strings, and the smoke run exercises that path.
+
+Scope of this run: it is browser-implementation evidence for Google Chrome 152 with the WebMCP testing flag against a local production build. **The Codex/ChatGPT in-app browser has not been run against this registration-history loop**; the Codex in-app browser sections above cover the earlier flow on 2026-08-30 and 2026-08-31. The deterministic suite is 62 passing tests at the time of this run.

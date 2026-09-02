@@ -261,9 +261,9 @@ main { max-width: 1480px; margin: auto; }
 .evidence-content { display: grid; grid-template-columns: .7fr 1.3fr; gap: 36px; }
 .rationale { padding-right: 30px; border-right: 1px solid var(--line); }
 .rationale > span { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 750; }
-.evidence-mapping-identity { margin-top: 14px; display: grid; grid-template-columns: 1fr 24px 1fr; align-items: center; gap: 10px; }
-.evidence-mapping-identity strong { font-family: var(--font-serif),serif; font-size: 16px; line-height: 1.2; font-weight: 600; }
-.evidence-mapping-identity > svg { color: var(--blue); }
+.evidence-mapping-identity { margin-top: 14px; display: grid; grid-template-columns: 1fr; gap: 6px; }
+.evidence-mapping-identity strong { font-family: var(--font-serif),serif; font-size: 15px; line-height: 1.25; font-weight: 600; overflow-wrap: anywhere; }
+.evidence-mapping-identity > svg { color: var(--blue); transform: rotate(90deg); }
 .rationale p { font-family: var(--font-serif); font-size: 21px; line-height: 1.4; margin: 12px 0 20px; }
 .rationale small { color: var(--muted); font-size: 13px; }
 .quotes { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }

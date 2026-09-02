@@ -28,7 +28,7 @@ Protocol Mirror places registered and reported outcomes side by side. Through We
 
 The agent cannot accept or reject its own conclusion. A person reviews the source spans in the same interface and makes the decision. Only reviewed decisions appear in the exportable audit receipt, and that export capability is registered dynamically after a human decision exists. The same reviewed receipt becomes available as a human-downloadable JSON file.
 
-The current app ships with a deterministic fictional case so the core demo never depends on network availability. Validated server adapters also retrieve normalized outcomes from ClinicalTrials.gov and structured abstract sections from PubMed. Agent-retrieved live records are rendered in the shared page with exact source links, making the source read visible to the reviewer without promoting it into an automatic finding.
+The app opens on a real pair fetched live — ACTT-1 and its NEJM report — together with the trial's ClinicalTrials.gov registration history, so the original registered primary outcome can be paired against the published one. A deterministic fictional case remains one click away as the teaching fallback and offline path. Validated server adapters retrieve normalized outcomes from ClinicalTrials.gov, its registration versions, and structured abstract sections from PubMed. Agent-retrieved live records are rendered in the shared page with exact source links, making the source read visible to the reviewer without promoting it into an automatic finding.
 
 The same shared intake exposes loading, safe failure, and recovery states. If a public source is unavailable or returns an incomplete envelope, the human sees that the record was not added and can continue with the deterministic case.
 
@@ -61,7 +61,7 @@ PubMed abstracts do not provide a canonical outcome schema, so the live adapter 
 - Deterministic offline demonstration data plus bounded live-source adapters
 - Evidence-side validation that rejects cross-record IDs, unrelated citations, duplicates, and unknown evidence
 - Restrictive production response headers, bounded upstream payloads, and entity-safe XML parsing
-- 54 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
+- 62 passing deterministic tests, clean lint and TypeScript checks, and a successful production build
 - Reviewer-visible live-source intake and a human-downloadable reviewed JSON receipt
 - A balanced 24-pair real-world source and grounding benchmark with raw outputs from two named local models
 - A production-mode Codex-browser rehearsal at desktop and 390-pixel mobile widths with no horizontal overflow or browser errors
@@ -75,7 +75,7 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 - Add a reviewer-approved workflow for turning PubMed sections into candidate reported outcomes
 - Persist signed, versioned receipts across sessions
 - Expand the current benchmark into a preregistered full-publication reviewer-agreement and task-time study
-- Support version comparison for registry records updated after study completion
+- Extend registration-version comparison beyond primary outcome measures
 
 ## Required links
 
@@ -92,8 +92,9 @@ Agent-native interfaces become more useful when tools reflect the authority mode
 - `docs/screenshots/03-review-queue.jpg` — staged proposals and the human-only accept/reject checkpoint
 - `docs/screenshots/04-evidence-drawer.jpg` — agent rationale beside exact source spans and locators
 - `docs/screenshots/05-mobile.jpg` — mobile hero, connected WebMCP state, and stacked case metadata
-- `docs/screenshots/06-agent-reviewed.png` — public deployment after agent staging and human acceptance, with the seven-tool badge and exact evidence visible
+- `docs/screenshots/06-agent-reviewed.png` — public deployment after agent staging and human acceptance, with the export tool unlocked and exact evidence visible
 - `docs/screenshots/07-real-world-benchmark.png` — exact local build showing 24 real pairs, 48/48 live reads, opposite model bias, and the run-specific claim boundary
+- `docs/screenshots/08-session-log.png` — the session log and the tool roster with the receipt tool unlocked
 
 ## Truthful-claim guardrail
 

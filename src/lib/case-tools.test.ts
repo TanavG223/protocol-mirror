@@ -52,11 +52,33 @@ describe("case tools", () => {
   it("reports the active case and compacts long live descriptions in get_audit_state", async () => {
     const { deps } = harness(bigPair());
     const [auditTool] = createCaseReadTools(deps);
-    const result = await auditTool.execute({}, options) as { activeCase: string; registryOutcomes: Array<{ description: string }>; publicationNote?: string; pair: { provenance: string } };
+    const result = await auditTool.execute({ outcomes: "all" }, options) as { activeCase: string; registryOutcomes: Array<{ description: string }>; publicationNote?: string; pair: { provenance: string }; registryOutcomesShown: string };
     expect(result.activeCase).toBe("live");
     expect(result.pair.provenance).toBe("live");
     expect(result.publicationNote).toContain("abstract sections");
+    expect(result.registryOutcomesShown).toBe("all");
+    expect(result.registryOutcomes).toHaveLength(25);
     expect(result.registryOutcomes[0].description.length).toBeLessThanOrEqual(240);
+  });
+
+  it("returns only primary registry outcomes by default for a large live record and says what it omitted", async () => {
+    const pair = bigPair();
+    pair.registryOutcomes = [{ id: "registry-original-primary-1", title: "Original", description: "d", timeFrame: "Day 15", role: "primary", evidenceIds: ["ev-registry-original-primary-1"] }, ...pair.registryOutcomes];
+    const { deps } = harness(pair);
+    const [auditTool] = createCaseReadTools(deps);
+    const byDefault = await auditTool.execute({}, options) as { registryOutcomesShown: string; registryOutcomes: Array<{ id: string }>; omittedRegistryOutcomes?: number; registryOutcomesHint?: string; registryOutcomeCount: number };
+    expect(byDefault.registryOutcomesShown).toBe("primary");
+    expect(byDefault.registryOutcomes.map((item) => item.id)).toEqual(["registry-original-primary-1"]);
+    expect(byDefault.omittedRegistryOutcomes).toBe(25);
+    expect(byDefault.registryOutcomeCount).toBe(26);
+    expect(byDefault.registryOutcomesHint).toContain('outcomes: "all"');
+    const asString = await auditTool.execute(JSON.stringify({ outcomes: "all" }) as unknown as Record<string, unknown>, options) as { registryOutcomes: unknown[] };
+    expect(asString.registryOutcomes).toHaveLength(26);
+    const { deps: demoDeps } = harness();
+    const [demoAudit] = createCaseReadTools(demoDeps);
+    const demo = await demoAudit.execute({}, options) as { registryOutcomesShown: string; omittedRegistryOutcomes?: number };
+    expect(demo.registryOutcomesShown).toBe("all");
+    expect(demo.omittedRegistryOutcomes).toBeUndefined();
   });
 
   it("stages a validated proposal against the current pair and refuses a stale binding", async () => {

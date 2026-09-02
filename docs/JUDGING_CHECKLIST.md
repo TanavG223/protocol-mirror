@@ -11,8 +11,11 @@ This criterion is equal-weight with the other three and is the first tie-break.
 - [x] Abort-signal lifecycle cleanup
 - [x] Dynamic export registration after human review
 - [x] Agent cannot call the human accept/reject action
-- [x] Codex browser reports the expected six-before/seven-after tools (earlier flow, 2026-08-30/31)
+- [x] Codex browser reported the expected before-and-after tool counts (earlier flow, 2026-08-30/31)
 - [x] `npm run smoke:webmcp` drives the real-pair loop end to end through `getTools()`/`executeTool()` in Google Chrome 152 with the WebMCP flag, locally and against the public deployment
+- [x] `get_registry_history` compares the original registration against the publication; the smoke asserts the whole registration-history loop against a local production build (2026-09-02)
+- [x] Two-way review: a rejection reason and a reviewer note return to the agent through `get_audit_state`
+- [ ] Production smoke run of the registration-history loop against https://protocol-mirror.vercel.app
 - [x] A real ClinicalTrials.gov/PubMed pair becomes the reviewable case; pair-bound tools re-register on the new identifiers
 - [ ] Codex/ChatGPT in-app browser run of the new real-pair loop
 - [x] Both live ClinicalTrials.gov and PubMed tools exercised through the real WebMCP surface
@@ -65,7 +68,7 @@ This criterion is equal-weight with the other three and is the fourth tie-break.
 - [x] Three-minute demo spine
 - [x] Devpost narrative draft
 - [x] Canonical plugin-shaped `devpost-submission.md` packet with testing instructions, AI/Codex usage, limitations, and explicit placeholders
-- [x] Seven final Codex-browser screenshots captured and visually reviewed, including mobile, the permanent seven-tool reviewed state, and the real-world benchmark panel
+- [x] Eight final screenshots captured and visually reviewed, including mobile, the reviewed state with the export tool unlocked, the real-world benchmark panel, and the session log
 - [x] Constant-60-fps visual preview, kinetic overlays, and fail-closed release renderer prepared
 - [x] Pre-benchmark technical candidate rendered with ElevenLabs narration and re-verified as media-pipeline evidence
 - [x] Benchmark-forward narration and 1:45–1:55 storyboard prepared

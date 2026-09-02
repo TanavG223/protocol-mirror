@@ -130,7 +130,12 @@ const asArray = <T>(value: T | T[] | undefined): T[] => value === undefined ? []
 // Entity processing is disabled in the parser so external entities can never be resolved; the
 // five predefined XML entities are decoded here so abstract text reads "P<0.001", not "P&lt;0.001".
 const PREDEFINED_ENTITIES: Record<string, string> = { "&lt;": "<", "&gt;": ">", "&quot;": "\"", "&apos;": "'", "&amp;": "&" };
-export const decodePredefinedEntities = (value: string) => value.replace(/&(lt|gt|quot|apos|amp);/g, (entity) => PREDEFINED_ENTITIES[entity] ?? entity);
+const codePointText = (codePoint: number) => Number.isInteger(codePoint) && codePoint > 31 && codePoint <= 0x10ffff && (codePoint < 0xd800 || codePoint > 0xdfff) ? String.fromCodePoint(codePoint) : "";
+/** Single-level decoding of numeric character references and the five predefined entities. Entity expansion stays disabled in the parser. */
+export const decodePredefinedEntities = (value: string) => value
+  .replace(/&#x([0-9a-f]{1,6});/gi, (entity, hex: string) => codePointText(parseInt(hex, 16)) || entity)
+  .replace(/&#(\d{1,7});/g, (entity, decimal: string) => codePointText(parseInt(decimal, 10)) || entity)
+  .replace(/&(lt|gt|quot|apos|amp);/g, (entity) => PREDEFINED_ENTITIES[entity] ?? entity);
 const text = (value: unknown): string => {
   if (typeof value === "string") return decodePredefinedEntities(value);
   if (typeof value === "number") return String(value);
@@ -139,6 +144,32 @@ const text = (value: unknown): string => {
     return [record["#text"], record.i, record.b, record.sup, record.sub].flatMap((item) => asArray(item)).map(text).filter(Boolean).join(" ");
   }
   return "";
+};
+
+const MONTHS: Record<string, string> = { jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06", jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12" };
+const datePart = (value: unknown, kind: "year" | "month" | "day"): string | null => {
+  const raw = text(value).trim();
+  if (!raw) return null;
+  if (kind === "month" && MONTHS[raw.slice(0, 3).toLowerCase()]) return MONTHS[raw.slice(0, 3).toLowerCase()];
+  const digits = raw.match(/^\d{1,4}/)?.[0];
+  if (!digits) return null;
+  if (kind === "year") return digits.length === 4 ? digits : null;
+  return digits.padStart(2, "0");
+};
+/** The earliest publication date PubMed states: the electronic ArticleDate, else the issue PubDate. Partial dates come back as YYYY or YYYY-MM. */
+const articlePublicationDate = (article: Record<string, unknown>): string | null => {
+  const journal = article.Journal as Record<string, unknown> | undefined;
+  const issue = journal?.JournalIssue as Record<string, unknown> | undefined;
+  for (const candidate of [...asArray(article.ArticleDate), issue?.PubDate]) {
+    if (!candidate || typeof candidate !== "object") continue;
+    const record = candidate as Record<string, unknown>;
+    const year = datePart(record.Year, "year");
+    if (!year) continue;
+    const month = datePart(record.Month, "month");
+    const dayOfMonth = month ? datePart(record.Day, "day") : null;
+    return [year, month, dayOfMonth].filter(Boolean).join("-");
+  }
+  return null;
 };
 
 export async function fetchPubMedArticle(rawPmid: string) {
@@ -169,13 +200,19 @@ export async function fetchPubMedArticle(rawPmid: string) {
     pmid,
     title: text(article.ArticleTitle) || "Untitled PubMed record",
     journal: text((article.Journal as Record<string, unknown> | undefined)?.Title) || "Journal not specified",
+    publishedOn: articlePublicationDate(article),
     abstractSections,
     limitation: "PubMed abstracts do not provide a canonical outcome schema. Outcome extraction must be proposed and reviewed, never silently inferred.",
   };
 }
 
 const MAX_HISTORY_LIST_BYTES = 1_000_000;
-const MAX_HISTORY_VERSIONS = 6;
+/** Late registration versions carry posted results; NCT04368728 version 52 is 4.2 MB. */
+const MAX_HISTORY_VERSION_BYTES = 8_000_000;
+/** Version fetches per call in addition to the original registration. */
+const MAX_HISTORY_FETCHES = 8;
+/** Up to this many outcome-module versions every one is compared and the timeline is complete. */
+const FULL_TIMELINE_LIMIT = 6;
 const OUTCOME_MODULE_LABEL = /outcome measures$/i;
 
 const HistoryList = z.object({
@@ -196,6 +233,16 @@ const HistoryVersion = z.object({
 
 export interface RegistryPrimaryOutcome { measure: string; timeFrame: string; description: string; locator: string }
 export interface RegistryVersionSnapshot { version: number; date: string; primaryOutcomes: RegistryPrimaryOutcome[] }
+export interface RegistryPrimaryChange {
+  version: number;
+  date: string;
+  from: string[];
+  to: string[];
+  /** False when outcome-module versions between `after` and this one were not compared: the change happened at or before this version. */
+  exact: boolean;
+  /** The newest compared version that still carried the previous primary outcome set. */
+  after: { version: number; date: string };
+}
 
 const normalizeMeasure = (outcome: RegistryPrimaryOutcome) => `${outcome.measure} @ ${outcome.timeFrame}`.toLowerCase().replace(/\s+/g, " ").trim();
 const samePrimarySet = (a: RegistryPrimaryOutcome[], b: RegistryPrimaryOutcome[]) =>
@@ -210,26 +257,31 @@ async function fetchHistoryVersion(nctId: string, version: number, date: string)
   if (!response.ok) throw new SourceAdapterError("ClinicalTrials.gov registration history is temporarily unavailable.", 502, "upstream_error");
   let payload: unknown;
   try {
-    payload = JSON.parse(await readBoundedText(response, MAX_CLINICAL_TRIAL_BYTES, "ClinicalTrials.gov history"));
+    payload = JSON.parse(await readBoundedText(response, MAX_HISTORY_VERSION_BYTES, "ClinicalTrials.gov history"));
   } catch (error) {
     if (error instanceof SourceAdapterError) throw error;
     throw new SourceAdapterError("ClinicalTrials.gov history returned malformed JSON.", 502, "invalid_upstream_data");
   }
   const parsed = HistoryVersion.safeParse(payload);
   if (!parsed.success) throw new SourceAdapterError("ClinicalTrials.gov history returned an unexpected record shape.", 502, "invalid_upstream_data");
+  // The history endpoint HTML-escapes text (unlike the v2 study API), so quotes decode here.
   const primaryOutcomes = (parsed.data.study.protocolSection.outcomesModule?.primaryOutcomes ?? []).map((outcome, index) => ({
-    measure: outcome.measure,
-    timeFrame: outcome.timeFrame,
-    description: outcome.description,
+    measure: decodePredefinedEntities(outcome.measure),
+    timeFrame: decodePredefinedEntities(outcome.timeFrame),
+    description: decodePredefinedEntities(outcome.description),
     locator: `history/${version}.protocolSection.outcomesModule.primaryOutcomes[${index}]`,
   }));
   return { version, date, primaryOutcomes };
 }
 
 /**
- * Every registration version is public. This reads the version list, fetches the original
- * registration plus the versions in which the Outcome Measures module changed (bounded), and
- * reports whether and when the primary outcome set was altered. Only primary outcomes are diffed.
+ * Every registration version is public. This reads the version list and the original registration,
+ * then compares primary outcomes across the versions in which the Outcome Measures module changed.
+ * Up to FULL_TIMELINE_LIMIT such versions are all compared, so the timeline is complete. Above that,
+ * the newest one is compared with the original and a bisection dates the first change, so every
+ * reported change says whether its date is exact and the result says which versions were not
+ * compared. A version that cannot be read (a results-bearing record above the byte cap, a timeout)
+ * is reported, never fatal.
  */
 export async function fetchRegistryHistory(rawNctId: string) {
   const nctId = parseNctId(rawNctId);
@@ -254,12 +306,62 @@ export async function fetchRegistryHistory(rawNctId: string) {
   const first = changes[0];
   const last = changes[changes.length - 1];
   const outcomeVersions = changes.filter((change) => change.version !== first.version && change.moduleLabels.some((label) => OUTCOME_MODULE_LABEL.test(label)));
-  const truncated = outcomeVersions.length > MAX_HISTORY_VERSIONS;
-  const selected = truncated ? [...outcomeVersions.slice(0, MAX_HISTORY_VERSIONS - 1), outcomeVersions[outcomeVersions.length - 1]] : outcomeVersions;
 
-  const snapshots = await Promise.all([first, ...selected].map((change) => fetchHistoryVersion(nctId, change.version, change.date)));
-  const timeline = snapshots.filter((snapshot, index) => index === 0 || !samePrimarySet(snapshot.primaryOutcomes, snapshots[index - 1].primaryOutcomes));
-  const firstChange = timeline.length > 1 ? timeline[1] : null;
+  const original = await fetchHistoryVersion(nctId, first.version, first.date);
+  const compared: RegistryVersionSnapshot[] = [original];
+  const unreadVersions: Array<{ version: number; date: string }> = [];
+  const read = async (change: { version: number; date: string }) => {
+    try {
+      const snapshot = await fetchHistoryVersion(nctId, change.version, change.date);
+      compared.push(snapshot);
+      return snapshot;
+    } catch {
+      unreadVersions.push({ version: change.version, date: change.date });
+      return null;
+    }
+  };
+  const sameAsOriginal = (snapshot: RegistryVersionSnapshot) => samePrimarySet(snapshot.primaryOutcomes, original.primaryOutcomes);
+
+  if (outcomeVersions.length <= FULL_TIMELINE_LIMIT) {
+    await Promise.all(outcomeVersions.map(read));
+  } else {
+    // Newest readable outcome-module version first, then bisect between the original and it.
+    let high = outcomeVersions.length - 1;
+    let newest: RegistryVersionSnapshot | null = null;
+    while (high >= 0 && !newest && unreadVersions.length < 3) {
+      newest = await read(outcomeVersions[high]);
+      if (!newest) high -= 1;
+    }
+    if (newest && !sameAsOriginal(newest)) {
+      let low = -1;
+      while (high - low > 1 && compared.length - 1 + unreadVersions.length < MAX_HISTORY_FETCHES) {
+        const middle = Math.floor((low + high) / 2);
+        const snapshot = await read(outcomeVersions[middle]);
+        if (!snapshot) break;
+        if (sameAsOriginal(snapshot)) low = middle; else high = middle;
+      }
+    }
+  }
+
+  const ordered = [...compared].sort((a, b) => a.version - b.version);
+  const timeline = ordered.filter((snapshot, index) => index === 0 || !samePrimarySet(snapshot.primaryOutcomes, ordered[index - 1].primaryOutcomes));
+  const comparedVersions = ordered.map((snapshot) => snapshot.version);
+  const comparedSet = new Set(comparedVersions);
+  const primaryChanges: RegistryPrimaryChange[] = timeline.slice(1).map((snapshot, index) => {
+    const previous = timeline[index];
+    const after = [...ordered].reverse().find((item) => item.version < snapshot.version) ?? previous;
+    const skipped = outcomeVersions.some((change) => change.version > after.version && change.version < snapshot.version && !comparedSet.has(change.version));
+    return {
+      version: snapshot.version,
+      date: snapshot.date,
+      from: previous.primaryOutcomes.map((outcome) => outcome.measure),
+      to: snapshot.primaryOutcomes.map((outcome) => outcome.measure),
+      exact: !skipped,
+      after: { version: after.version, date: after.date },
+    };
+  });
+  const uncompared = outcomeVersions.filter((change) => !comparedSet.has(change.version));
+  const complete = uncompared.length === 0;
 
   return {
     source: "ClinicalTrials.gov registration history",
@@ -269,17 +371,20 @@ export async function fetchRegistryHistory(rawNctId: string) {
     totalVersions: changes.length,
     latestVersion: { version: last.version, date: last.date },
     outcomeModuleVersions: outcomeVersions.map((change) => ({ version: change.version, date: change.date })),
-    original: snapshots[0],
+    comparedVersions,
+    unreadVersions,
+    complete,
+    original,
     timeline,
-    primaryOutcomeChanged: firstChange !== null,
-    firstPrimaryChange: firstChange ? {
-      version: firstChange.version,
-      date: firstChange.date,
-      from: snapshots[0].primaryOutcomes.map((outcome) => outcome.measure),
-      to: firstChange.primaryOutcomes.map((outcome) => outcome.measure),
-    } : null,
-    truncated,
-    limitation: "Only primary outcome measures are compared across registration versions. A change is a registry fact, not a judgment; it may be legitimate and pre-specified elsewhere.",
+    changes: primaryChanges,
+    primaryOutcomeChanged: primaryChanges.length > 0,
+    firstPrimaryChange: primaryChanges[0] ?? null,
+    truncated: !complete,
+    limitation: [
+      "Only primary outcome measures are compared across registration versions. A change is a registry fact, not a judgment; it may be legitimate and pre-specified elsewhere.",
+      complete ? "" : `${comparedVersions.length} of ${changes.length} versions were compared; ${uncompared.length} outcome-module version${uncompared.length === 1 ? " was" : "s were"} not, so a change made and reverted between compared versions would not appear here.`,
+      unreadVersions.length ? `Version${unreadVersions.length === 1 ? "" : "s"} ${unreadVersions.map((item) => item.version).join(", ")} could not be read.` : "",
+    ].filter(Boolean).join(" "),
   };
 }
 

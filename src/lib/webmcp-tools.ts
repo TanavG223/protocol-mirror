@@ -21,9 +21,13 @@ export interface LivePubMedRecord {
   pmid: string;
   title: string;
   journal: string;
+  /** Earliest publication date PubMed states (electronic date first); YYYY, YYYY-MM or YYYY-MM-DD; null when absent. */
+  publishedOn?: string | null;
   abstractSections: Array<{ id: string; label: string; text: string; locator: string }>;
   limitation: string;
 }
+
+export interface LiveRegistryPrimaryChange { version: number; date: string; from: string[]; to: string[]; exact: boolean; after: { version: number; date: string } }
 
 export interface LiveRegistryHistory {
   source: string;
@@ -33,10 +37,16 @@ export interface LiveRegistryHistory {
   totalVersions: number;
   latestVersion: { version: number; date: string };
   outcomeModuleVersions: Array<{ version: number; date: string }>;
+  /** Versions whose primary outcomes were actually compared (always includes the original). */
+  comparedVersions: number[];
+  unreadVersions: Array<{ version: number; date: string }>;
+  /** True when every outcome-module version was compared; otherwise `changes` may omit intermediate edits. */
+  complete: boolean;
   original: { version: number; date: string; primaryOutcomes: Array<{ measure: string; timeFrame: string; description: string; locator: string }> };
   timeline: Array<{ version: number; date: string; primaryOutcomes: Array<{ measure: string; timeFrame: string; description: string; locator: string }> }>;
+  changes: LiveRegistryPrimaryChange[];
   primaryOutcomeChanged: boolean;
-  firstPrimaryChange: { version: number; date: string; from: string[]; to: string[] } | null;
+  firstPrimaryChange: LiveRegistryPrimaryChange | null;
   truncated: boolean;
   limitation: string;
 }

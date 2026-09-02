@@ -19,7 +19,7 @@ The steps below are the reproducible release procedure and final external-action
 
 This step changes external state and requires the project owner's explicit confirmation at action time.
 
-Before any push or deployment, commit the candidate and run `npm run preflight:product`. The command requires a clean tree and prints the exact commit SHA after the dependency audit, 54-test contract, TypeScript check, and production build pass.
+Before any push or deployment, commit the candidate and run `npm run preflight:product`. The command requires a clean tree and prints the exact commit SHA after the dependency audit, 62-test contract, TypeScript check, and production build pass.
 
 1. Import `https://github.com/TanavG223/protocol-mirror` into Vercel.
 2. Keep the detected Next.js defaults. The current application requires no environment variables.
@@ -30,7 +30,7 @@ Before any push or deployment, commit the candidate and run `npm run preflight:p
 
 - Home page returns HTTP 200 over HTTPS.
 - Header shows **WebMCP connected** in the Codex in-app browser.
-- Exactly six tools exist initially; the export tool appears as the seventh only after a human decision.
+- Exactly 7 tools exist initially; the export tool appears as the 8th only after a human decision.
 - Stage, focus, accept, undo, re-accept, and export complete without console errors.
 - The receipt excludes staged proposals.
 - Invalid live-source identifiers return the documented structured 400 response.
@@ -57,7 +57,7 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 Run `npm run preflight:submission` only after the owner has completed every personal and media gate. The command deliberately requires the four `PROTOCOL_MIRROR_*` confirmation variables documented by its error messages; never set them merely to make the command pass.
 
 - Paste the narrative from `docs/SUBMISSION_DRAFT.md` and preserve its truthful-claim guardrail.
-- Add the seven files from `docs/screenshots/` in narrative order; use `06-agent-reviewed.png` as direct proof of the public seven-tool reviewed state and `07-real-world-benchmark.png` as the reality-check differentiator.
+- Add the eight files from `docs/screenshots/` in narrative order; use `06-agent-reviewed.png` as direct proof of the public reviewed state with the export tool unlocked and `07-real-world-benchmark.png` as the reality-check differentiator.
 - Put the permanent app URL in **Try it out** and repeat the public source URL in the description.
 - Add the public video URL and repository license URL.
 - Re-open the official rules immediately before submission and verify the displayed deadline, eligibility, required fields, public-access requirements, and video limit.
@@ -75,8 +75,8 @@ Moved here from `README.md` on 2026-09-01 so the public README stays a product p
 
 | Command | What it does |
 | --- | --- |
-| `npm run check` | WebMCP metadata/lifecycle conformance, judge-facing submission-packet consistency, ESLint, 54 deterministic tests, TypeScript, and a production Next.js build |
-| `npm run smoke:webmcp` | Headless Google Chrome 152+ with `--enable-features=WebMCPTesting`; drives the page's own tools through the full 6 → live reads → human promotion → propose → human Accept → 7 → receipt → Undo → 6 loop. Add `--url=` to point it at the deployment |
+| `npm run check` | WebMCP metadata/lifecycle conformance, judge-facing submission-packet consistency, ESLint, 62 deterministic tests, TypeScript, and a production Next.js build |
+| `npm run smoke:webmcp` | Headless Google Chrome 152+ with `--enable-features=WebMCPTesting`; drives the page's own tools through the full 7 tools → opening on ACTT-1 with its registration history → live reads → human promotion → propose → human Accept → 8 → receipt citing a `history/0.` locator → Undo → 7 loop, plus reject-with-reason, reviewer note, reload, session clear and deep link. Add `--url=` to point it at the deployment |
 | `npm run check:media` | Exact checksums, codec, 60 fps cadence, duration, frame count, audio contract, black/silence thresholds, and the 23-cue caption timeline for the demo master |
 | `npm run preflight:product` | Fails closed unless source, license, screenshots, media assets, WebMCP registrations, dependency audit, tests, and the production build all map to one clean commit; prints that `COMMIT_SHA` |
 | `npm run preflight:submission` | Adds owner-controlled gates for rules acknowledgment, narration/media approval, personal Devpost answers, and the watched public YouTube URL. Expected to fail until those external gates are truthfully complete |
@@ -85,10 +85,11 @@ Judge-evidence summary for the current candidate:
 
 | Judge evidence | Verified result |
 | --- | --- |
-| Automated release checks | 54 tests, lint, TypeScript, and an optimized build pass |
-| WebMCP metadata contract | Seven unique tools, three registration call sites, signal cleanup, same-origin exposure, annotations, and Chrome's character budgets enforced |
-| Real WebMCP lifecycle | Six initial tools; a human decision alone exposes the seventh; undo removes it. Driven end to end by `npm run smoke:webmcp` in Google Chrome 152 |
-| Real-pair loop | A real ClinicalTrials.gov/PubMed pair becomes the reviewable case from either the agent side or the human loader; pair-bound tools re-register on the new identifiers |
+| Automated release checks | 62 tests, lint, TypeScript, and an optimized build pass |
+| WebMCP metadata contract | Eight unique tools, three registration call sites, signal cleanup, same-origin exposure, annotations, and Chrome's character budgets enforced |
+| Real WebMCP lifecycle | Seven initial tools; a human decision alone exposes the eighth; undo removes it. Driven end to end by `npm run smoke:webmcp` in Google Chrome 152 |
+| Real-pair loop | The page opens on a real pair with its ClinicalTrials.gov registration history; the original registered primary outcome is listed first; a pair can also be promoted from the agent side or the human loader, and pair-bound tools re-register on the new identifiers |
+| Two-way review | A rejection reason and a free-text reviewer note return to the agent through `get_audit_state` |
 | Real-world source stress test | 24 NCT/PMID pairs; 48/48 WebMCP source calls; 172 outcomes and 106 abstract sections |
 | Failure behavior | Invalid identifiers, malformed/oversized/entity-shaped source data, missing records, duplicate proposals, and unrelated evidence fail closed |
 | Human authority | No agent accept/reject tool; reviewed JSON is available only after a human decision |

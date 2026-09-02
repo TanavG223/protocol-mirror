@@ -6,27 +6,27 @@
 
 ## Why this use case is a strong fit for WebMCP
 
-Clinical trials register the outcomes they promise to measure, then publish years later. In a 2019 JAMA Network Open study, Chen et al. checked 389 randomized trials sampled from PubMed and Embase — published 2011-2015, with no restriction by journal — against their registrations: 130 had changed at least one primary outcome, 66 of those omitted or never reported the registered one, and trials with a change reported effect sizes about 16% larger. Journal editors, peer reviewers and systematic reviewers do this check by hand, in two tabs, copying quotes.
+Clinical trials register the outcomes they promise to measure, then publish years later. In a 2019 JAMA Network Open study, Chen et al. checked 389 randomized trials sampled from PubMed and Embase — published 2011-2015, with no restriction by journal — against their registrations: 130 had changed at least one primary outcome, 66 of those omitted or never reported the registered one, and trials with a change reported effect sizes about 16% larger. Journal editors, peer reviewers and systematic reviewers do this by hand across three tabs: the registry record, its version history, and the paper.
 
-An agent alone cannot be trusted with it: scrape both documents and it hands back a confident paragraph you cannot check. A hosted backend is no better — the reviewer never sees what was read. WebMCP is the fit because the tools live on the page the reviewer is already looking at. The agent gets typed outcome IDs and exact locators instead of screenshots, and every read, quote and proposal lands in the reviewer's own view.
+An agent alone cannot be trusted with it: scrape the documents and it hands back a confident paragraph you cannot check. A hosted backend is no better, because the reviewer never sees what was read. WebMCP fits because the tools live on the page the reviewer is already looking at. The agent gets typed outcome IDs and exact source locators instead of screenshots, and every read, quote and proposal lands in the reviewer's own view.
 
 ## How it creates a better user experience
 
-Before: two browser tabs, a spreadsheet, and hand-copied quotes, with no record of what was compared. In Protocol Mirror you paste one line, and the agent pulls ClinicalTrials.gov `NCT04280705` and PubMed `32445440` into intake cards you can see. You click **Review this pair** and the real trial becomes the case. The agent then quotes the registered outcome and the abstract section verbatim, each with its source locator, and stages a proposal — matched, omitted, introduced, or uncertain — with rationale, cited evidence IDs and a confidence.
+The page opens on a real pair — ACTT-1 (`NCT04280705`) beside its NEJM report (PubMed `32445440`) — with the trial's ClinicalTrials.gov registration history already fetched. That is the point: outcome switching is a claim about what was registered *first*, so `get_registry_history` reads the public version list and reports it: ACTT-1 has 25 registration versions, was first registered on 2020-02-20 with a 7-point ordinal scale at Day 15, and changed in version 9 and again in version 14 to time to recovery — which is what the publication presents as primary. The originally registered outcome is listed first in the registry column with a `history/0.` locator, so the agent can pair what was promised against what was printed.
 
-You read the rationale beside both quotes and decide. A session log lists every tool call and every human decision as it happens, and a seven-chip tool roster shows exactly which capability is available right now. Nothing enters the exported receipt that a person did not accept.
+Before, that was three tabs and hand-copied quotes with no record of what was compared. Here the agent quotes both spans verbatim with their locators and stages a proposal — matched, omitted, introduced, or uncertain — with rationale, cited evidence IDs and a confidence. You read the rationale beside both quotes and decide. A session log lists every tool call and human decision as it happens, and an eight-chip tool roster shows exactly which capability is available right now.
 
 ## What people and agents can do together that was hard before
 
-The agent does the whole investigation and stops precisely where authority begins. It cannot cite an ID that is not in the loaded case, cannot accept or reject — no such tool is registered, so ask it and it will tell you it has none — and cannot export anything until a human has decided.
+The agent does the whole investigation and stops precisely where authority begins. It cannot cite an ID outside the loaded case, cannot accept or reject — no such tool is registered — and cannot export anything until a human has decided.
 
-That last part is the collaboration: the human's click is not just a UI event, it registers a new tool. Accept or reject one proposal and `export_review_receipt` appears; the agent can now package the reviewed decisions with their exact locators and source URLs. Undo the decision and the tool is unregistered. The agent's capability surface is grown and revoked by human review, on a real registry-to-publication pair, in the page both parties share.
+The collaboration then runs both ways. The human's click is not just a UI event: accept or reject one proposal and `export_review_receipt` is registered, so the agent can package the reviewed decisions with their exact locators and source URLs; undo and the tool is unregistered. And a rejection is not a dead end — the reviewer picks a reason, or types a note to the agent, and both come back through `get_audit_state` as `reviewerFeedback` and `reviewerNotes`, so the agent can revise and re-propose. The agent's capability surface, and its next attempt, are shaped by human review on a real registry-to-publication pair, in the page both parties share.
 
 ## How WebMCP was implemented
 
-Seven tools are registered with `document.modelContext.registerTool` (with a `navigator.modelContext` fallback) in three registration effects: pair-independent tools (`get_live_clinical_trial`, `get_live_pubmed_article`, `get_audit_state`, `request_human_review`); pair-bound tools (`get_evidence_spans`, `propose_outcome_mapping`) that re-register against the new identifiers whenever the case changes; and the gated `export_review_receipt`, registered only while reviewed work exists.
+Eight tools are registered with `document.modelContext.registerTool` (with a `navigator.modelContext` fallback) in three registration effects: pair-independent tools (`get_live_clinical_trial`, `get_live_pubmed_article`, `get_registry_history`, `get_audit_state`, `request_human_review`); pair-bound tools (`get_evidence_spans`, `propose_outcome_mapping`) that re-register against the new identifiers whenever the case changes; and the gated `export_review_receipt`, registered only while reviewed work exists.
 
-Every registration carries an `AbortSignal` that effect cleanup aborts; every schema is a closed object with `additionalProperties: false`, bounded strings and enum-bound IDs — emitted as enums only for ID lists of 20 or fewer, with runtime validation authoritative either way. Read tools declare `readOnlyHint` and `untrustedContentHint`; staging and focus tools do not claim to be read-only. `propose_outcome_mapping` re-checks category shape and evidence linkage at execute time. A conformance script enforces the annotations, the abort signals, the same-origin default and Chrome's metadata budgets in CI.
+`get_registry_history` is read-only and untrusted-content annotated, backed by a bounded server route that validates the identifier, caps the version list, and fetches at most six registration versions. Every registration carries an `AbortSignal` that effect cleanup aborts; every schema is a closed object with `additionalProperties: false`, bounded strings and enum-bound IDs. Read tools declare `readOnlyHint` and `untrustedContentHint`; staging and focus tools do not claim to be read-only. A conformance script enforces the annotations, the abort signals, the same-origin default and Chrome's metadata budgets in CI.
 
 ## Benchmark
 
@@ -34,20 +34,20 @@ On 24 real NCT/PMID pairs (12 primary-outcome-change, 12 no-change, labels from 
 
 ## Testing instructions
 
-No login, API key, or paid service. Open https://protocol-mirror.vercel.app in the ChatGPT/Codex in-app browser with site tools enabled, or Chrome 152+ with `chrome://flags/#enable-webmcp-testing`. The header should read **WebMCP connected · 6 tools**; if it reads **WebMCP preview**, click a curated pair chip in **Load a real trial** (or **Load 4 example proposals**) and do steps 4-6 by hand.
+No login, API key, or paid service. Open https://protocol-mirror.vercel.app in Chrome 152+ with `chrome://flags/#enable-webmcp-testing`, or the ChatGPT/Codex in-app browser with site tools enabled. The header should read **WebMCP connected · 7 tools**. Nothing has to be loaded first: the page opens on ACTT-1 `NCT04280705` / PMID `32445440` with its registration history already fetched. If the header reads **WebMCP preview**, skip the pasted prompts — steps 4-6 are ordinary clicks.
 
-1. Paste: *Call get_live_clinical_trial with nctId NCT04280705, then get_live_pubmed_article with pmid 32445440.* Both records appear in the intake cards; click **Review this pair**.
-2. Paste: *Call get_audit_state, then call get_evidence_spans for two evidence IDs it returned and quote both spans with their locators.*
-3. Paste: *Call propose_outcome_mapping for those two IDs with a discrepancy of uncertain, both evidence IDs, a rationale and a confidence, then call request_human_review with the returned mappingId.*
-4. Ask the agent to accept it — it has no such tool. Click **Accept** yourself.
-5. The header reads **7 tools**. Paste: *Call export_review_receipt and list its mappings, locators and audit events.* It reports `generatedFrom: "live_sources"`.
-6. Click **Undo last decision**; the receipt tool is unregistered and the header returns to 6 tools.
+1. Paste: *Call get_audit_state and summarize registryHistory: how many registration versions, and when did the primary outcome change?* It reports 25 versions and the change from a 7-point ordinal scale to time to recovery.
+2. Paste: *Call get_evidence_spans for ev-registry-original-primary-1 and for the evidence ID of the RESULTS abstract section, and quote both spans with their locators.*
+3. Paste: *Call propose_outcome_mapping for those two outcome IDs with a discrepancy of uncertain, both evidence IDs, a rationale and a confidence, then call request_human_review with the returned mappingId.*
+4. Ask the agent to accept it — it has no such tool. Click **Accept** yourself; the header moves to **8 tools**.
+5. Paste: *Call export_review_receipt and list its mappings, locators and audit events.* It reports `generatedFrom: "live_sources"` and cites the `history/0.` original-registration locator. Click **Undo last decision**; the receipt tool is unregistered and the header returns to 7 tools.
+6. Click **Reject** on a proposal and pick a reason, or send a line through **Note to the agent**. Paste: *Call get_audit_state and read reviewerFeedback and reviewerNotes.* Your words come back to the agent, which can revise and re-propose.
 
-Locally: `npm ci && npm run check` runs the WebMCP conformance gate, ESLint, 54 tests, TypeScript and the production build. `npm run smoke:webmcp` drives the whole loop above through `document.modelContext.getTools()` / `executeTool()` in headless Google Chrome with `--enable-features=WebMCPTesting`; it passed against the live URL on Sep 1, 2026 with Chrome 152.0.7977.65.
+Locally: `npm ci && npm run check` runs the WebMCP conformance gate, ESLint, 62 tests, TypeScript and the production build. `npm run smoke:webmcp` drives the whole loop above through `document.modelContext.getTools()` / `executeTool()` in headless Google Chrome with `--enable-features=WebMCPTesting`; it passed against a local production build on Sep 2, 2026 with Chrome 152.0.7977.65, and the run against the live URL is pending.
 
 ## Verified compatibility
 
-The real-pair loop is verified in Google Chrome 152 with the WebMCP flag by the headless smoke script. The Codex/ChatGPT in-app browser was verified on 2026-08-30 and 08-31 against the earlier flow — six initial tools, both live reads rendered in the page, agent-staged proposal, human accept, seventh tool, receipt — on the fictional case; that browser has not yet been run against the new real-pair loop.
+The real-pair loop with registration history is verified in Google Chrome 152 with the WebMCP flag by the headless smoke script. The Codex/ChatGPT in-app browser was verified on 2026-08-30 and 08-31 against the earlier flow — the initial tool surface, both live reads rendered in the page, an agent-staged proposal, a human accept, the receipt tool unlocked by that decision, and the exported receipt — on the fictional case; that browser has not yet been run against the new real-pair loop.
 
 ## Demo video
 
@@ -60,16 +60,17 @@ The prepared local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`:
 3. `docs/screenshots/03-review-queue.jpg` — staged proposals and the human-only checkpoint
 4. `docs/screenshots/04-evidence-drawer.jpg` — rationale beside exact quotations and locators
 5. `docs/screenshots/05-mobile.jpg` — 390×844 layout without horizontal overflow
-6. `docs/screenshots/06-agent-reviewed.png` — the seven-tool state after a human decision
+6. `docs/screenshots/06-agent-reviewed.png` — the unlocked export state after a human decision
 7. `docs/screenshots/07-real-world-benchmark.png` — the 24-pair stress-test panel
 8. `docs/screenshots/08-session-log.png` — the session log and the tool roster with the receipt tool unlocked
 
 ## Known limitations
 
-- The default bundled case is a fictional trial; it is implementation evidence, not accuracy evidence.
+- The default case is a real trial fetched live from public APIs; the bundled fictional trial is the teaching fallback and offline path, and is implementation evidence, not accuracy evidence.
+- Registration history compares primary outcome measures only. Histories with more than six Outcome Measures versions are sampled (original, newest, and a bisection to date the first change); the response says which versions were compared and whether each change date is exact. A change is a registry fact, not a judgment; it may be legitimate and pre-specified elsewhere.
 - PubMed returns abstract sections, not a canonical outcome schema, so the publication column shows sections and labels them as such.
 - The benchmark is abstract-only and specific to the named models, prompt and run; it is not clinical validation.
-- Audit state is in-session only: not persisted, not signed.
+- Audit state is kept in the tab's `sessionStorage`: per tab, not persisted, not signed, and never sent anywhere.
 - No authentication; the app must not be used with protected health information.
 - Compatibility is claimed only for the browsers listed under **Verified compatibility**.
 

@@ -71,13 +71,25 @@ const bannedJudgeClaims = [
   ["await_human", "no such tool is registered"],
   ["Stage guided review", "the visible control is \"Load 4 example proposals\""],
 ];
+// Stale surface counts and unverified production claims, checked only in the two files this
+// packet owns. Older dated records elsewhere describe earlier flows and stay as written.
+const bannedCurrentCopy = [
+  ["seven tools", "the page registers eight tools; seven before a human decision"],
+  ["six tools", "the page registers eight tools; seven before a human decision"],
+  ["seventh tool", "export_review_receipt is the eighth tool"],
+  ["six initial", "seven tools are registered before a human decision"],
+  ["seven WebMCP tools", "there are eight WebMCP tools"],
+  ["passed against the live URL", "the production smoke of the registration-history loop has not been recorded"],
+];
 
 requireAll(packet, requiredPacketSections, paths.packet);
 requireAll(requirements, criteria, paths.requirements);
 requireAll(scorecard, criteria, paths.scorecard);
 requireAll(packet, [publicApp, publicRepo, scopeSentence], paths.packet);
 requireAll(draft, [publicApp, publicRepo, "Truthful-claim guardrail"], paths.draft);
-requireAll(readme, [publicApp, publicRepo, scopeSentence, "Five-minute judge path", "chrome://flags/#enable-webmcp-testing", "npm run smoke:webmcp", "54 tests"], paths.readme);
+requireAll(readme, [publicApp, publicRepo, scopeSentence, "Five-minute judge path", "chrome://flags/#enable-webmcp-testing", "npm run smoke:webmcp", "62 tests"], paths.readme);
+requireAll(readme, ["The eight WebMCP tools", "get_registry_history", "WebMCP connected · 7 tools", "8 tools", "Registration history"], `${paths.readme} eight-tool surface`);
+requireAll(packet, ["Eight tools are registered", "get_registry_history", "reviewerFeedback", "reviewerNotes"], `${paths.packet} eight-tool surface`);
 requireAll(manifest, ["Owner-only gates still open", "without establishing universal hallucination or clinical-accuracy claims"], paths.manifest);
 requireAll(handoff, ["Complete video watch and explicit approval", "Current official-rules acknowledgment", "Separate literal authorization before final submission", "External-state warning"], paths.handoff);
 
@@ -90,6 +102,14 @@ if (/^- \[[ x]\] /m.test(packet)) fail(`${paths.packet} must not carry the inter
 
 for (const [phrase, reason] of bannedJudgeClaims) {
   if (combinedJudgeCopy.includes(phrase)) fail(`judge-facing copy contains "${phrase}": ${reason}`);
+}
+
+const currentCopy = [[paths.readme, readme], [paths.packet, packet]];
+for (const [label, content] of currentCopy) {
+  const lower = content.toLowerCase();
+  for (const [phrase, reason] of bannedCurrentCopy) {
+    if (lower.includes(phrase.toLowerCase())) fail(`${label} contains "${phrase}": ${reason}`);
+  }
 }
 
 if (/\b(?:TBD|TODO:|YOUR_[A-Z_]+|INSERT_[A-Z_]+)\b/.test(combinedJudgeCopy)) {
@@ -127,6 +147,7 @@ requireAll(manifest, ["not evidence of owner editorial approval, a Devpost entry
 console.log("SUBMISSION_PACKET=PASS");
 console.log("OFFICIAL_CRITERIA=4/4");
 console.log("DEVPOST_FIELDS=12/12");
+console.log("TOOL_SURFACE=7_before_decision+1_gated");
 console.log(`BENCHMARK_PAIRS=${pairs.cases.length}`);
 console.log(`LIVE_SOURCE_CALLS=${sourceSummary.successfulToolCalls}/${sourceSummary.toolCalls}`);
 console.log(`EVIDENCE_TOTALS=${sourceSummary.registryOutcomes}_outcomes+${sourceSummary.publicationAbstractSections}_abstract_sections`);

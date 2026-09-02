@@ -5,7 +5,7 @@ Target runtime: 2:30–2:45. Hard limit: under three minutes. The current 1:53.3
 ## Before recording
 
 - Open `https://protocol-mirror.vercel.app` in a fresh Codex/ChatGPT in-app-browser session with WebMCP site tools enabled.
-- Confirm the header reads **WebMCP connected · 6 tools** and `export_review_receipt` is not yet available.
+- Confirm the header reads **WebMCP connected · 7 tools** and `export_review_receipt` is not yet available.
 - Confirm no live-source intake is visible before the agent calls the source tools.
 - Record at 1280×720 or higher, browser zoom at 100%, notifications hidden, and microphone levels tested.
 - Keep the production URL visible near the beginning. Show the agent tool activity and the page response in the same recording.
@@ -71,7 +71,7 @@ Target runtime: 2:30–2:45. Hard limit: under three minutes. The current 1:53.3
 
 **Say:**
 
-> This is the authority boundary. I—not the agent—make the decision. And watch the capability surface: after my review, the page changes from six tools to seven.
+> This is the authority boundary. I—not the agent—make the decision. And watch the capability surface: after my review, the page changes from seven tools to eight.
 
 ## 2:05–2:23 — Dynamic proof, not a black box
 
@@ -83,7 +83,7 @@ Target runtime: 2:30–2:45. Hard limit: under three minutes. The current 1:53.3
 
 **Say:**
 
-> The seventh tool exists only when reviewed work exists. Its receipt excludes staged suggestions and preserves the accepted mapping, exact evidence locators, and the audit events that produced it.
+> The eighth tool exists only when reviewed work exists. Its receipt excludes staged suggestions and preserves the accepted mapping, exact evidence locators, and the audit events that produced it.
 
 ## 2:23–2:43 — Reliability and close
 
