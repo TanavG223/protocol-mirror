@@ -95,7 +95,9 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` in a WebMCP-capable browser. Browsers without `document.modelContext` or `navigator.modelContext` show **WebMCP preview** and keep the complete manual review workflow.
+Open `http://localhost:3000`. A local origin is not covered by the origin-trial token, so to connect an agent locally use Chrome 152 or newer with `chrome://flags/#enable-webmcp-testing` set to Enabled (relaunch Chrome), or open the local URL in the ChatGPT/Codex desktop in-app browser with site tools enabled. Browsers without `document.modelContext` or `navigator.modelContext` show **WebMCP preview** and keep the complete manual review workflow. No environment variables or accounts are needed; the two live-source routes call the public ClinicalTrials.gov and PubMed APIs directly.
+
+The demo videos under `docs/demo/` are stored with Git LFS. Cloning without `git-lfs` installed gives you small pointer files in their place, which affects nothing else; `git lfs install && git lfs pull` fetches them.
 
 Live source routes, used by both the tools and the human loader:
 
@@ -110,9 +112,12 @@ Identifiers are validated before interpolation; responses use a stable `{ ok, da
 ## Verify
 
 ```bash
-npm run check          # WebMCP conformance, submission packet, ESLint, 75 tests, TypeScript, production build
-npm run smoke:webmcp   # headless Chrome 152+ drives the page's own tools through the whole loop
+npm run check          # WebMCP conformance, submission packet, ESLint, 75 tests, TypeScript, production build (no browser needed)
+npm run build && npx next start -p 4180   # in one terminal: the production build the smoke drives
+npm run smoke:webmcp   # in another: headless Chrome 152+ drives the page's own tools through the whole loop
 ```
+
+The smoke expects Google Chrome at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`; pass `--chrome=/path/to/chrome` or set `CHROME_BIN` elsewhere, and `--url=http://127.0.0.1:PORT` to target a different server. It needs Chrome 152 or newer because it uses Chromium's in-page testing API (`document.modelContext.getTools()` / `executeTool()`), which the `--enable-features=WebMCPTesting` flag it launches with enables.
 
 `npm run smoke:webmcp` is a dependency-free DevTools-protocol script. It launches Google Chrome headless with `--enable-features=WebMCPTesting` and calls `document.modelContext.getTools()` / `executeTool()` on the real page. It asserts: 7 initial tools; the page opening on ACTT-1 with its registration history and the original primary outcome listed first; a return to the demonstration case; agent reads of the trial, the article and the history; human promotion via a DOM click on **Review this pair**; `get_audit_state` and `get_evidence_spans` on the original primary outcome against the RESULTS section; `propose_outcome_mapping`; `request_human_review`; DOM **Accept** → 8 tools; a receipt whose `live_sources` evidence cites a `history/0.` locator; **Undo** → 7 tools; a rejection whose reason is readable in `reviewerFeedback`; a note readable in `reviewerNotes`; a reload that restores the case; **Clear session**; and a `?nct=&pmid=` deep link. It passed against the local production build and against https://protocol-mirror.vercel.app on 2026-09-02 (America/New_York) with Google Chrome 152.0.7977.65, most recently on the deployment of commit `d8de2a8`, the last change to the application code. Chromium's in-page `executeTool` passes tool input as JSON strings, so every executor accepts both objects and JSON strings.
 
