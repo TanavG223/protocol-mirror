@@ -85,21 +85,21 @@ render_scene() {
 }
 
 render_scene "$capture_dir/01-hero.jpg" "hero-clean"
-render_scene "$capture_dir/01-hero.jpg" "hero-close" "01-hero-overlay"
-render_scene "$capture_dir/02-benchmark.jpg" "benchmark"
-render_scene "$capture_dir/03-evidence-table.jpg" "evidence-tools" "02-evidence-overlay"
+render_scene "$capture_dir/01-hero.jpg" "hero-hook" "01-hero-overlay"
+render_scene "$capture_dir/02-benchmark.jpg" "benchmark" "06-live-overlay"
+render_scene "$capture_dir/03-evidence-table.jpg" "registry-history" "02-evidence-overlay"
 render_scene "$capture_dir/05-evidence-drawer.jpg" "evidence-proposal" "03-proposal-overlay"
 render_scene "$capture_dir/04-human-review.jpg" "review-human" "04-human-overlay"
-render_scene "$capture_dir/07-seven-tools.jpg" "seven-tools" "05-receipt-overlay"
+render_scene "$capture_dir/07-seven-tools.jpg" "eight-tools" "05-receipt-overlay"
 render_scene "$capture_dir/06-reviewed-receipt.jpg" "reviewed-receipt" "05-receipt-overlay"
-render_scene "$capture_dir/08-live-sources.jpg" "live-sources" "06-live-overlay"
+render_scene "$capture_dir/08-live-sources.jpg" "live-sources"
 
 if [[ "${PROOF_ONLY:-0}" == "1" ]]; then
   proof_video="${PROOF_VIDEO:-$render_tmp/transition-proof.mp4}"
   ffmpeg -hide_banner -loglevel error -y \
     -i "$render_tmp/hero-clean.png" \
     -i "$render_tmp/benchmark.png" \
-    -i "$render_tmp/evidence-tools.png" \
+    -i "$render_tmp/registry-history.png" \
     -filter_complex "
       [0:v]zoompan=z='1+.01*on/119':d=120:s=1280x720:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v0];
       [1:v]zoompan=z='1+.01*on/119':d=120:s=1280x720:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v1];
@@ -114,47 +114,47 @@ fi
 
 ffmpeg -hide_banner -loglevel error -y \
   -i "$voice_input" \
-  -af "atempo=$voice_tempo,highpass=f=70,lowpass=f=12000,acompressor=threshold=-18dB:ratio=2.4:attack=18:release=180,loudnorm=I=-16:TP=-1.5:LRA=7" \
+  -af "atempo=$voice_tempo,highpass=f=70,lowpass=f=12000,acompressor=threshold=-18dB:ratio=2.4:attack=18:release=180,loudnorm=I=-16:TP=-1.5:LRA=7,apad=pad_dur=1" \
   -ar 48000 -ac 2 -c:a aac -b:a 192k "$output_voice"
 
 ffmpeg -hide_banner -loglevel error -y \
-  -i "$render_tmp/hero-clean.png" \
-  -i "$render_tmp/benchmark.png" \
-  -i "$render_tmp/benchmark.png" \
-  -i "$render_tmp/benchmark.png" \
-  -i "$render_tmp/evidence-tools.png" \
+  -i "$render_tmp/hero-hook.png" \
+  -i "$render_tmp/registry-history.png" \
+  -i "$render_tmp/live-sources.png" \
   -i "$render_tmp/evidence-proposal.png" \
   -i "$render_tmp/review-human.png" \
-  -i "$render_tmp/seven-tools.png" \
+  -i "$render_tmp/evidence-proposal.png" \
+  -i "$render_tmp/eight-tools.png" \
+  -i "$render_tmp/reviewed-receipt.png" \
+  -i "$render_tmp/benchmark.png" \
   -i "$render_tmp/reviewed-receipt.png" \
   -i "$render_tmp/live-sources.png" \
-  -i "$render_tmp/benchmark.png" \
-  -i "$render_tmp/hero-close.png" \
+  -i "$render_tmp/hero-clean.png" \
   -i "$output_voice" \
   -filter_complex "
-    [0:v]zoompan=z='1+.025*(.5-.5*cos(PI*on/539))':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d=540:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v0];
-    [1:v]zoompan=z='1+.035*(.5-.5*cos(PI*on/809))':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d=810:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v1];
-    [2:v]zoompan=z='1.04+.10*(.5-.5*cos(PI*on/809))':x='(iw-iw/zoom)*.18':y='(ih-ih/zoom)*.58':d=810:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v2];
-    [3:v]zoompan=z='1.04+.10*(.5-.5*cos(PI*on/809))':x='(iw-iw/zoom)*.82':y='(ih-ih/zoom)*.58':d=810:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v3];
-    [4:v]zoompan=z='1.01+.075*(.5-.5*cos(PI*on/539))':x='(iw-iw/zoom)*.48':y='(ih-ih/zoom)*.52':d=540:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v4];
-    [5:v]zoompan=z='1.01+.085*(.5-.5*cos(PI*on/539))':x='(iw-iw/zoom)*.56':y='(ih-ih/zoom)*.72':d=540:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v5];
-    [6:v]zoompan=z='1.01+.08*(.5-.5*cos(PI*on/539))':x='(iw-iw/zoom)*.58':y='(ih-ih/zoom)*.46':d=540:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v6];
-    [7:v]zoompan=z='1.01+.085*(.5-.5*cos(PI*on/419))':x='(iw-iw/zoom)*.84':y='(ih-ih/zoom)*.16':d=420:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v7];
-    [8:v]zoompan=z='1.01+.08*(.5-.5*cos(PI*on/539))':x='(iw-iw/zoom)*.56':y='(ih-ih/zoom)*.56':d=540:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v8];
-    [9:v]zoompan=z='1.01+.07*(.5-.5*cos(PI*on/809))':x='(iw-iw/zoom)*.50':y='(ih-ih/zoom)*.38':d=810:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v9];
-    [10:v]zoompan=z='1.075-.05*(.5-.5*cos(PI*on/419))':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d=420:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v10];
-    [11:v]zoompan=z='1.065-.055*(.5-.5*cos(PI*on/512))':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d=513:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v11];
-    [v0][v1]xfade=transition=fade:duration=0.75:offset=8.25[x1];
-    [x1][v2]xfade=transition=smoothleft:duration=0.75:offset=21.00[x2];
-    [x2][v3]xfade=transition=smoothright:duration=0.75:offset=33.75[x3];
-    [x3][v4]xfade=transition=fade:duration=0.75:offset=46.50[x4];
-    [x4][v5]xfade=transition=smoothup:duration=0.75:offset=54.75[x5];
-    [x5][v6]xfade=transition=fade:duration=0.75:offset=63.00[x6];
-    [x6][v7]xfade=transition=smoothleft:duration=0.75:offset=71.25[x7];
-    [x7][v8]xfade=transition=fade:duration=0.75:offset=77.50[x8];
-    [x8][v9]xfade=transition=smoothup:duration=0.75:offset=85.75[x9];
-    [x9][v10]xfade=transition=fade:duration=0.75:offset=98.50[x10];
-    [x10][v11]xfade=transition=fade:duration=0.75:offset=104.75[vout]
+    [0:v]zoompan=z='1+.028*(.5-.5*cos(PI*on/599))':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d=600:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v0];
+    [1:v]zoompan=z='1.01+.065*(.5-.5*cos(PI*on/779))':x='(iw-iw/zoom)*.32':y='(ih-ih/zoom)*.32':d=780:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v1];
+    [2:v]zoompan=z='1.01+.06*(.5-.5*cos(PI*on/719))':x='(iw-iw/zoom)*.50':y='(ih-ih/zoom)*.58':d=720:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v2];
+    [3:v]zoompan=z='1.01+.075*(.5-.5*cos(PI*on/659))':x='(iw-iw/zoom)*.48':y='(ih-ih/zoom)*.52':d=660:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v3];
+    [4:v]zoompan=z='1.01+.06*(.5-.5*cos(PI*on/599))':x='(iw-iw/zoom)*.52':y='(ih-ih/zoom)*.54':d=600:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v4];
+    [5:v]zoompan=z='1.06-.035*(.5-.5*cos(PI*on/599))':x='(iw-iw/zoom)*.50':y='(ih-ih/zoom)*.52':d=600:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v5];
+    [6:v]zoompan=z='1+.045*(.5-.5*cos(PI*on/599))':x='(iw-iw/zoom)*.84':y='(ih-ih/zoom)*.16':d=600:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v6];
+    [7:v]zoompan=z='1.01+.07*(.5-.5*cos(PI*on/599))':x='(iw-iw/zoom)*.52':y='(ih-ih/zoom)*.50':d=600:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v7];
+    [8:v]zoompan=z='1.01+.055*(.5-.5*cos(PI*on/719))':x='(iw-iw/zoom)*.48':y='(ih-ih/zoom)*.42':d=720:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v8];
+    [9:v]zoompan=z='1.06-.035*(.5-.5*cos(PI*on/779))':x='(iw-iw/zoom)*.50':y='(ih-ih/zoom)*.48':d=780:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v9];
+    [10:v]zoompan=z='1.01+.055*(.5-.5*cos(PI*on/719))':x='(iw-iw/zoom)*.50':y='(ih-ih/zoom)*.58':d=720:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v10];
+    [11:v]zoompan=z='1.055-.045*(.5-.5*cos(PI*on/809))':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d=810:s=1920x1080:fps=60,format=yuv420p,setpts=PTS-STARTPTS[v11];
+    [v0][v1]xfade=transition=fade:duration=0.75:offset=9.25[x1];
+    [x1][v2]xfade=transition=smoothleft:duration=0.75:offset=21.50[x2];
+    [x2][v3]xfade=transition=fade:duration=0.75:offset=32.75[x3];
+    [x3][v4]xfade=transition=smoothup:duration=0.75:offset=43.00[x4];
+    [x4][v5]xfade=transition=fade:duration=0.75:offset=52.25[x5];
+    [x5][v6]xfade=transition=smoothleft:duration=0.75:offset=61.50[x6];
+    [x6][v7]xfade=transition=fade:duration=0.75:offset=70.75[x7];
+    [x7][v8]xfade=transition=smoothup:duration=0.75:offset=80.00[x8];
+    [x8][v9]xfade=transition=fade:duration=0.75:offset=91.25[x9];
+    [x9][v10]xfade=transition=smoothright:duration=0.75:offset=103.50[x10];
+    [x10][v11]xfade=transition=fade:duration=0.75:offset=114.75[vout]
   " \
   -map "[vout]" -map 12:a -shortest \
   -c:v libx264 -preset medium -crf 14 -tune animation -profile:v high -level 4.2 \

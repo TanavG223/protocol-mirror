@@ -1,7 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs><filter id="shadow"><feDropShadow dx="0" dy="3" stdDeviation="6" flood-opacity=".34"/></filter></defs>
-  <rect x="58" y="52" width="482" height="142" rx="12" fill="#17201f" fill-opacity=".94" filter="url(#shadow)"/>
-  <text x="88" y="91" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2.4" fill="#9ebcf2">TYPED, SOURCE-AWARE TOOLS</text>
-  <text x="88" y="132" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="white">get_audit_state</text>
-  <text x="88" y="169" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="white">get_evidence_spans</text>
+  <rect x="58" y="52" width="590" height="178" rx="12" fill="#17201f" fill-opacity=".94" filter="url(#shadow)"/>
+  <text x="88" y="91" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2.4" fill="#9ebcf2">LIVE, SOURCE-AWARE TOOLS</text>
+  <text x="88" y="132" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="white">get_registry_history</text>
+  <text x="88" y="169" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="white">get_audit_state · get_evidence_spans</text>
+  <text x="88" y="204" font-family="Arial, sans-serif" font-size="17" fill="#cdd6d2">Exact quotes + stable source locators</text>
 </svg>

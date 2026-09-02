@@ -1,44 +1,52 @@
 # Benchmark recut storyboard
 
-Target runtime: 1:45–1:55. Hard limit: under three minutes. This plan produced the current 1:53.30 local candidate and supersedes the preserved 1:29 technical master because it shows the real-world stress test without rushing the evidence or authority-boundary explanation.
+Target runtime: 2:05–2:10. Hard limit: under three minutes. This plan produced the current 2:07.90 local candidate and supersedes the preserved 1:53 benchmark cut because it opens on a specific dated ACTT-1 registration change, shows the two-way review loop, and preserves time for the real-world stress test.
 
 The current render uses locally generated Kokoro-82M narration with Apache-2.0 model-card provenance recorded in `KOKORO_NARRATION_PROVENANCE.md`. The owner must still complete a full watch with sound before upload. Do not substitute the preserved Free-plan ElevenLabs track.
 
-## 0:00–0:10 — Hook
+## 0:00–0:10 — Dated-change hook
 
-- Start on the title card, then reveal the live connected page.
-- On-screen line: **What happens when models disagree on consequential evidence?**
-- Keep the production URL and **WebMCP connected · 6 tools** visible.
+- Start on the verified production page with **WebMCP connected · 7 tools** visible.
+- Put the concrete finding on screen: **Feb 20: seven-point scale. Apr 16: time to recovery.**
+- State the authority boundary immediately: the agent found the change; a human interprets it.
 
-## 0:10–0:32 — Real-world stress test
+## 0:10–0:33 — Registration history and live intake
 
-- Use `docs/screenshots/07-real-world-benchmark.png` full-frame with a restrained 2–3% push-in.
-- Highlight, in order: **24 real NCT/PMID pairs**, **48/48 live WebMCP reads**, then the 4B and 9B directional-bias cards.
-- Leave the disclaimer visible. Do not animate the metric values as if they were live counters.
+- Show the ACTT-1 history evidence and the live ClinicalTrials.gov/PubMed intake.
+- Name version 14 of 25 and keep the history locator visible.
+- Explain that the seven typed tools return source material as untrusted evidence.
 
-## 0:32–0:55 — Typed evidence, not pixel guessing
+## 0:33–0:50 — Exact evidence and constrained proposal
 
 - Show the registered/reported comparison and exact evidence drawer.
 - Show the agent calling `get_audit_state` and `get_evidence_spans`.
 - Keep both exact locators visible long enough to read.
 
-## 0:55–1:15 — Agent proposal, human-only decision
+## 0:50–1:03 — Uncertainty stays visible
 
-- Show `propose_outcome_mapping`, then `request_human_review` moving focus to the checkpoint.
-- Pause on the evidence-linked proposal.
-- The human—not the agent—clicks **Accept** once.
+- Pause on the uncertain relationship with its rationale, seven-point scale, recovery result, and dates.
+- Keep the proposal visibly evidence-linked rather than presenting an automatic verdict.
 
-## 1:15–1:30 — Dynamic capability proof
+## 1:03–1:16 — Two-way review
 
-- Hold on the change from six tools to seven.
-- Call `export_review_receipt` and show that staged work is excluded.
-- Show the exact locators and the human-downloadable JSON action.
+- Show a human rejection with a reason.
+- Show the feedback returning through `get_audit_state`, followed by a revised proposal.
 
-## 1:30–1:50 — Live intake and close
+## 1:16–1:31 — Dynamic capability proof
 
-- Show the two live-source tools and reviewer-visible source intake.
-- Return to the stress-test or hero panel for the final line.
-- Close on: **AI assembles evidence. A human decides.**
+- Hold on the change from seven tools to eight after a human acceptance.
+- Show `export_review_receipt`, the live-source marker, the `history/0.` locator, and the staged → rejected → revised → accepted event chain.
+
+## 1:31–1:51 — Real-world stress test
+
+- Show **24 real NCT/PMID pairs** and **48/48 live WebMCP reads**.
+- Show the opposite model failure directions and leave the run-specific, non-clinical-validation boundary visible.
+
+## 1:51–2:07.90 — Audit trail, live sources, and close
+
+- Return to the reviewed receipt and live-source intake.
+- Close on the production hero while stating that the person remains accountable for consequential judgment.
+- End with the research-transparency and non-clinical-use boundary.
 
 ## Editorial acceptance checks
 
@@ -46,5 +54,5 @@ The current render uses locally generated Kokoro-82M narration with Apache-2.0 m
 - Spoken numbers match the tracked benchmark artifacts exactly.
 - The run-specific disclaimer is visible while model metrics are narrated.
 - The agent never accepts or rejects a proposal.
-- The six-to-seven tool transition and reviewed-only receipt are visible, not merely narrated.
+- The seven-to-eight tool transition and reviewed-only receipt are visible, not merely narrated.
 - The owner watches the complete cleared local master with sound before any upload.

@@ -1,6 +1,6 @@
 # Final release manifest
 
-Updated on 2026-09-01 America/New_York after rendering and technically verifying the 1920×1080 benchmark-forward 1:53.30 candidate with locally generated Kokoro-82M narration. The exact current release candidate is always the commit containing this manifest and must be confirmed by the `COMMIT_SHA` printed by `npm run preflight:product`; the manifest does not embed its own changing commit hash. The model-card license provenance is documented, but this is not evidence of owner editorial approval, a Devpost entry, or a YouTube upload.
+Updated on 2026-09-02 America/New_York after rendering and technically verifying the 1920×1080 benchmark-forward 2:07.90 candidate with locally generated Kokoro-82M narration. The exact current release candidate is always the commit containing this manifest and must be confirmed by the `COMMIT_SHA` printed by `npm run preflight:product`; the manifest does not embed its own changing commit hash. The model-card license provenance is documented, but this is not evidence of owner editorial approval, a Devpost entry, or a YouTube upload.
 
 ## Authoritative release references
 
@@ -34,10 +34,10 @@ Updated on 2026-09-01 America/New_York after rendering and technically verifying
 
 | Artifact | SHA-256 | Verified properties |
 | --- | --- | --- |
-| `docs/demo/protocol-mirror-submission-demo.mp4` | `237762f907b27f9be1e6a4bb88f94f483f5f2190903c3984371839f8583a89ff` | 113.300000 seconds; 1920×1080; H.264; constant 60 fps; 6,798 frames; stereo AAC at 48 kHz; benchmark-forward candidate |
-| `docs/demo/protocol-mirror-submission-voiceover.m4a` | `4fc5bd5469c88f3f93a028fd974e72f246a004a6ee93c79659d164a04012d12a` | processed Kokoro-82M `af_heart` narration; −16.4 LUFS; −4.2 dBTP; stereo AAC at 48 kHz |
-| `docs/demo/protocol-mirror-kokoro-source.wav` | `feb90ecf25cd785f78f40faee612947e79a95aa5d3c6288ea08daf607fa730e0` | 124.050-second local Kokoro-82M v1.0 source; 24 kHz mono PCM; generation settings and Apache-2.0 model-card evidence recorded separately |
-| `docs/demo/protocol-mirror-submission-captions.srt` | `acdac92ee20705ec4b1d9ce584c1c204e688f802ebc48606e885232846a7f4e4` | 23 monotonic English cues; final cue ends at 113.288 seconds; owner must inspect timing against the processed upload |
+| `docs/demo/protocol-mirror-submission-demo.mp4` | `275291234fbc9dfb4359d0659ed79fc9833a7db4f15c8cf4357b3a00e089be40` | 127.900000 seconds; 1920×1080; H.264; constant 60 fps; 7,674 frames; stereo AAC at 48 kHz; dated-change benchmark-forward candidate |
+| `docs/demo/protocol-mirror-submission-voiceover.m4a` | `e8952003604fd084665794dd8c297fdc627c7382096c712ae7cf966832b35216` | processed Kokoro-82M `af_heart` narration; −16.4 LUFS; −4.2 dBTP; stereo AAC at 48 kHz |
+| `docs/demo/protocol-mirror-kokoro-source.wav` | `ecdc9e54dc1ba3805884a5d6497637c79dffa22fe7ada6dffa6e72b16fb5d695` | 138.965-second local Kokoro-82M v1.0 source; 24 kHz mono PCM; generation settings and Apache-2.0 model-card evidence recorded separately |
+| `docs/demo/protocol-mirror-submission-captions.srt` | `3470af382ef1a901e1b450ef96d320ec2a4fa3c683c018d42fb2ac7b27d0f159` | 24 monotonic English cues; final cue ends at 126.460 seconds; owner must inspect timing against the processed upload |
 | `docs/demo/protocol-mirror-final-demo.mp4` | `0ce0b5b4aabaccf1baa5ec6f193b47785bbfff2ef0c4f6ee39a4f689c3f58797` | 89.650000 seconds; 1280×720; H.264; constant 60 fps; 5,379 frames; stereo AAC at 48 kHz |
 | `docs/demo/protocol-mirror-final-voiceover.m4a` | `deda8c80e6032b989f9da01250dc3012e91d8a7dba2632faa1908dd6791120c4` | 88.900000 seconds; processed ElevenLabs Chris voice; stereo AAC at 48 kHz |
 | `docs/demo/protocol-mirror-elevenlabs-chris-source.mp3` | `161ac9090cebff12f635137fe6ceb15044f42bc8b15ffe42178c377e7da1f9a7` | 93.753438-second ElevenLabs source; Chris, Multilingual v2, default settings recorded in the voice-direction file |

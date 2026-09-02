@@ -7,8 +7,8 @@ This runbook starts from a clean, CI-verified `main` branch.
 - Permanent application: https://protocol-mirror.vercel.app
 - Public MIT repository: https://github.com/TanavG223/protocol-mirror
 - Permanent WebMCP workflow: verified end to end in the Codex in-app browser
-- Benchmark-forward local candidate: `docs/demo/protocol-mirror-submission-demo.mp4`; 113.30 seconds, 1920×1080 H.264 at constant 60 fps, rights-documented Kokoro-82M narration
-- Candidate verification: 6,798 frames; no tested black/silence discontinuity; no variable cadence; −16.4 LUFS and −4.2 dBTP; owner watch-and-approve still pending
+- Benchmark-forward local candidate: `docs/demo/protocol-mirror-submission-demo.mp4`; 127.90 seconds, 1920×1080 H.264 at constant 60 fps, rights-documented Kokoro-82M narration
+- Candidate verification: 7,674 frames; no tested black/silence discontinuity; no variable cadence; −16.4 LUFS and −4.2 dBTP; owner watch-and-approve still pending
 - Reproducible HD edit: `scripts/render-hd-submission-demo.sh`; release mode requires an explicit rights-cleared `NARRATION_AUDIO`
 - Upload thumbnail: `docs/demo/title-card.png` (1280×720)
 - Still pending by owner choice: public YouTube upload, explicit rules acknowledgment, Devpost project write, and final `yes, submit`
@@ -42,7 +42,7 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 ## 3. Record and publish the demo
 
 1. Review `docs/demo/KOKORO_NARRATION_PROVENANCE.md`; the current candidate replaces the unresolved ElevenLabs Free-plan path with locally generated Apache-2.0 Kokoro-82M narration.
-2. Watch the complete `docs/demo/protocol-mirror-submission-demo.mp4` local master with sound and confirm the narration, pacing, benchmark panel, overlays, and visible six-to-seven tool sequence.
+2. Watch the complete `docs/demo/protocol-mirror-submission-demo.mp4` local master with sound and confirm the narration, pacing, benchmark panel, overlays, and visible seven-to-eight tool sequence.
 3. If the owner requests a voice or timing change, regenerate from `docs/demo/BENCHMARK_RECUT_NARRATION.txt` and render with `scripts/render-hd-submission-demo.sh`, passing the approved track as `NARRATION_AUDIO`.
 4. Re-run the codec, frame-cadence, black-segment, silence, loudness, caption, and checksum checks after any change; update `docs/YOUTUBE_METADATA.md` and `docs/FINAL_RELEASE_MANIFEST.md`.
 5. Do not upload until the project owner explicitly approves the complete master with sound.
@@ -77,7 +77,7 @@ Moved here from `README.md` on 2026-09-01 so the public README stays a product p
 | --- | --- |
 | `npm run check` | WebMCP metadata/lifecycle conformance, judge-facing submission-packet consistency, ESLint, 62 deterministic tests, TypeScript, and a production Next.js build |
 | `npm run smoke:webmcp` | Headless Google Chrome 152+ with `--enable-features=WebMCPTesting`; drives the page's own tools through the full 7 tools → opening on ACTT-1 with its registration history → live reads → human promotion → propose → human Accept → 8 → receipt citing a `history/0.` locator → Undo → 7 loop, plus reject-with-reason, reviewer note, reload, session clear and deep link. Add `--url=` to point it at the deployment |
-| `npm run check:media` | Exact checksums, codec, 60 fps cadence, duration, frame count, audio contract, black/silence thresholds, and the 23-cue caption timeline for the demo master |
+| `npm run check:media` | Exact checksums, codec, 60 fps cadence, duration, frame count, audio contract, black/silence thresholds, and the 24-cue caption timeline for the demo master |
 | `npm run preflight:product` | Fails closed unless source, license, screenshots, media assets, WebMCP registrations, dependency audit, tests, and the production build all map to one clean commit; prints that `COMMIT_SHA` |
 | `npm run preflight:submission` | Adds owner-controlled gates for rules acknowledgment, narration/media approval, personal Devpost answers, and the watched public YouTube URL. Expected to fail until those external gates are truthfully complete |
 
@@ -95,4 +95,3 @@ Judge-evidence summary for the current candidate:
 | Human authority | No agent accept/reject tool; reviewed JSON is available only after a human decision |
 | Responsive UX | 320- and 390-pixel layouts verified without horizontal overflow; visible enabled targets are at least 44×44 pixels |
 | Security | Zero reportable repository-scan findings and zero dependency vulnerabilities at the enforced threshold |
-

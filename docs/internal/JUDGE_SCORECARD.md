@@ -37,7 +37,7 @@ This table compares visible public artifacts only. It does not establish that an
 
 ## Highest-value submission plan
 
-1. Deploy the already-tested local release candidate, then repeat the six-to-seven-tool and mobile checks on the permanent URL.
+1. Deploy the already-tested local release candidate, then repeat the seven-to-eight-tool and mobile checks on the permanent URL.
 2. Recut the demo so a real live-source tool call and the resulting reviewer-visible record appear in the first 10–15 seconds.
 3. Show the attempted authority boundary explicitly: no agent accept/reject tool exists; only the human click changes the capability surface.
 4. Show the eighth tool and the human JSON download, then inspect the reviewed-only evidence locators.

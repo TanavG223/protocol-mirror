@@ -14,4 +14,10 @@ Generation settings:
 - release tempo adjustment: `1.095`
 - release processing: high/low-pass filtering, gentle compression, EBU R128 loudness normalization, 48 kHz stereo AAC
 
+Current rendered artifacts:
+
+- source WAV: 138.965 seconds; SHA-256 `ecdc9e54dc1ba3805884a5d6497637c79dffa22fe7ada6dffa6e72b16fb5d695`
+- processed M4A: SHA-256 `e8952003604fd084665794dd8c297fdc627c7382096c712ae7cf966832b35216`
+- final master: 127.900 seconds; SHA-256 `275291234fbc9dfb4359d0659ed79fc9833a7db4f15c8cf4357b3a00e089be40`
+
 This provenance replaces the unresolved ElevenLabs Free-plan rights path for the benchmark-forward local candidate. It records the model-card evidence consulted; it is not legal advice. The project owner must still listen to and approve the complete narration and final video before upload.

@@ -1,6 +1,6 @@
 # Fallback live owner demo script
 
-Target runtime: 2:30–2:45. Hard limit: under three minutes. The current 1:53.30 edited local master already includes the real-world benchmark; use this script only as a live fallback or when recording an owner-narrated replacement.
+Target runtime: 2:30–2:45. Hard limit: under three minutes. The current 2:07.90 edited local master already includes the dated ACTT-1 change and real-world benchmark; use this script only as a live fallback or when recording an owner-narrated replacement.
 
 ## Before recording
 

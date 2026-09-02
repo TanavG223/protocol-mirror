@@ -1,19 +1,15 @@
-Most AI demos ask what an agent can do. Protocol Mirror asks a harder question: what happens when models disagree on consequential evidence?
+In February 2020, ACTT-1 registered a seven-point ordinal scale at day fifteen. The paper reports time to recovery. The registry says that outcome changed on April sixteenth, in version fourteen of twenty-five. Protocol Mirror found that from the live registry—and it cannot decide what the change means.
 
-We stress-tested twenty-four real clinical-trial and publication pairs. The page completed forty-eight out of forty-eight live Web M C P source reads, returning one hundred seventy-two registry outcomes and one hundred six abstract sections.
+This is not a slideshow of invented data. The page opens on real ClinicalTrials.gov and PubMed records. Seven typed Web M C P tools let the agent read the trial, its publication, and the registration history as untrusted evidence.
 
-Then two local models received the same blinded, exact-evidence task. The four-billion-parameter run called every decided no-change case a change. The nine-billion-parameter run missed ninety point nine percent of the decided change cases. Those are run-specific grounding results, not a universal hallucination or clinical-accuracy claim. Their opposite bias is the product argument.
+The agent retrieves the exact original registry span and the paper's results, including stable source locators. It can inspect, cite, and stage a schema-bound proposal—but it has no tool that can accept or reject its own conclusion.
 
-Protocol Mirror turns the page into a typed evidence workspace. The agent can inspect stable outcome identifiers, retrieve exact quotations, stage a structured comparison, explain uncertainty, and move the right checkpoint into view.
+Here, it proposes an uncertain relationship. The evidence stays visible beside the rationale, so the reviewer can inspect the seven-point scale, the recovery result, and the dates instead of trusting a black-box summary.
 
-But there is no agent-callable accept or reject action. A human reviews both source spans and makes the consequential decision here, in the interface.
+The reviewer can reject with a reason. That feedback returns through the audit state, allowing the agent to revise and propose again. The two-way loop improves the work without transferring authority.
 
-After that human decision, the capability surface changes from six tools to seven. The new receipt tool packages only reviewed work, exact evidence locators, and the decision trail. Staged suggestions stay out.
+When the human accepts, the page changes from seven tools to eight. Only then can the agent export a reviewed receipt. The receipt identifies live sources, preserves the history-zero locator, and records the staged, rejected, revised, and accepted events.
 
-The deterministic case keeps the judging flow reliable. Bounded live adapters bring current Clinical Trials dot gov and Pub Med evidence into the same visible workspace without silently turning it into a finding.
+We also tested twenty-four real trial-publication pairs. All forty-eight live source reads returned the requested record with nonempty evidence. Two small local models then failed in opposite directions—one overcalled changes while the other often missed them. These are run-specific grounding results, not clinical validation.
 
-Protocol Mirror is a research-transparency aid, not medical advice, a misconduct detector, or a clinically validated decision system.
-
-The agent investigates, cites, proposes, and packages proof. The human remains accountable for what the evidence means.
-
-AI assembles evidence. A human decides.
+Protocol Mirror gives the agent the investigation, citation, revision, and packaging work. A person remains accountable for the consequential judgment. It is a research-transparency aid—not medical advice, a misconduct detector, or a clinical decision system.

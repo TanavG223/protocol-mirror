@@ -5,7 +5,7 @@ This package contains the complete prepared submission media and copy. It is a h
 ## Start here
 
 1. Play `video/protocol-mirror-submission-demo.mp4` from beginning to end with sound.
-2. Confirm the voice, pronunciation, pacing, benchmark values, transitions, six-to-seven tool change, receipt, and closing frame.
+2. Confirm the voice, pronunciation, pacing, benchmark values, transitions, seven-to-eight tool change, receipt, and closing frame.
 3. If approved, upload `video/protocol-mirror-submission-captions.srt` with the video and use `video/title-card.png` as the thumbnail.
 4. Paste the title and description from `submission/YOUTUBE_METADATA.md`, then watch the processed public YouTube upload with sound and captions.
 5. Use `submission/devpost-submission.md` as the canonical Devpost packet and `submission/OFFICIAL_REQUIREMENTS_SNAPSHOT.md` as the pre-submission checklist.
@@ -24,10 +24,10 @@ This package contains the complete prepared submission media and copy. It is a h
 
 ## Verified local media contract
 
-- Runtime: 113.300 seconds
-- Video: H.264, 1920×1080, constant 60 fps, 6,798 frames
+- Runtime: 127.900 seconds
+- Video: H.264, 1920×1080, constant 60 fps, 7,674 frames
 - Audio: AAC stereo, 48 kHz, measured −16.4 LUFS and −4.2 dBTP
-- Captions: 23 monotonic English cues ending at 113.288 seconds
+- Captions: 24 monotonic English cues ending at 126.460 seconds
 - Continuity: no tested black segment of 0.4 seconds or longer; no tested silence of 1.5 seconds or longer
 - Narration: local Kokoro-82M v1.0 `af_heart`; provenance in `submission/KOKORO_NARRATION_PROVENANCE.md`
 
