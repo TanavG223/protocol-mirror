@@ -2,7 +2,7 @@
 
 const SESSION_KEY = "protocol-mirror.session.v2";
 
-/** Last-resort screen: a broken saved session or a runtime error must never leave a judge on a blank page. */
+/** Last-resort screen: a broken saved session or a runtime error must never leave a visitor on a blank page. */
 export default function WorkspaceError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   const clearAndReload = () => {
     try { sessionStorage.removeItem(SESSION_KEY); } catch { /* nothing to clear */ }

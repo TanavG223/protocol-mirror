@@ -38,7 +38,7 @@ const [readme, packet, pairs, sources, qwen, ornith] = await Promise.all([
   json(paths.ornith),
 ]);
 
-const combinedJudgeCopy = [readme, packet].join("\n");
+const publicCopy = [readme, packet].join("\n");
 const publicApp = "https://protocol-mirror.vercel.app";
 const publicRepo = "https://github.com/TanavG223/protocol-mirror";
 const requiredPacketSections = [
@@ -53,7 +53,7 @@ const requiredPacketSections = [
   "## Known limitations",
 ];
 const scopeSentence = "medical advice, a clinical decision system, or a finding of research misconduct";
-const bannedJudgeClaims = [
+const bannedClaims = [
   ["high-impact", "the Chen et al. sample had no restriction by journal"],
   ["load_trial_pair", "no such tool is registered"],
   ["await_human", "no such tool is registered"],
@@ -78,8 +78,8 @@ requireAll(packet, ["Eight tools are registered", "get_registry_history", "revie
 if (packet.includes("Not submitted yet")) fail(`${paths.packet} must not carry the internal submission-state banner`);
 if (/^- \[[ x]\] /m.test(packet)) fail(`${paths.packet} must not carry the internal readiness checklist`);
 
-for (const [phrase, reason] of bannedJudgeClaims) {
-  if (combinedJudgeCopy.includes(phrase)) fail(`judge-facing copy contains "${phrase}": ${reason}`);
+for (const [phrase, reason] of bannedClaims) {
+  if (publicCopy.includes(phrase)) fail(`public copy contains "${phrase}": ${reason}`);
 }
 
 const currentCopy = [[paths.readme, readme], [paths.packet, packet]];
@@ -90,8 +90,8 @@ for (const [label, content] of currentCopy) {
   }
 }
 
-if (/\b(?:TBD|TODO:|YOUR_[A-Z_]+|INSERT_[A-Z_]+)\b/.test(combinedJudgeCopy)) {
-  fail("judge-facing copy contains an unresolved placeholder");
+if (/\b(?:TBD|TODO:|YOUR_[A-Z_]+|INSERT_[A-Z_]+)\b/.test(publicCopy)) {
+  fail("public copy contains an unresolved placeholder");
 }
 
 if (pairs.selection.includedPairs !== 24 || pairs.cases.length !== 24) fail("benchmark manifest must contain exactly 24 included pairs");
@@ -100,7 +100,7 @@ if (pairs.selection.changed !== 12 || pairs.selection.unchanged !== 12) fail("be
 const sourceSummary = sources.summary;
 if (sourceSummary.pairs !== 24 || sourceSummary.toolCalls !== 48 || sourceSummary.successfulToolCalls !== 48) fail("live-source run must prove 24 pairs and 48/48 tool calls");
 if (sourceSummary.identifierMismatches !== 0 || sourceSummary.sourceUrlMismatches !== 0 || sourceSummary.emptyEvidenceRecords !== 0) fail("live-source run contains a fidelity failure");
-if (sourceSummary.registryOutcomes !== 172 || sourceSummary.publicationAbstractSections !== 106) fail("tracked live-source evidence totals changed; update and review judge copy deliberately");
+if (sourceSummary.registryOutcomes !== 172 || sourceSummary.publicationAbstractSections !== 106) fail("tracked live-source evidence totals changed; update and review reviewers copy deliberately");
 
 for (const [label, run] of [["qwen3:4b", qwen], ["ornith-1.5:9b", ornith]]) {
   if (run.run.model !== label) fail(`unexpected model identity for ${label}`);
@@ -108,14 +108,14 @@ for (const [label, run] of [["qwen3:4b", qwen], ["ornith-1.5:9b", ornith]]) {
   if (run.summary.authorityAttempts !== 0 || run.summary.misconductClaims !== 0) fail(`${label} run violates the recorded authority/claim boundary`);
 }
 
-requireAll(combinedJudgeCopy, [
+requireAll(publicCopy, [
   "24 real NCT/PMID pairs",
   "48/48",
   "172 outcomes",
   "106 abstract sections",
   "qwen3:4b",
   "ornith-1.5:9b",
-], "judge-facing benchmark claims");
+], "public benchmark claims");
 
 requireAll(packet, ["## Demo video"], `${paths.packet} media section`);
 requireAll(packet, ["Google Chrome 152", "No other agent client has been tested.", "origin-trial token"], `${paths.packet} browser-verification boundary`);

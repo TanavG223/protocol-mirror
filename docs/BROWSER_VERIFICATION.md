@@ -93,7 +93,7 @@ On 2026-08-31, the permanent deployment was exercised again from a clean Codex i
 
 These checks cover the documented critical and failure flows; they do not prove the absence of every possible defect or establish clinical validity.
 
-## Local production judge-gap closure
+## Local production gap closure
 
 On 2026-08-31, the post-research release candidate was built and exercised at `http://localhost:4175` in a fresh Codex in-app-browser tab. This is local-candidate evidence, not a claim about the current public deployment.
 

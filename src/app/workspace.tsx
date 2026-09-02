@@ -86,7 +86,7 @@ function Rolling({ value }: { value: number }) {
 
 // The specification exposes WebMCP on document.modelContext; browsers that implemented the
 // earlier draft expose the same interface on navigator.modelContext. Prefer the current
-// location and fall back so a judge on an older WebMCP-capable Chrome still sees the tools.
+// location and fall back so a visitor on an older WebMCP-capable Chrome still sees the tools.
 const getModelContext = () => document.modelContext ?? navigator.modelContext;
 
 type LiveSourceStatus = "idle" | "loading" | "success" | "error";
