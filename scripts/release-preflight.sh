@@ -52,7 +52,7 @@ require_file docs/demo/protocol-mirror-submission-captions.srt
 require_file docs/demo/protocol-mirror-kokoro-source.wav
 require_file docs/demo/protocol-mirror-submission-voiceover.m4a
 require_file docs/demo/KOKORO_NARRATION_PROVENANCE.md
-require_file scripts/render-benchmark-demo.sh
+require_file scripts/render-hd-submission-demo.sh
 require_file scripts/check-demo-media.sh
 require_file scripts/build-submission-bundle.sh
 require_file docs/demo/title-card.png

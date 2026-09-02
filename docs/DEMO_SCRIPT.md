@@ -1,6 +1,6 @@
 # Demo recording plan
 
-The current local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`: a 1:53.30 constant-60-fps benchmark-forward cut with locally generated Kokoro-82M narration. The narration and shot plan are `docs/demo/BENCHMARK_RECUT_NARRATION.txt` and `docs/demo/BENCHMARK_RECUT_STORYBOARD.md`; exact license provenance and generation settings are in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`.
+The current local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`: a 1:53.30, 1920×1080, constant-60-fps benchmark-forward cut with locally generated Kokoro-82M narration. The narration and shot plan are `docs/demo/BENCHMARK_RECUT_NARRATION.txt` and `docs/demo/BENCHMARK_RECUT_STORYBOARD.md`; exact license provenance and generation settings are in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`.
 
 The plan below and `docs/FINAL_OWNER_DEMO_SCRIPT.md` remain reproducible live-recording fallbacks. No video is upload-approved until the project owner completes the full watch with sound.
 

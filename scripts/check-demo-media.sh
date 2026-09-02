@@ -30,7 +30,7 @@ sha256() {
   fi
 }
 
-[[ "$(sha256 "$video")" == "c39f2720d788b7ae60c7553174bf003a92af6c971219986d41aa4126a5a9d10f" ]] || fail "video checksum changed"
+[[ "$(sha256 "$video")" == "237762f907b27f9be1e6a4bb88f94f483f5f2190903c3984371839f8583a89ff" ]] || fail "video checksum changed"
 [[ "$(sha256 "$voice")" == "4fc5bd5469c88f3f93a028fd974e72f246a004a6ee93c79659d164a04012d12a" ]] || fail "processed narration checksum changed"
 [[ "$(sha256 "$source_voice")" == "feb90ecf25cd785f78f40faee612947e79a95aa5d3c6288ea08daf607fa730e0" ]] || fail "source narration checksum changed"
 [[ "$(sha256 "$captions")" == "acdac92ee20705ec4b1d9ce584c1c204e688f802ebc48606e885232846a7f4e4" ]] || fail "caption checksum changed"
@@ -39,7 +39,7 @@ duration="$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1
 awk -v duration="$duration" 'BEGIN { exit !(duration >= 113.29 && duration <= 113.31) }' || fail "duration is $duration instead of 113.30 seconds"
 
 video_contract="$(ffprobe -v error -select_streams v:0 -count_frames -show_entries stream=codec_name,width,height,avg_frame_rate,nb_read_frames -of csv=p=0 "$video")"
-[[ "$video_contract" == "h264,1280,720,60/1,6798" ]] || fail "unexpected video contract: $video_contract"
+[[ "$video_contract" == "h264,1920,1080,60/1,6798" ]] || fail "unexpected video contract: $video_contract"
 
 audio_contract="$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of csv=p=0 "$video")"
 [[ "$audio_contract" == "aac,48000,2" ]] || fail "unexpected audio contract: $audio_contract"

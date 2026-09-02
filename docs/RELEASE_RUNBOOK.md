@@ -7,9 +7,9 @@ This runbook starts from a clean, CI-verified `main` branch.
 - Permanent application: https://protocol-mirror.vercel.app
 - Public MIT repository: https://github.com/TanavG223/protocol-mirror
 - Permanent WebMCP workflow: verified end to end in the Codex in-app browser
-- Benchmark-forward local candidate: `docs/demo/protocol-mirror-submission-demo.mp4`; 113.30 seconds, 1280×720 H.264 at constant 60 fps, rights-documented Kokoro-82M narration
+- Benchmark-forward local candidate: `docs/demo/protocol-mirror-submission-demo.mp4`; 113.30 seconds, 1920×1080 H.264 at constant 60 fps, rights-documented Kokoro-82M narration
 - Candidate verification: 6,798 frames; no tested black/silence discontinuity; no variable cadence; −16.4 LUFS and −4.2 dBTP; owner watch-and-approve still pending
-- Reproducible edit: `scripts/render-benchmark-demo.sh`; release mode requires an explicit rights-cleared `NARRATION_AUDIO`
+- Reproducible HD edit: `scripts/render-hd-submission-demo.sh`; release mode requires an explicit rights-cleared `NARRATION_AUDIO`
 - Upload thumbnail: `docs/demo/title-card.png` (1280×720)
 - Still pending by owner choice: public YouTube upload, explicit rules acknowledgment, Devpost project write, and final `yes, submit`
 
@@ -43,7 +43,7 @@ Record the URL and verification date in `README.md`, `docs/SUBMISSION_DRAFT.md`,
 
 1. Review `docs/demo/KOKORO_NARRATION_PROVENANCE.md`; the current candidate replaces the unresolved ElevenLabs Free-plan path with locally generated Apache-2.0 Kokoro-82M narration.
 2. Watch the complete `docs/demo/protocol-mirror-submission-demo.mp4` local master with sound and confirm the narration, pacing, benchmark panel, overlays, and visible six-to-seven tool sequence.
-3. If the owner requests a voice or timing change, regenerate from `docs/demo/BENCHMARK_RECUT_NARRATION.txt` and render with `scripts/render-benchmark-demo.sh`, passing the approved track as `NARRATION_AUDIO`.
+3. If the owner requests a voice or timing change, regenerate from `docs/demo/BENCHMARK_RECUT_NARRATION.txt` and render with `scripts/render-hd-submission-demo.sh`, passing the approved track as `NARRATION_AUDIO`.
 4. Re-run the codec, frame-cadence, black-segment, silence, loudness, caption, and checksum checks after any change; update `docs/YOUTUBE_METADATA.md` and `docs/FINAL_RELEASE_MANIFEST.md`.
 5. Do not upload until the project owner explicitly approves the complete master with sound.
 6. Use the paste-ready metadata in `docs/YOUTUBE_METADATA.md` and confirm the processed runtime remains under three minutes with clear narration.

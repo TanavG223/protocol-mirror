@@ -4,13 +4,13 @@
 
 - File: `docs/demo/protocol-mirror-submission-demo.mp4`
 - Status: **do not upload** until the project owner watches and explicitly approves the complete master with sound
-- SHA-256: `c39f2720d788b7ae60c7553174bf003a92af6c971219986d41aa4126a5a9d10f`
+- SHA-256: `237762f907b27f9be1e6a4bb88f94f483f5f2190903c3984371839f8583a89ff`
 - Duration: 113.300000 seconds
-- Video: H.264, 1280×720, constant 60 fps, 6,798 frames
+- Video: H.264, 1920×1080, constant 60 fps, 6,798 frames
 - Audio: AAC stereo, 48 kHz, integrated −16.4 LUFS, true peak −4.2 dBTP
 - Narration: locally generated Kokoro-82M v1.0 `af_heart`; model-card license provenance and exact settings in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`
 - Music: none
-- File size: 35,060,699 bytes
+- File size: 104,644,963 bytes
 - Automated continuity checks: no black segment of 0.4 seconds or longer; no silence of 1.5 seconds or longer below −40 dB; no variable-frame-rate cadence
 - Thumbnail SHA-256: `f2c30941c47ae9e920933a7e35a1920165f8fa8224cec63ba2a303b26fa4a7bf`
 

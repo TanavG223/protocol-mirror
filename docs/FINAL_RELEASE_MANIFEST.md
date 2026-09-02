@@ -1,6 +1,6 @@
 # Final release manifest
 
-Updated on 2026-09-01 America/New_York after rendering and technically verifying the benchmark-forward 1:53.30 candidate with locally generated Kokoro-82M narration. The exact current release candidate is always the commit containing this manifest and must be confirmed by the `COMMIT_SHA` printed by `npm run preflight:product`; the manifest does not embed its own changing commit hash. The model-card license provenance is documented, but this is not evidence of owner editorial approval, a Devpost entry, or a YouTube upload.
+Updated on 2026-09-01 America/New_York after rendering and technically verifying the 1920×1080 benchmark-forward 1:53.30 candidate with locally generated Kokoro-82M narration. The exact current release candidate is always the commit containing this manifest and must be confirmed by the `COMMIT_SHA` printed by `npm run preflight:product`; the manifest does not embed its own changing commit hash. The model-card license provenance is documented, but this is not evidence of owner editorial approval, a Devpost entry, or a YouTube upload.
 
 ## Authoritative release references
 
@@ -34,7 +34,7 @@ Updated on 2026-09-01 America/New_York after rendering and technically verifying
 
 | Artifact | SHA-256 | Verified properties |
 | --- | --- | --- |
-| `docs/demo/protocol-mirror-submission-demo.mp4` | `c39f2720d788b7ae60c7553174bf003a92af6c971219986d41aa4126a5a9d10f` | 113.300000 seconds; 1280×720; H.264; constant 60 fps; 6,798 frames; stereo AAC at 48 kHz; benchmark-forward candidate |
+| `docs/demo/protocol-mirror-submission-demo.mp4` | `237762f907b27f9be1e6a4bb88f94f483f5f2190903c3984371839f8583a89ff` | 113.300000 seconds; 1920×1080; H.264; constant 60 fps; 6,798 frames; stereo AAC at 48 kHz; benchmark-forward candidate |
 | `docs/demo/protocol-mirror-submission-voiceover.m4a` | `4fc5bd5469c88f3f93a028fd974e72f246a004a6ee93c79659d164a04012d12a` | processed Kokoro-82M `af_heart` narration; −16.4 LUFS; −4.2 dBTP; stereo AAC at 48 kHz |
 | `docs/demo/protocol-mirror-kokoro-source.wav` | `feb90ecf25cd785f78f40faee612947e79a95aa5d3c6288ea08daf607fa730e0` | 124.050-second local Kokoro-82M v1.0 source; 24 kHz mono PCM; generation settings and Apache-2.0 model-card evidence recorded separately |
 | `docs/demo/protocol-mirror-submission-captions.srt` | `acdac92ee20705ec4b1d9ce584c1c204e688f802ebc48606e885232846a7f4e4` | 23 monotonic English cues; final cue ends at 113.288 seconds; owner must inspect timing against the processed upload |

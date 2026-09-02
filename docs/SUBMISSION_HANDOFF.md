@@ -25,7 +25,7 @@ This package contains the complete prepared submission media and copy. It is a h
 ## Verified local media contract
 
 - Runtime: 113.300 seconds
-- Video: H.264, 1280×720, constant 60 fps, 6,798 frames
+- Video: H.264, 1920×1080, constant 60 fps, 6,798 frames
 - Audio: AAC stereo, 48 kHz, measured −16.4 LUFS and −4.2 dBTP
 - Captions: 23 monotonic English cues ending at 113.288 seconds
 - Continuity: no tested black segment of 0.4 seconds or longer; no tested silence of 1.5 seconds or longer
