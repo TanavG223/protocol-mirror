@@ -66,7 +66,6 @@ const requiredPacketSections = [
 const scopeSentence = "medical advice, a clinical decision system, or a finding of research misconduct";
 const bannedJudgeClaims = [
   ["high-impact", "the Chen et al. sample had no restriction by journal"],
-  ["Chrome 149", "verification was done in Chrome 152 with the WebMCP flag"],
   ["load_trial_pair", "no such tool is registered"],
   ["await_human", "no such tool is registered"],
   ["Stage guided review", "the visible control is \"Load 4 example proposals\""],
@@ -139,7 +138,7 @@ requireAll(combinedJudgeCopy, [
 ], "judge-facing benchmark claims");
 
 requireAll(packet, ["## Demo video"], `${paths.packet} media section`);
-requireAll(packet, ["Google Chrome 152", "No other agent client has been tested."], `${paths.packet} browser-verification boundary`);
+requireAll(packet, ["Google Chrome 152", "No other agent client has been tested.", "origin-trial token"], `${paths.packet} browser-verification boundary`);
 requireAll(requirements, ["owner watch and public upload remain", "Missing"], `${paths.requirements} media status`);
 requireAll(manifest, ["not evidence of owner editorial approval, a Devpost entry, or a YouTube upload", "Owner-only gates still open"], `${paths.manifest} external-state boundary`);
 

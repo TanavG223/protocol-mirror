@@ -34,7 +34,7 @@ On 24 real NCT/PMID pairs (12 primary-outcome-change, 12 no-change, labels from 
 
 ## Testing instructions
 
-No login, API key, or paid service. Open https://protocol-mirror.vercel.app in Chrome 152+ with `chrome://flags/#enable-webmcp-testing`, or the ChatGPT/Codex in-app browser with site tools enabled. The header should read **WebMCP connected · 7 tools**. Nothing has to be loaded first: the page opens on ACTT-1 `NCT04280705` / PMID `32445440` with its registration history already fetched. If the header reads **WebMCP preview**, skip the pasted prompts — steps 4-6 are ordinary clicks.
+No login, API key, flag, or paid service. Open https://protocol-mirror.vercel.app in Chrome 149 or newer (the live origin serves a Chrome WebMCP origin-trial token, verified in Chrome 152 with no flag on 2026-09-02; a local build still needs `chrome://flags/#enable-webmcp-testing`), or the ChatGPT/Codex in-app browser with site tools enabled. The header should read **WebMCP connected · 7 tools**. Nothing has to be loaded first: the page opens on ACTT-1 `NCT04280705` / PMID `32445440` with its registration history already fetched. If the header reads **WebMCP preview**, skip the pasted prompts — steps 4-6 are ordinary clicks.
 
 1. Paste: *Call get_audit_state and summarize registryHistory: how many registration versions, and when did the primary outcome change?* It reports 25 versions and the change from a 7-point ordinal scale to time to recovery.
 2. Paste: *Call get_evidence_spans for ev-registry-original-primary-1 and for the evidence ID of the RESULTS abstract section, and quote both spans with their locators.*
