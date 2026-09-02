@@ -9,12 +9,12 @@
 //   quotes spans, stages a proposal, requests review → human clicks Accept → 7 tools →
 //   export_review_receipt reports live_sources → human clicks Undo → 6 tools.
 //
-// Usage: node scripts/webmcp-smoke.mjs [--url=http://127.0.0.1:4180] [--chrome=/path/to/chrome]
+// Usage: node scripts/webmcp-smoke.mjs [--url=http://127.0.0.1:4180] [--chrome=/path/to/chrome] [--screenshots=dir]
 // Requires Google Chrome 152 or newer. No npm dependency: it speaks the DevTools protocol over
 // Node's built-in WebSocket.
 
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -93,6 +93,17 @@ async function waitFor(expression, description, timeoutMs = 15000) {
   fail(`Timed out waiting for ${description}`);
 }
 
+const shotDir = args.screenshots;
+if (shotDir) mkdirSync(shotDir, { recursive: true });
+async function snap(name, viewportHeight = 900) {
+  if (!shotDir) return;
+  await send("Emulation.setDeviceMetricsOverride", { width: 1280, height: viewportHeight, deviceScaleFactor: 1, mobile: false }, session);
+  await sleep(250);
+  const { data } = await send("Page.captureScreenshot", { format: "png" }, session);
+  writeFileSync(join(shotDir, `${name}.png`), Buffer.from(data, "base64"));
+  log(`screenshot ${name}.png`);
+}
+
 // The page exposes its tools; this script calls them exactly as an in-page agent would.
 const agent = `
   (async () => {
@@ -150,6 +161,8 @@ try {
   const expectedInitial = ["get_audit_state", "get_evidence_spans", "get_live_clinical_trial", "get_live_pubmed_article", "propose_outcome_mapping", "request_human_review"];
   if (JSON.stringify(names) !== JSON.stringify(expectedInitial)) fail(`expected the six initial tools, got ${names.join(", ")}`);
   if (!(await evaluate(badgeText)).includes("6 tools")) fail("badge does not report 6 tools");
+  await evaluate("window.scrollTo(0, 0)");
+  await snap("01-hero-connected", 720);
 
   const trial = await evaluate(`window.__pm.call("get_live_clinical_trial", { nctId: ${JSON.stringify(nctId)} })`);
   const article = await evaluate(`window.__pm.call("get_live_pubmed_article", { pmid: ${JSON.stringify(pmid)} })`);
@@ -163,6 +176,8 @@ try {
   await waitFor(clickText("Review this pair"), "the Review this pair button");
   await waitFor(`[...document.querySelectorAll('section[aria-labelledby="registered-title"] .outcome-list h4')].some((node) => node.textContent.includes("Time to Recovery"))`, "the real registry outcomes to render");
   log("human promoted the live pair; registry column shows the real primary outcome");
+  await evaluate(`document.getElementById("workspace-title")?.scrollIntoView({ block: "start" })`);
+  await snap("02-live-pair-comparison", 900);
 
   const state = await evaluate(`window.__pm.call("get_audit_state")`);
   if (state.activeCase !== "live" || state.pair.nctId !== nctId) fail("get_audit_state does not report the live pair as the active case");
@@ -183,6 +198,7 @@ try {
   if (review.decisionAuthority !== "human_reviewer_only") fail("request_human_review did not return human_reviewer_only");
   if ((await evaluate(`window.__pm.refresh()`)).includes("export_review_receipt")) fail("the receipt tool must not exist before a human decision");
   log(`proposal ${proposal.mapping.id} staged and focused; no accept/reject tool exists for the agent`);
+  await snap("03-review-queue-live-proposal", 900);
 
   await waitFor(`(() => { const accept = document.querySelector(".review-card.active .review-actions .accept"); if (!accept || accept.disabled) return false; accept.click(); return true; })()`, "an enabled Accept button on the active proposal");
   await waitFor(`${badgeText}.includes("7 tools")`, "the badge to report 7 tools");
@@ -192,6 +208,8 @@ try {
   if (receipt.generatedFrom !== "live_sources") fail(`receipt generatedFrom is ${receipt.generatedFrom}`);
   if (receipt.reviewedMappings.length !== 1 || receipt.evidence.length !== 2) fail("receipt should contain exactly the accepted mapping and its two spans");
   log(`receipt ok: ${receipt.generatedFrom}; locators ${receipt.evidence.map((span) => span.locator).join(" | ")}`);
+  await evaluate("window.scrollTo(0, 0)");
+  await snap("04-seven-tools-after-decision", 720);
 
   await waitFor(clickText("Undo last decision"), "the Undo button");
   await waitFor(`${badgeText}.includes("6 tools")`, "the badge to return to 6 tools");
