@@ -47,6 +47,9 @@ export interface TrialPair {
     complete?: boolean;
     comparedVersions?: number[];
     unreadVersions?: number[];
+    /** How many versions edited the Outcome Measures module, and how many of those were compared. */
+    outcomeModuleVersionCount?: number;
+    comparedOutcomeModuleVersions?: number;
     /** How many of `changes` are certainly dated before the publication; null when PubMed gives no full date. */
     changesBeforePublication?: number | null;
     /** Inexact changes whose window straddles the publication date, so they may or may not predate it. */

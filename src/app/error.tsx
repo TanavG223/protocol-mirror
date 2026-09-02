@@ -6,7 +6,7 @@ const SESSION_KEY = "protocol-mirror.session.v2";
 export default function WorkspaceError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   const clearAndReload = () => {
     try { sessionStorage.removeItem(SESSION_KEY); } catch { /* nothing to clear */ }
-    window.location.assign("/");
+    window.location.reload();
   };
   return (
     <main className="error-shell">

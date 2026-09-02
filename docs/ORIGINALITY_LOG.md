@@ -25,7 +25,7 @@ No source code from another hackathon entry was copied. The fictional demonstrat
 Claims allowed now:
 
 - The production build compiles.
-- The current deterministic contract suite contains 70 passing tests, including registration-history parsing, the word-level span difference, the real-world grounding scorer, and tracked-artifact integrity.
+- The current deterministic contract suite contains 75 passing tests, including registration-history parsing, the word-level span difference, the real-world grounding scorer, and tracked-artifact integrity.
 - A reproducible 24-pair benchmark records 48 successful live WebMCP source reads and two blinded local-model runs with opposite directional biases.
 - The page registers WebMCP tools when `document.modelContext` is available, falling back to `navigator.modelContext`; the Codex in-app browser exposed the expected initial tool surface, both live adapters returned public source records, and the reviewed decision exposed the gated receipt tool during verification of the earlier flow on 2026-08-30/31.
 - A real ClinicalTrials.gov/PubMed pair can be promoted to the reviewable case from either the agent side or a human-side loader; `scripts/webmcp-smoke.mjs` drove that full loop through `document.modelContext.getTools()`/`executeTool()` in Google Chrome 152.0.7977.65 with `--enable-features=WebMCPTesting` on 2026-09-01, against both a local production build and the public deployment.

@@ -27,18 +27,35 @@ const CURATED_PAIRS = [
   { label: "RECOVERY · dexamethasone", nctId: "NCT04381936", pmid: "32678530" },
 ];
 
-function Icon({ name }: { name: "spark" | "check" | "arrow" | "quote" | "undo" | "download" }) {
+function Icon({ name }: { name: "spark" | "check" | "arrow" | "quote" | "undo" | "download" | "lock" }) {
   const paths = {
     spark: <path d="M12 2l1.25 5.2L18 9l-4.75 1.8L12 16l-1.25-5.2L6 9l4.75-1.8L12 2ZM6 13l.75 3L10 17l-3.25 1L6 21l-.75-3L2 17l3.25-1L6 13Z" />,
     check: <path d="m5 12 4 4L19 6" />, arrow: <path d="M5 12h14m-5-5 5 5-5 5" />,
     quote: <path d="M7 8h4v4H7v4H3v-4a4 4 0 0 1 4-4Zm10 0h4v4h-4v4h-4v-4a4 4 0 0 1 4-4Z" />,
     undo: <path d="M9 7 4 12l5 5M5 12h8a6 6 0 1 1 0 12" />,
     download: <path d="M12 3v12m-4-4 4 4 4-4M5 20h14" />,
+    lock: <path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z" />,
   };
   return <svg aria-hidden="true" viewBox="0 0 24 24">{paths[name]}</svg>;
 }
 
 const outcomeById = (id: string | null, outcomes: Outcome[]) => outcomes.find((item) => item.id === id);
+
+/** Renders a number; when it changes, replays a short roll (transform/opacity only, skipped under reduced motion). */
+function Rolling({ value }: { value: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const previous = useRef(value);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || previous.current === value) return;
+    previous.current = value;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    node.removeAttribute("data-roll");
+    void node.offsetWidth;
+    node.setAttribute("data-roll", "");
+  }, [value]);
+  return <span className="num-roll" ref={ref}>{value}</span>;
+}
 
 // The specification exposes WebMCP on document.modelContext; browsers that implemented the
 // earlier draft expose the same interface on navigator.modelContext. Prefer the current
@@ -85,7 +102,12 @@ const changeText = (change: HistoryChange) => `${change.exact === false && chang
 const timeFrameText = (edits?: Array<{ version: number; date: string }>) => edits && edits.length > 0 ? ` Time frames were edited without changing the measures in ${edits.map((edit) => `v${edit.version} (${edit.date})`).join(", ")}.` : "";
 const predateText = (total: number, before: number, possible: number, publishedOn: string) => possible > 0
   ? ` At least ${before} of ${total} changes predate the publication (${publishedOn}); ${possible} more ${possible === 1 ? "falls" : "fall"} in a window that straddles it.`
-  : ` ${before} of ${total} ${before === 1 ? "change predates" : "changes predate"} the publication (${publishedOn}).`;
+  : before === 0
+    ? ` None of the ${total === 1 ? "change predates" : `${total} changes predate`} the publication (${publishedOn}); the registered set changed only afterwards, so the paper cannot have been affected by ${total === 1 ? "it" : "them"}.`
+    : ` ${before} of ${total} ${total === 1 ? "change" : "changes"} ${before === 1 ? "predates" : "predate"} the publication (${publishedOn}).`;
+/** Changes that could have affected the paper: dated before it, or in a window that straddles it. */
+const relevantChanges = (history: { changes: unknown[]; changesBeforePublication?: number | null; changesPossiblyBeforePublication?: number; publishedOn?: string | null }) =>
+  typeof history.changesBeforePublication === "number" && history.publishedOn ? history.changesBeforePublication + (history.changesPossiblyBeforePublication ?? 0) : history.changes.length;
 const countText = (count: number, complete: boolean) => `${count === 1 ? "once" : `${count} times`}${complete ? "" : " or more"}`;
 
 function summarizeArgs(name: string, input: Record<string, unknown>) {
@@ -228,6 +250,7 @@ export default function Workspace() {
       // A new proposal takes focus unless the reviewer is mid-rejection; then it waits in the queue.
       if (!rejectingRef.current) { setActiveId(mapping.id); setSelectedOutcomeId(null); }
     });
+    setDecisionNotice(`${LABELS[mapping.discrepancy]} proposal staged for human review. ${rejectingRef.current ? "It is waiting in the queue while you finish the current rejection." : "It is ready for inspection."}`);
     return mapping;
   }, [event]);
 
@@ -607,13 +630,13 @@ export default function Workspace() {
     }}>Skip to comparison workspace</a>
     <header className="site-header">
       <a className="brand" href="#top"><span className="brand-mark" aria-hidden="true"><span>P</span><span>M</span></span><span>Protocol Mirror</span></a>
-      <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? `WebMCP connected · ${reviewedWorkAvailable ? 8 : 7} tools` : "WebMCP preview"}</span></div>
+      <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" /><span className="badge-label">{webMcp === "connected" ? <>WebMCP connected · <Rolling value={reviewedWorkAvailable ? 8 : 7} /> tools</> : "WebMCP preview"}</span></span></div>
     </header>
     <main id="top">
       <section className="case-header" aria-labelledby="case-title">
         <div className="eyebrow case-reveal"><span>Clinical-trial outcome check</span><span aria-hidden="true">/</span><span>ClinicalTrials.gov registry vs PubMed publication</span></div>
         <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>Did the trial publish</span><span>what it registered?</span></h1><p className="case-subtitle">Load a real ClinicalTrials.gov record and its PubMed report. Your agent quotes the exact registered and reported text through WebMCP and stages each match or discrepancy for you. AI assembles evidence. A human decides.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={showExamples} disabled={(reviewedWorkAvailable && live) || loaderBusy} title={loaderBusy ? "Wait for the real trial to finish loading" : reviewedWorkAvailable && live ? "Undo the reviewed decisions before switching to the demonstration case" : undefined}><Icon name="spark" /> {live ? "See 4 example proposals (demo case)" : "Load 4 example proposals"}</button><p>{webMcp === "connected"
-          ? <><strong>{reviewedWorkAvailable ? "8 tools" : "7 tools"}</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Agent export unlocked" : "Your decision unlocks export"}</>
+          ? <><strong><Rolling value={reviewedWorkAvailable ? 8 : 7} /> tools</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Agent export unlocked" : "Your decision unlocks export"}</>
           : <><strong>WebMCP preview</strong><span aria-hidden="true">→</span>Tools appear when an agent connects</>}</p>{webMcp !== "connected" && <small className="preview-hint">No agent is connected. Open this page in ChatGPT&apos;s in-app browser{ORIGIN_TRIAL_ACTIVE ? <>, or in Chrome 149+ at {WEBMCP_ORIGIN_TRIAL_ORIGIN.replace("https://", "")} (that origin carries a WebMCP origin-trial token, so no flag is needed)</> : <>, or in Chrome 152+ with <code>chrome://flags/#enable-webmcp-testing</code></>}. Loading a real trial and reviewing by hand work without one.</small>}</div></div>
         <ol className="agent-rail case-reveal" aria-label="How a review runs">
           <li><span>01</span><strong>Agent reads both records</strong><small>Exact registry and abstract text, flagged as untrusted</small></li>
@@ -626,7 +649,7 @@ export default function Workspace() {
           <div><span>Registration</span><strong>{live ? <a href={activePair.registryUrl} target="_blank" rel="noreferrer">{activePair.nctId}</a> : activePair.nctId}</strong><small>{live ? `Retrieved ${activePair.registryUpdated}` : `Updated ${activePair.registryUpdated}`}</small></div>
           <div><span>Publication</span><strong>{live ? <a href={activePair.publicationUrl} target="_blank" rel="noreferrer">PMID {activePair.pmid}</a> : activePair.pmid}</strong><small>{live && !activePair.publishedOn ? `Retrieved ${activePair.publicationDate}` : `Published ${activePair.publicationDate}`}</small></div>
           <div><span>Sponsor</span><strong>{activePair.sponsor}</strong><small>{activePair.phase}</small></div>
-          <div className="review-score"><span>Review progress</span><strong>{reviewed.length}<em> / {audit.mappings.length || (live ? 0 : 4)}</em></strong><small>{staged.length} awaiting a human decision</small></div>
+          <div className="review-score"><span>Review progress</span><strong><Rolling value={reviewed.length} /><em> / {audit.mappings.length || (live ? 0 : 4)}</em></strong><small>{staged.length} awaiting a human decision</small></div>
         </div>
         <section className="case-loader case-reveal" aria-labelledby="case-loader-title">
           <div className="case-loader-heading"><div><p className="section-kicker">Load a real trial</p><h2 id="case-loader-title">Review a real registry-to-publication pair.</h2></div><p>The same bounded ClinicalTrials.gov and PubMed readers the agent uses. Publication text arrives as abstract sections, not extracted outcomes; every proposal still waits for your decision.</p></div>
@@ -647,7 +670,7 @@ export default function Workspace() {
             <LiveTrialCard record={liveTrial} status={liveTrialStatus} error={liveTrialError} />
             <LiveArticleCard record={liveArticle} status={liveArticleStatus} error={liveArticleError} />
           </div>
-          <RegistryHistoryStrip record={liveHistory} status={liveHistoryStatus} error={liveHistoryError} />
+          <RegistryHistoryStrip record={liveHistory} status={liveHistoryStatus} error={liveHistoryError} publishedOn={liveArticle?.publishedOn ?? null} />
           {liveIntakeReady && !liveHistory && liveHistoryStatus === "idle" && <p className="history-hint">Tip: ask the agent to call <code>get_registry_history</code> before reviewing so the original registered outcomes are included, or load the pair from the form above, which fetches the history automatically.</p>}
           {liveIntakeReady && <div className="intake-actions">
             {liveIntakeIsActive
@@ -687,7 +710,7 @@ export default function Workspace() {
       <section className="activity-log" aria-labelledby="activity-title">
         <div className="activity-heading"><div><p className="section-kicker">This session</p><h2 id="activity-title">What the agent called, what you decided.</h2><p className="muted">Kept in this browser tab only, so a reload does not lose the case. The receipt tool stays locked until your first decision.</p></div><button type="button" className="text-button" onClick={clearSession}><Icon name="undo" /> Clear session</button></div>
         <ul className="tool-roster" aria-label="WebMCP tools on this page">
-          {TOOL_ROSTER.map((tool) => { const locked = Boolean(tool.gated) && !reviewedWorkAvailable; return <li key={tool.name} className={`tool-chip ${locked ? "locked" : ""} ${tool.readOnly ? "read-only" : "mutating"}`}><code>{tool.name}</code><small>{locked ? "locked until you decide" : tool.readOnly ? "read-only" : tool.name === "request_human_review" ? "focuses only" : "stages only"}</small></li>; })}
+          {TOOL_ROSTER.map((tool) => { const locked = Boolean(tool.gated) && !reviewedWorkAvailable; return <li key={tool.name} data-tool={tool.name} className={`tool-chip ${locked ? "locked" : ""} ${tool.readOnly ? "read-only" : "mutating"}`}><code>{tool.name}</code><small>{locked ? <><Icon name="lock" />locked until you decide</> : tool.readOnly ? "read-only" : tool.name === "request_human_review" ? "focuses only" : "stages only"}</small></li>; })}
         </ul>
         {activity.length === 0
           ? <p className="activity-empty">No tool calls yet this session. Ask your agent to call <code>get_audit_state</code>, or load a real pair above.</p>
@@ -717,15 +740,19 @@ function LiveArticleCard({ record, status, error }: { record: LivePubMedRecord |
   return <article className="live-source-card"><span>PubMed · retrieved</span><h3>{record.title}</h3><p><strong>PMID {record.pmid}</strong> · {record.abstractSections.length} abstract sections · {record.journal}</p><ul>{record.abstractSections.slice(0, 3).map((section) => <li key={section.id}><span>section</span>{section.label}</li>)}</ul><small>{record.limitation}</small><a href={record.sourceUrl} target="_blank" rel="noreferrer">Open exact article record <Icon name="arrow" /></a></article>;
 }
 
-function RegistryHistoryStrip({ record, status, error }: { record: LiveRegistryHistory | null; status: LiveSourceStatus; error: string | null }) {
+function RegistryHistoryStrip({ record, status, error, publishedOn }: { record: LiveRegistryHistory | null; status: LiveSourceStatus; error: string | null; publishedOn?: string | null }) {
   if (status === "idle") return null;
   if (status === "error") return <p className="history-strip error" role="alert"><strong>Registration history unavailable.</strong> {error} The current registry record is still reviewable.</p>;
   if (!record) return <p className="history-strip pending" aria-busy="true">Reading the registration versions…</p>;
   const first = record.primaryOutcomeChanged ? record.firstPrimaryChange : null;
-  return <div className={`history-strip ${first ? "changed" : ""}`}>
+  const fullDate = publishedOn && /^\d{4}-\d{2}-\d{2}$/.test(publishedOn) ? publishedOn : null;
+  const before = fullDate ? record.changes.filter((change) => change.date < fullDate).length : null;
+  const possible = fullDate ? record.changes.filter((change) => change.date >= fullDate && !change.exact && change.after.date < fullDate).length : 0;
+  const alarming = Boolean(first) && (before === null || before + possible > 0);
+  return <div className={`history-strip ${alarming ? "changed" : first ? "settled" : ""}`}>
     <span>ClinicalTrials.gov · {record.nctId} · registration history · {record.totalVersions} versions{record.complete ? "" : ` · ${record.comparedVersions.length} compared`}</span>
     {first
-      ? <p><strong>The registered primary outcome set changed {countText(record.changes.length, record.complete)}.</strong> {first.from.length === 0 ? `No primary outcome was listed when first registered (${record.original.date}).` : `First registered ${record.original.date}: “${listMeasures(first.from)}”.`} {record.changes.map(changeText).join("; ")}.{timeFrameText(record.timeFrameEdits)}{first.from.length === 0 ? "" : " When this pair is reviewed, the original entry is included so the agent can pair it against the publication."}</p>
+      ? <p><strong>The registered primary outcome set changed {countText(record.changes.length, record.complete)}.</strong>{fullDate && before !== null ? predateText(record.changes.length, before, possible, fullDate) : ""} {first.from.length === 0 ? `No primary outcome was listed when first registered (${record.original.date}).` : `First registered ${record.original.date}: “${listMeasures(first.from)}”.`} {record.changes.map(changeText).join("; ")}.{timeFrameText(record.timeFrameEdits)}{first.from.length === 0 ? "" : " When this pair is reviewed, the original entry is included so the agent can pair it against the publication."}</p>
       : <p><strong>The primary outcome measures did not change</strong> across the {record.complete ? record.totalVersions : `${record.comparedVersions.length} compared`} versions (first registered {record.original.date}, latest {record.latestVersion.date}).{timeFrameText(record.timeFrameEdits)}</p>}
     <small>{record.limitation} <a href={record.sourceUrl} target="_blank" rel="noreferrer">Open the registry history <Icon name="arrow" /></a></small>
   </div>;
@@ -736,7 +763,10 @@ function RegistryHistoryNote({ history }: { history: NonNullable<TrialPair["regi
   const complete = history.complete !== false;
   const compared = history.comparedVersions?.length ?? history.totalVersions;
   const before = history.changesBeforePublication;
-  return <p className={`registry-history-note ${first ? "changed" : ""}`}>
+  const alarming = Boolean(first) && relevantChanges(history) > 0;
+  const outcomeVersions = history.outcomeModuleVersionCount ?? null;
+  const comparedOutcomeVersions = history.comparedOutcomeModuleVersions ?? null;
+  return <p className={`registry-history-note ${alarming ? "changed" : first ? "settled" : ""}`}>
     <strong>{first
       ? `The registered primary outcome set changed ${countText(history.changes.length, complete)} across ${history.totalVersions} registration versions.`
       : `Primary outcome measures unchanged across ${complete ? "" : `the ${compared} compared of `}${history.totalVersions} registration versions.`}</strong>
@@ -747,7 +777,7 @@ function RegistryHistoryNote({ history }: { history: NonNullable<TrialPair["regi
         ? `No primary outcome was listed when first registered (${history.originalDate}); primary outcomes first appear in v${first.version} (${first.date}).`
         : `First registered ${history.originalDate}: “${listMeasures(first.from)}”. ${history.changes.map(changeText).join("; ")}.${timeFrameText(history.timeFrameEdits)} The original entry is listed first below so it can be paired against the publication.`
       : `First registered ${history.originalDate}; latest version ${history.latest.version} on ${history.latest.date}.${timeFrameText(history.timeFrameEdits)}`}
-    {complete ? "" : ` ${compared} of ${history.totalVersions} versions compared${history.unreadVersions?.length ? `; version${history.unreadVersions.length === 1 ? "" : "s"} ${history.unreadVersions.join(", ")} could not be read` : ""}.`}
+    {complete ? "" : ` ${outcomeVersions !== null && comparedOutcomeVersions !== null ? `${comparedOutcomeVersions} of the ${outcomeVersions} versions that edited the outcome measures were compared (${compared} of ${history.totalVersions} versions in all)` : `${compared} of ${history.totalVersions} versions compared`}${history.unreadVersions?.length ? `; version${history.unreadVersions.length === 1 ? "" : "s"} ${history.unreadVersions.join(", ")} could not be read` : ""}.`}
     {" "}<a href={history.sourceUrl} target="_blank" rel="noreferrer">Open registry history</a>
   </p>;
 }

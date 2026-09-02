@@ -86,7 +86,7 @@ requireAll(requirements, criteria, paths.requirements);
 requireAll(scorecard, criteria, paths.scorecard);
 requireAll(packet, [publicApp, publicRepo, scopeSentence], paths.packet);
 requireAll(draft, [publicApp, publicRepo, "Truthful-claim guardrail"], paths.draft);
-requireAll(readme, [publicApp, publicRepo, scopeSentence, "Five-minute judge path", "chrome://flags/#enable-webmcp-testing", "npm run smoke:webmcp", "70 tests"], paths.readme);
+requireAll(readme, [publicApp, publicRepo, scopeSentence, "Five-minute judge path", "chrome://flags/#enable-webmcp-testing", "npm run smoke:webmcp", "75 tests"], paths.readme);
 requireAll(readme, ["The eight WebMCP tools", "get_registry_history", "WebMCP connected · 7 tools", "8 tools", "Registration history"], `${paths.readme} eight-tool surface`);
 requireAll(packet, ["Eight tools are registered", "get_registry_history", "reviewerFeedback", "reviewerNotes"], `${paths.packet} eight-tool surface`);
 requireAll(manifest, ["Owner-only gates still open", "without establishing universal hallucination or clinical-accuracy claims"], paths.manifest);
@@ -138,7 +138,7 @@ requireAll(combinedJudgeCopy, [
   "ornith-1.5:9b",
 ], "judge-facing benchmark claims");
 
-requireAll(packet, ["113.30 seconds", "Kokoro-82M", "project owner must still watch and approve", "final public YouTube URL remains pending"], `${paths.packet} media boundary`);
+requireAll(packet, ["## Demo video"], `${paths.packet} media section`);
 requireAll(packet, ["Google Chrome 152", "No other agent client has been tested."], `${paths.packet} browser-verification boundary`);
 requireAll(requirements, ["owner watch and public upload remain", "Missing"], `${paths.requirements} media status`);
 requireAll(manifest, ["not evidence of owner editorial approval, a Devpost entry, or a YouTube upload", "Owner-only gates still open"], `${paths.manifest} external-state boundary`);

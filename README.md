@@ -48,7 +48,7 @@ Protocol Mirror puts the registry record — including what the registry said *f
 
 ## The eight WebMCP tools
 
-All are registered with `document.modelContext.registerTool` (falling back to `navigator.modelContext`), each with an `AbortSignal`, a closed schema (`additionalProperties: false`), and Chrome's `readOnlyHint` / `untrustedContentHint` annotations.
+All are registered with `document.modelContext.registerTool` (falling back to `navigator.modelContext`), each with an `AbortSignal` and a closed schema (`additionalProperties: false`). The six read tools declare `readOnlyHint` and `untrustedContentHint`; the staging and focus tools deliberately declare neither.
 
 | Tool | Purpose | Authority |
 | --- | --- | --- |
@@ -108,7 +108,7 @@ Identifiers are validated before interpolation; responses use a stable `{ ok, da
 ## Verify
 
 ```bash
-npm run check          # WebMCP conformance, submission packet, ESLint, 70 tests, TypeScript, production build
+npm run check          # WebMCP conformance, submission packet, ESLint, 75 tests, TypeScript, production build
 npm run smoke:webmcp   # headless Chrome 152+ drives the page's own tools through the whole loop
 ```
 

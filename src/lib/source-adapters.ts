@@ -401,7 +401,7 @@ export async function fetchRegistryHistory(rawNctId: string) {
     firstPrimaryChange: primaryChanges[0] ?? null,
     truncated: !complete,
     limitation: [
-      "Only primary outcome measures are compared across registration versions; time-frame edits are listed separately and never counted as changes. A change is a registry fact, not a judgment; it may be legitimate and pre-specified elsewhere.",
+      "Only primary outcome measures are compared across registration versions. An edit between two stated time frames is listed separately and never counted as a change; a time frame first supplied after registration is not listed. A change is a registry fact, not a judgment; it may be legitimate and pre-specified elsewhere.",
       labelsAvailable ? "" : "The registry did not label which versions changed the Outcome Measures module, so only the original and latest versions were compared.",
       !labelsAvailable || complete ? "" : `${comparedVersions.length} of ${changes.length} versions were compared; ${uncompared.length} outcome-module version${uncompared.length === 1 ? " was" : "s were"} not, so a change made and reverted between compared versions would not appear here.`,
       unreadVersions.length ? `Version${unreadVersions.length === 1 ? "" : "s"} ${unreadVersions.map((item) => item.version).join(", ")} could not be read.` : "",

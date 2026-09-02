@@ -43,7 +43,7 @@ No login, API key, or paid service. Open https://protocol-mirror.vercel.app in C
 5. Paste: *Call export_review_receipt and list its mappings, locators and audit events.* It reports `generatedFrom: "live_sources"` and cites the `history/0.` original-registration locator. Click **Undo last decision**; the receipt tool is unregistered and the header returns to 7 tools.
 6. Click **Reject** on a proposal and pick a reason, or send a line through **Note to the agent**. Paste: *Call get_audit_state and read reviewerFeedback and reviewerNotes.* Your words come back to the agent, which can revise and re-propose.
 
-Locally: `npm ci && npm run check` runs the WebMCP conformance gate, ESLint, 70 tests, TypeScript and the production build. `npm run smoke:webmcp` drives the whole loop above through `document.modelContext.getTools()` / `executeTool()` in headless Google Chrome with `--enable-features=WebMCPTesting`; it passed against a local production build and against https://protocol-mirror.vercel.app on Sep 2, 2026 with Chrome 152.0.7977.65.
+Locally: `npm ci && npm run check` runs the WebMCP conformance gate, ESLint, 75 tests, TypeScript and the production build. `npm run smoke:webmcp` drives the whole loop above through `document.modelContext.getTools()` / `executeTool()` in headless Google Chrome with `--enable-features=WebMCPTesting`; it passed against a local production build and against https://protocol-mirror.vercel.app on Sep 2, 2026 with Chrome 152.0.7977.65.
 
 ## Verified compatibility
 
@@ -51,7 +51,7 @@ The real-pair loop with registration history is verified in Google Chrome 152 wi
 
 ## Demo video
 
-The prepared local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`: 113.30 seconds, 1920×1080 H.264 at constant 60 fps, with locally generated Kokoro-82M narration (Apache-2.0 model card; provenance in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`). It is a narrated slideshow and is the fallback; a screen recording of the live loop is preferred. The project owner must still watch and approve the complete master with sound, and the final public YouTube URL remains pending. Paste-ready title, description and chapters are in `docs/YOUTUBE_METADATA.md`.
+The prepared local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`: 113.30 seconds, 1920×1080 H.264 at constant 60 fps, with locally generated Kokoro-82M narration (Apache-2.0 model card; provenance in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`).  Paste-ready title, description and chapters are in `docs/YOUTUBE_METADATA.md`.
 
 ## Screenshots
 
@@ -76,6 +76,3 @@ The prepared local candidate is `docs/demo/protocol-mirror-submission-demo.mp4`:
 
 Protocol Mirror is a research transparency aid. It is not medical advice, a clinical decision system, or a finding of research misconduct.
 
-## Owner-completed form fields
-
-The authenticated Devpost form field map, the answers that require the owner's personal choice, and the remaining external gates are in [`docs/SUBMISSION_HANDOFF.md`](docs/SUBMISSION_HANDOFF.md). The official Devpost pages and rules prevail if any requirement changes.

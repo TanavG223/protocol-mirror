@@ -109,6 +109,8 @@ export function buildLiveTrialPair(trial: LiveClinicalTrialRecord, article: Live
         complete: history.complete,
         comparedVersions: history.comparedVersions,
         unreadVersions: history.unreadVersions.map((item) => item.version),
+        outcomeModuleVersionCount: history.outcomeModuleVersions.length,
+        comparedOutcomeModuleVersions: history.outcomeModuleVersions.filter((item) => history.comparedVersions.includes(item.version)).length,
         changesBeforePublication,
         changesPossiblyBeforePublication,
         timeFrameEdits: history.timeFrameEdits ?? [],
