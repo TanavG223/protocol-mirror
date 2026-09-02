@@ -40,6 +40,7 @@ describe("ClinicalTrials.gov adapter", () => {
     }), { status: 200, headers: { "Content-Type": "application/json" } })));
 
     const result = await fetchClinicalTrial("NCT01234567");
+    expect(vi.mocked(fetch).mock.calls[0][0]).toBe("https://clinicaltrials.gov/api/v2/studies/NCT01234567?fields=protocolSection.identificationModule,protocolSection.outcomesModule");
     expect(result.outcomes).toHaveLength(2);
     expect(result.outcomes[0]).toMatchObject({ id: "registry-primary-1", role: "primary", locator: "protocolSection.outcomesModule.primaryOutcomes[0]" });
     expect(result.outcomes[1].description).toBe("No description supplied by the registry.");

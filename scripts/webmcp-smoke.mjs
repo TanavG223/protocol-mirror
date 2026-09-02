@@ -55,7 +55,8 @@ async function connect() {
         if (payload.id && pending.has(payload.id)) {
           const { resolve, reject } = pending.get(payload.id);
           pending.delete(payload.id);
-          payload.error ? reject(new Error(payload.error.message)) : resolve(payload.result);
+          if (payload.error) reject(new Error(payload.error.message));
+          else resolve(payload.result);
         } else if (payload.method) {
           events.push(payload);
         }

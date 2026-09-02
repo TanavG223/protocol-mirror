@@ -12,7 +12,7 @@ import { LIVE_PUBLICATION_LIMITATION, buildLiveTrialPair, isLivePair } from "@/l
 
 const LABELS: Record<DiscrepancyKind, string> = {
   matched: "Matched", omitted: "Omitted", downgraded: "Downgraded",
-  upgraded: "Upgraded", introduced: "Introduced", uncertain: "Needs review",
+  upgraded: "Upgraded", introduced: "Introduced", uncertain: "Uncertain",
 };
 
 /** Real, public trial/publication pairs a reviewer can load with one click, with or without an agent. */
@@ -339,19 +339,19 @@ export default function Workspace() {
     }}>Skip to comparison workspace</a>
     <header className="site-header">
       <a className="brand" href="#top" aria-label="Protocol Mirror home"><span className="brand-mark" aria-hidden="true"><span>P</span><span>M</span></span><span>Protocol Mirror</span></a>
-      <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? `WebMCP connected · ${reviewedWorkAvailable ? 7 : 6} tools` : "WebMCP preview"}</span><span className="avatar" aria-hidden="true">TG</span></div>
+      <div className="header-meta"><span className={`connection-badge ${webMcp}`} role="status"><span aria-hidden="true" />{webMcp === "connected" ? `WebMCP connected · ${reviewedWorkAvailable ? 7 : 6} tools` : "WebMCP preview"}</span></div>
     </header>
     <main id="top">
       <section className="case-header" aria-labelledby="case-title">
-        <div className="eyebrow case-reveal"><span>Case 04</span><span aria-hidden="true">/</span><span>Outcome integrity review</span></div>
-        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>AI assembles evidence.</span><span>A human decides.</span></h1><p className="case-subtitle">A WebMCP collaboration loop where an agent retrieves, compares, cites, and stages evidence—then packages the reviewed result after a human adjudicates it.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={loadDemo} disabled={live} title={live ? "Return to the demonstration case to stage the example proposals" : undefined}><Icon name="spark" /> Stage guided review</button><p>{webMcp === "connected"
-          ? <><strong>{reviewedWorkAvailable ? "7 tools" : "6 tools"}</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Agent export unlocked" : "Human decision unlocks export"}</>
+        <div className="eyebrow case-reveal"><span>Clinical-trial outcome check</span><span aria-hidden="true">/</span><span>ClinicalTrials.gov registry vs PubMed publication</span></div>
+        <div className="case-heading-row case-reveal"><div><h1 id="case-title"><span>Did the trial publish</span><span>what it registered?</span></h1><p className="case-subtitle">Load a real ClinicalTrials.gov record and its PubMed report. Your agent quotes the exact registered and reported text through WebMCP and stages each match or discrepancy for you. AI assembles evidence. A human decides.</p></div><div className="hero-action-stack"><button className="primary-action" type="button" onClick={loadDemo} disabled={live} title={live ? "Return to the demonstration case to load the example proposals" : undefined}><Icon name="spark" /> Load 4 example proposals</button><p>{webMcp === "connected"
+          ? <><strong>{reviewedWorkAvailable ? "7 tools" : "6 tools"}</strong><span aria-hidden="true">→</span>{reviewedWorkAvailable ? "Agent export unlocked" : "Your decision unlocks export"}</>
           : <><strong>WebMCP preview</strong><span aria-hidden="true">→</span>Tools appear when an agent connects</>}</p></div></div>
-        <ol className="agent-rail case-reveal" aria-label="Accountable WebMCP workflow">
-          <li><span>01</span><strong>Inspect exact spans</strong><small>Source text stays untrusted</small></li>
-          <li><span>02</span><strong>Stage a proposal</strong><small>Schema-bound and evidence-linked</small></li>
-          <li><span>03</span><strong>Human adjudicates</strong><small>The consequential decision stays human</small></li>
-          <li><span>04</span><strong>Agent packages proof</strong><small>Only reviewed work enters the receipt</small></li>
+        <ol className="agent-rail case-reveal" aria-label="How a review runs">
+          <li><span>01</span><strong>Agent reads both records</strong><small>Exact registry and abstract text, flagged as untrusted</small></li>
+          <li><span>02</span><strong>Agent proposes with citations</strong><small>Matched, omitted, introduced, or uncertain, each with quoted spans</small></li>
+          <li><span>03</span><strong>You decide</strong><small>Accept or reject in the page; no agent tool can</small></li>
+          <li><span>04</span><strong>Exports only what you approved</strong><small>The receipt tool appears after your first decision</small></li>
         </ol>
         <div className={`case-passport case-reveal ${live ? "live" : ""}`}><span>{live ? "Live public record · active case" : "Active demonstration case"}</span><h2>{activePair.title}</h2><p>{live ? "Real ClinicalTrials.gov and PubMed records · research transparency aid, not a finding" : "Deterministic fictional record · no clinical claim"}</p></div>
         <div className="source-strip" role="group" aria-label="Study sources">
@@ -388,14 +388,14 @@ export default function Workspace() {
       </section>
       <section className="reality-check" aria-labelledby="reality-check-title">
         <div className="reality-check-heading">
-          <div><p className="section-kicker">Real-world stress test</p><h2 id="reality-check-title">The same evidence produced opposite model bias.</h2></div>
-          <p>Two local models were blinded to 24 published labels and restricted to exact registry and abstract evidence. Their disagreement is the product argument: an agent may investigate, but its consequential conclusion must stay inspectable and human-decided.</p>
+          <div><p className="section-kicker">Real-world stress test</p><h2 id="reality-check-title">Two models, the same real evidence, opposite errors.</h2></div>
+          <p>Two local models were blinded to 24 published labels and restricted to the exact registry and abstract text these tools return. One over-called changes, the other missed them. That is why every proposal shows its quotes and why the final call stays with you.</p>
         </div>
         <div className="reality-metrics" aria-label="Real-world evaluation summary">
           <article><strong>24</strong><span>real NCT/PMID pairs</span><small>12 labeled change · 12 labeled no change</small></article>
-          <article><strong>48 / 48</strong><span>live WebMCP reads</span><small>172 outcomes · 106 abstract sections</small></article>
-          <article><strong>4B</strong><span>change-biased run</span><small>qwen3:4b · 100% false positives among decided no-change cases</small></article>
-          <article><strong>9B</strong><span>no-change-biased run</span><small>ornith-1.5:9b · 90.9% false negatives among decided change cases</small></article>
+          <article><strong>48 / 48</strong><span>live WebMCP reads succeeded</span><small>172 registry outcomes · 106 abstract sections</small></article>
+          <article><strong>Over-called</strong><span>qwen3:4b</span><small>Called every one of its 10 decided no-change cases a change</small></article>
+          <article><strong>Under-called</strong><span>ornith-1.5:9b</span><small>Missed 10 of its 11 decided change cases</small></article>
         </div>
         <div className="reality-footnote"><strong>Strict grounding result</strong><span>qwen3 17.9% · ornith 69.0% unsupported claims</span><span>0 authority attempts · 0 misconduct claims</span><small>Run-specific evidence—not a universal hallucination or clinical-accuracy claim.</small></div>
       </section>

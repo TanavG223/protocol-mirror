@@ -82,7 +82,7 @@ tracked_sensitive_files="$(git ls-files | grep -E '(^|/)\.env($|\.)|\.(pem|key)$
 grep -q 'document.modelContext' src/app/workspace.tsx || fail "top-level WebMCP context usage is missing"
 grep -q 'registerTool' src/app/workspace.tsx || fail "WebMCP tool registration is missing"
 grep -q 'export_review_receipt' src/app/workspace.tsx || fail "dynamic reviewed-receipt tool is missing"
-grep -q 'Agent packages proof' src/app/workspace.tsx || fail "four-step agent collaboration loop is missing"
+grep -q 'Exports only what you approved' src/app/workspace.tsx || fail "four-step agent collaboration loop is missing"
 grep -q 'MIT' LICENSE || fail "detectable MIT license text is missing"
 
 npm ci

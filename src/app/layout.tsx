@@ -15,21 +15,21 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   metadataBase: new URL("https://protocol-mirror.vercel.app"),
   applicationName: "Protocol Mirror",
-  title: "Protocol Mirror · Outcome integrity review",
+  title: "Protocol Mirror · Did the trial publish what it registered?",
   description:
-    "An accountable human-agent workspace for comparing registered clinical-trial outcomes with published reports.",
+    "Load a real ClinicalTrials.gov record and its PubMed report. Your agent quotes exact outcome text and stages discrepancies through WebMCP; you decide.",
   category: "research transparency",
   openGraph: {
     type: "website",
     url: "/",
     siteName: "Protocol Mirror",
-    title: "Protocol Mirror · Outcome integrity review",
-    description: "AI assembles auditable clinical-trial evidence. A human decides.",
+    title: "Protocol Mirror · Did the trial publish what it registered?",
+    description: "Registry vs publication review with WebMCP: the agent cites exact spans and proposes, a human decides.",
   },
   twitter: {
     card: "summary",
-    title: "Protocol Mirror · Outcome integrity review",
-    description: "AI assembles auditable clinical-trial evidence. A human decides.",
+    title: "Protocol Mirror · Did the trial publish what it registered?",
+    description: "Registry vs publication review with WebMCP: the agent cites exact spans and proposes, a human decides.",
   },
   robots: { index: true, follow: true },
 };

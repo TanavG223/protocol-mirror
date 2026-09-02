@@ -81,12 +81,15 @@ async function readBoundedText(response: Response, maxBytes: number, source: str
 
 export async function fetchClinicalTrial(rawNctId: string) {
   const nctId = parseNctId(rawNctId);
-  const response = await fetch(`https://clinicaltrials.gov/api/v2/studies/${encodeURIComponent(nctId)}`, {
+  // Project the response to the two modules this product reads. Large trials (for example
+  // NCT04368728) exceed the 2 MB safety cap when the full study record is requested.
+  const response = await fetch(`https://clinicaltrials.gov/api/v2/studies/${encodeURIComponent(nctId)}?fields=protocolSection.identificationModule,protocolSection.outcomesModule`, {
     headers: { Accept: "application/json", "User-Agent": "ProtocolMirror/0.1 research-transparency-demo" },
     next: { revalidate: 60 * 60 * 12 },
     signal: AbortSignal.timeout(8_000),
   });
   if (response.status === 404) throw new SourceAdapterError(`No ClinicalTrials.gov study was found for ${nctId}.`, 404, "not_found");
+  if (response.status === 400) throw new SourceAdapterError(`ClinicalTrials.gov rejected ${nctId} as an identifier.`, 400, "invalid_identifier");
   if (!response.ok) throw new SourceAdapterError("ClinicalTrials.gov is temporarily unavailable.", 502, "upstream_error");
   let payload: unknown;
   try {
