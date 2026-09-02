@@ -8,10 +8,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-## Protocol Mirror context routing
-
-For any non-trivial product, benchmark, security, release, or submission change, start with `.agent/README.md`. It is a small task router, not another source of truth: read only the canonical files it points to for the work in scope.
+## Protocol Mirror
 
 Preserve the product's central authority invariant: agents may retrieve, inspect, cite, stage, focus, and export reviewed work, but no agent-callable tool may accept or reject a proposal. Do not claim clinical validation, universal hallucination rates, or automatic misconduct detection.
 
-After a change, follow `.agent/sop/change-and-verify.md`. Update `.agent/` only when its routing, stable architecture summary, or SOP genuinely changes; put detailed evidence in the existing canonical benchmark and release documents.
+After a change, run `npm run check` (conformance, packet, lint, tests, build) and, for tool changes, `npm run smoke:webmcp` against a production build on port 4180.

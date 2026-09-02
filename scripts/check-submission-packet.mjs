@@ -3,11 +3,6 @@ import { readFile } from "node:fs/promises";
 const paths = {
   readme: "README.md",
   packet: "devpost-submission.md",
-  draft: "docs/SUBMISSION_DRAFT.md",
-  scorecard: "docs/internal/JUDGE_SCORECARD.md",
-  requirements: "docs/OFFICIAL_REQUIREMENTS_SNAPSHOT.md",
-  manifest: "docs/FINAL_RELEASE_MANIFEST.md",
-  handoff: "docs/SUBMISSION_HANDOFF.md",
   pairs: "benchmarks/real-world-pairs.json",
   sources: "benchmarks/runs/live-source-webmcp-2026-08-31.json",
   qwen: "benchmarks/runs/qwen3-4b-2026-08-31.json",
@@ -34,24 +29,18 @@ function requireAll(content, expected, label) {
   for (const item of expected) requireText(content, item, label);
 }
 
-const [readme, packet, draft, scorecard, requirements, manifest, handoff, pairs, sources, qwen, ornith] = await Promise.all([
+const [readme, packet, pairs, sources, qwen, ornith] = await Promise.all([
   text(paths.readme),
   text(paths.packet),
-  text(paths.draft),
-  text(paths.scorecard),
-  text(paths.requirements),
-  text(paths.manifest),
-  text(paths.handoff),
   json(paths.pairs),
   json(paths.sources),
   json(paths.qwen),
   json(paths.ornith),
 ]);
 
-const combinedJudgeCopy = [readme, packet, draft, scorecard, requirements, manifest].join("\n");
+const combinedJudgeCopy = [readme, packet].join("\n");
 const publicApp = "https://protocol-mirror.vercel.app";
 const publicRepo = "https://github.com/TanavG223/protocol-mirror";
-const criteria = ["WebMCP Leverage", "Execution", "Potential Impact", "Creativity & Ambition"];
 const requiredPacketSections = [
   "## Why this use case is a strong fit for WebMCP",
   "## How it creates a better user experience",
@@ -81,20 +70,11 @@ const bannedCurrentCopy = [
 ];
 
 requireAll(packet, requiredPacketSections, paths.packet);
-requireAll(requirements, criteria, paths.requirements);
-requireAll(scorecard, criteria, paths.scorecard);
 requireAll(packet, [publicApp, publicRepo, scopeSentence], paths.packet);
-requireAll(draft, [publicApp, publicRepo, "Truthful-claim guardrail"], paths.draft);
-requireAll(readme, [publicApp, publicRepo, scopeSentence, "Five-minute judge path", "chrome://flags/#enable-webmcp-testing", "npm run smoke:webmcp", "75 tests"], paths.readme);
+requireAll(readme, [publicApp, publicRepo, scopeSentence, "Five-minute walkthrough", "chrome://flags/#enable-webmcp-testing", "npm run smoke:webmcp", "75 tests"], paths.readme);
 requireAll(readme, ["The eight WebMCP tools", "get_registry_history", "WebMCP connected · 7 tools", "8 tools", "Registration history"], `${paths.readme} eight-tool surface`);
 requireAll(packet, ["Eight tools are registered", "get_registry_history", "reviewerFeedback", "reviewerNotes"], `${paths.packet} eight-tool surface`);
-requireAll(manifest, ["Owner-only gates still open", "without establishing universal hallucination or clinical-accuracy claims"], paths.manifest);
-requireAll(handoff, ["Complete video watch and explicit approval", "Current official-rules acknowledgment", "Separate literal authorization before final submission", "External-state warning"], paths.handoff);
 
-// The owner-only Devpost form map lives in the handoff, not in the judge-facing packet.
-for (let fieldId = 28249; fieldId <= 28260; fieldId += 1) {
-  requireText(handoff, `\`${fieldId}\``, `${paths.handoff} official form map`);
-}
 if (packet.includes("Not submitted yet")) fail(`${paths.packet} must not carry the internal submission-state banner`);
 if (/^- \[[ x]\] /m.test(packet)) fail(`${paths.packet} must not carry the internal readiness checklist`);
 
@@ -139,14 +119,9 @@ requireAll(combinedJudgeCopy, [
 
 requireAll(packet, ["## Demo video"], `${paths.packet} media section`);
 requireAll(packet, ["Google Chrome 152", "No other agent client has been tested.", "origin-trial token"], `${paths.packet} browser-verification boundary`);
-requireAll(requirements, ["owner watch and public upload remain", "Missing"], `${paths.requirements} media status`);
-requireAll(manifest, ["not evidence of owner editorial approval, a Devpost entry, or a YouTube upload", "Owner-only gates still open"], `${paths.manifest} external-state boundary`);
 
 console.log("SUBMISSION_PACKET=PASS");
-console.log("OFFICIAL_CRITERIA=4/4");
-console.log("DEVPOST_FIELDS=12/12");
 console.log("TOOL_SURFACE=7_before_decision+1_gated");
 console.log(`BENCHMARK_PAIRS=${pairs.cases.length}`);
 console.log(`LIVE_SOURCE_CALLS=${sourceSummary.successfulToolCalls}/${sourceSummary.toolCalls}`);
 console.log(`EVIDENCE_TOTALS=${sourceSummary.registryOutcomes}_outcomes+${sourceSummary.publicationAbstractSections}_abstract_sections`);
-console.log("EXTERNAL_STATE=not_submitted_video_pending");

@@ -8,7 +8,7 @@ Research transparency aid only. Not medical advice, a clinical decision system, 
 
 ![Protocol Mirror comparison workspace](docs/screenshots/01-hero.jpg)
 
-## Five-minute judge path
+## Five-minute walkthrough
 
 No account, API key, flag, or setup. Open https://protocol-mirror.vercel.app in Chrome 149 or newer: the live origin serves a Chrome WebMCP origin-trial token, verified on 2026-09-02 in Chrome 152 with no flag. (A local build is a different origin and still needs `chrome://flags/#enable-webmcp-testing`.) The ChatGPT/Codex in-app browser with site tools enabled works too. Paste the prompts into whichever agent is driving the browser: the client verified end to end is the ChatGPT/Codex desktop app's in-app browser with site tools enabled. Plain Chrome with the origin trial makes the tools visible to any WebMCP-capable agent client but does not supply one; without an agent, the badge still proves the tools registered and steps 4-6 are ordinary clicks. The header should read **WebMCP connected · 7 tools**.
 
@@ -128,7 +128,7 @@ The smoke expects Google Chrome at `/Applications/Google Chrome.app/Contents/Mac
 
 `npm run smoke:webmcp` is a dependency-free DevTools-protocol script. It launches Google Chrome headless with `--enable-features=WebMCPTesting` and calls `document.modelContext.getTools()` / `executeTool()` on the real page. It asserts: 7 initial tools; the page opening on ACTT-1 with its registration history and the original primary outcome listed first; a return to the demonstration case; agent reads of the trial, the article and the history; human promotion via a DOM click on **Review this pair**; `get_audit_state` and `get_evidence_spans` on the original primary outcome against the RESULTS section; `propose_outcome_mapping`; `request_human_review`; DOM **Accept** → 8 tools; a receipt whose `live_sources` evidence cites a `history/0.` locator; **Undo** → 7 tools; a rejection whose reason is readable in `reviewerFeedback`; a note readable in `reviewerNotes`; a reload that restores the case; **Clear session**; and a `?nct=&pmid=` deep link. It passed against the local production build and against https://protocol-mirror.vercel.app on 2026-09-02 (America/New_York) with Google Chrome 152.0.7977.65, most recently on the deployment of commit `d8de2a8`, the last change to the application code. Chromium's in-page `executeTool` passes tool input as JSON strings, so every executor accepts both objects and JSON strings.
 
-Verification records: [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md) (Chrome 152 smoke runs, the Codex in-app browser run of the earlier flow on Aug 30-31, and the Codex in-app browser run of this loop on Sep 2), [`docs/WEBMCP_CONFORMANCE.md`](docs/WEBMCP_CONFORMANCE.md), [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md), and [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.md) for the release and media procedure.
+Verification records: [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md) (Chrome 152 smoke runs, the Codex in-app browser run of the earlier flow on Aug 30-31, and the Codex in-app browser run of this loop on Sep 2), [`docs/WEBMCP_CONFORMANCE.md`](docs/WEBMCP_CONFORMANCE.md), [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md).
 
 ## Limitations
 
@@ -157,7 +157,7 @@ ClinicalTrials.gov ─┬─ record
 PubMed E-utilities ─┘
 ```
 
-Contracts in `src/lib/contracts.ts`; the fictional case in `src/lib/demo-data.ts`; live-pair and history construction in `src/lib/live-pair.ts`; pair-bound tool definitions in `src/lib/case-tools.ts`; live source tools in `src/lib/webmcp-tools.ts`; server-side parsing in `src/lib/source-adapters.ts`; registration and reviewer UI in `src/app/workspace.tsx`. Coding agents should start at [`.agent/README.md`](.agent/README.md).
+Contracts in `src/lib/contracts.ts`; the fictional case in `src/lib/demo-data.ts`; live-pair and history construction in `src/lib/live-pair.ts`; pair-bound tool definitions in `src/lib/case-tools.ts`; live source tools in `src/lib/webmcp-tools.ts`; server-side parsing in `src/lib/source-adapters.ts`; registration and reviewer UI in `src/app/workspace.tsx`.agent/README.md).
 
 ## License
 

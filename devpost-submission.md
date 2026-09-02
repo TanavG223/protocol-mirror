@@ -4,6 +4,14 @@
 
 **Live app:** https://protocol-mirror.vercel.app · **Source (MIT):** https://github.com/TanavG223/protocol-mirror
 
+## Inspiration
+
+I have always loved medicine because it combines scientific discovery with decisions that can genuinely affect people's lives. AI is also part of how I learn, research, prototype ideas, and solve problems every day. Bringing those interests together made me ask a harder question than simply, “What can an AI agent do?” In medicine-related research, how can an agent be genuinely useful without asking people to trust a confident answer they cannot inspect?
+
+That question became concrete when I looked at clinical trials. Registries record what researchers planned to measure; publications show what readers ultimately see. Editors, peer reviewers, and systematic reviewers may need to compare those records and their version histories by hand across multiple pages. It is slow, detail-heavy work, but handing the final judgment to a generic AI summary would only hide the uncertainty behind fluent language.
+
+Protocol Mirror grew from the idea that AI should remove investigative friction without removing human accountability. WebMCP lets the page give an agent precise, state-aware tools to retrieve live records, trace dated registration changes, quote exact source spans, and stage an evidence-linked proposal inside the same workspace a person reviews. The agent has no accept or reject tool. Only a human decision unlocks the final reviewed-receipt capability. I wanted to build more than another chatbot that acts for the user: I wanted to explore an interface where the tools themselves reflect who should investigate, who should decide, and why.
+
 ## Why this use case is a strong fit for WebMCP
 
 ACTT-1 registered its primary outcome on 2020-02-20: a 7-point ordinal scale at Day 15. Its NEJM report, published online 2020-10-08, presents time to recovery. The registry dated that change to a numbered version, before the paper existed.
@@ -55,7 +63,7 @@ The real-pair loop with registration history is verified in Google Chrome 152 wi
 
 ## Demo video
 
-The demo video linked in this submission's Video field is 2:08 (127.90 seconds), 1920×1080 H.264 at 60 fps, with locally generated Kokoro-82M narration (Apache-2.0 model card; provenance in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`); the same master is in the repository at `docs/demo/protocol-mirror-submission-demo.mp4` (Git LFS). Paste-ready title, description, and chapters are in `docs/YOUTUBE_METADATA.md`.
+The demo video linked in this submission's Video field is 2:08 (127.90 seconds), 1920×1080 H.264 at 60 fps, with locally generated Kokoro-82M narration (Apache-2.0 model card; provenance in `docs/demo/KOKORO_NARRATION_PROVENANCE.md`); the same master is in the repository at `docs/demo/protocol-mirror-submission-demo.mp4` (Git LFS).
 
 ## Screenshots
 
