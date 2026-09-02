@@ -114,7 +114,7 @@ npm run smoke:webmcp   # headless Chrome 152+ drives the page's own tools throug
 
 `npm run smoke:webmcp` is a dependency-free DevTools-protocol script. It launches Google Chrome headless with `--enable-features=WebMCPTesting` and calls `document.modelContext.getTools()` / `executeTool()` on the real page. It asserts: 7 initial tools; the page opening on ACTT-1 with its registration history and the original primary outcome listed first; a return to the demonstration case; agent reads of the trial, the article and the history; human promotion via a DOM click on **Review this pair**; `get_audit_state` and `get_evidence_spans` on the original primary outcome against the RESULTS section; `propose_outcome_mapping`; `request_human_review`; DOM **Accept** → 8 tools; a receipt whose `live_sources` evidence cites a `history/0.` locator; **Undo** → 7 tools; a rejection whose reason is readable in `reviewerFeedback`; a note readable in `reviewerNotes`; a reload that restores the case; **Clear session**; and a `?nct=&pmid=` deep link. It passed against the local production build and against https://protocol-mirror.vercel.app on Sep 2, 2026 with Google Chrome 152.0.7977.65 (commit d77e447). Chromium's in-page `executeTool` passes tool input as JSON strings, so every executor accepts both objects and JSON strings.
 
-Verification records: [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md) (Chrome 152 smoke runs, plus the Codex in-app browser run of the earlier flow on Aug 30-31), [`docs/WEBMCP_CONFORMANCE.md`](docs/WEBMCP_CONFORMANCE.md), [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md), and [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.md) for the release and media procedure.
+Verification records: [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION.md) (Chrome 152 smoke runs, the Codex in-app browser run of the earlier flow on Aug 30-31, and the Codex in-app browser run of this loop on Sep 2), [`docs/WEBMCP_CONFORMANCE.md`](docs/WEBMCP_CONFORMANCE.md), [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md), and [`docs/RELEASE_RUNBOOK.md`](docs/RELEASE_RUNBOOK.md) for the release and media procedure.
 
 ## Limitations
 
@@ -124,7 +124,7 @@ Verification records: [`docs/BROWSER_VERIFICATION.md`](docs/BROWSER_VERIFICATION
 - The benchmark is abstract-only, model-, prompt- and run-specific; it is not clinical validation.
 - Audit state is kept in the tab's `sessionStorage` so a reload does not lose a review: it is per tab, not persisted, not signed, and never sent anywhere.
 - No authentication; do not use with protected health information.
-- The registration-history loop is verified in Google Chrome 152 with the WebMCP flag; the Codex/ChatGPT in-app browser verification on Aug 30-31 covered the earlier flow (fictional case, live intake cards, a receipt unlocked by a human decision) and has not been run against this loop.
+- The registration-history loop is verified in Google Chrome 152 with the WebMCP flag by the smoke script, and in the Codex/ChatGPT desktop in-app browser on Sep 2, 2026 (see `docs/BROWSER_VERIFICATION.md`). Other agent clients have not been tested.
 
 ## Architecture
 

@@ -35,10 +35,11 @@ Claims allowed now:
 - Live-source reads expose loading, success, failure, and recovery to the human reviewer without converting source data or errors into reviewed findings.
 - The public challenge source is available at `https://github.com/TanavG223/protocol-mirror` under MIT terms.
 
+- On 2026-09-02 the Codex/ChatGPT desktop in-app browser (site tools enabled) ran this loop end to end: the real ACTT-1 case loaded automatically, the registration history showed 25 versions with the three dated changes, seven tools became eight after a human decision, the rejection reason reached the agent, the agent revised and re-proposed, the receipt carried live-source provenance with a `history/0…` locator, and the case survived a reload. (reported by Codex; recorded in docs/BROWSER_VERIFICATION.md)
+
 Claims not yet allowed:
 
 - Clinical or research-integrity accuracy
 - Validated detection of outcome switching
 - Performance on a representative clinical corpus beyond the documented 24-pair, abstract-limited grounding benchmark
 - Compatibility in every browser
-- Codex/ChatGPT in-app browser verification of the real-pair loop; only the earlier flow was exercised there

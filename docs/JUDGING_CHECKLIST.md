@@ -17,7 +17,7 @@ This criterion is equal-weight with the other three and is the first tie-break.
 - [x] Two-way review: a rejection reason and a reviewer note return to the agent through `get_audit_state`
 - [x] Production smoke run of the registration-history loop against https://protocol-mirror.vercel.app (2026-09-02, commit d77e447; Lighthouse desktop 100/100/100/100 the same night)
 - [x] A real ClinicalTrials.gov/PubMed pair becomes the reviewable case; pair-bound tools re-register on the new identifiers
-- [ ] Codex/ChatGPT in-app browser run of the new real-pair loop
+- [x] Codex/ChatGPT in-app browser run of the new real-pair loop (2026-09-02, run by Codex; recorded in docs/BROWSER_VERIFICATION.md)
 - [x] Both live ClinicalTrials.gov and PubMed tools exercised through the real WebMCP surface
 - [x] Agent-retrieved live records appear in the shared reviewer UI with exact source links
 - [x] Complete agent investigation → proposal → human adjudication → agent export loop exercised through real WebMCP calls

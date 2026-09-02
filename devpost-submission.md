@@ -47,7 +47,7 @@ Locally: `npm ci && npm run check` runs the WebMCP conformance gate, ESLint, 70 
 
 ## Verified compatibility
 
-The real-pair loop with registration history is verified in Google Chrome 152 with the WebMCP flag by the headless smoke script. The Codex/ChatGPT in-app browser was verified on 2026-08-30 and 08-31 against the earlier flow — the initial tool surface, both live reads rendered in the page, an agent-staged proposal, a human accept, the receipt tool unlocked by that decision, and the exported receipt — on the fictional case; that browser has not yet been run against the new real-pair loop.
+The real-pair loop with registration history is verified in Google Chrome 152 with the WebMCP flag by the headless smoke script, and in the Codex/ChatGPT desktop in-app browser with site tools enabled. On 2026-09-02 the Codex/ChatGPT desktop in-app browser (site tools enabled) ran this loop end to end: the real ACTT-1 case loaded automatically, the registration history showed 25 versions with the three dated changes, seven tools became eight after a human decision, the rejection reason reached the agent, the agent revised and re-proposed, the receipt carried live-source provenance with a `history/0…` locator, and the case survived a reload. The in-app browser had earlier (2026-08-30 and 08-31) verified the previous flow on the fictional case. No other agent client has been tested.
 
 ## Demo video
 
