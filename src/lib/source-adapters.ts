@@ -127,8 +127,12 @@ export async function fetchClinicalTrial(rawNctId: string) {
 
 const xmlParser = new XMLParser({ ignoreAttributes: false, trimValues: true, parseTagValue: false, processEntities: false });
 const asArray = <T>(value: T | T[] | undefined): T[] => value === undefined ? [] : Array.isArray(value) ? value : [value];
+// Entity processing is disabled in the parser so external entities can never be resolved; the
+// five predefined XML entities are decoded here so abstract text reads "P<0.001", not "P&lt;0.001".
+const PREDEFINED_ENTITIES: Record<string, string> = { "&lt;": "<", "&gt;": ">", "&quot;": "\"", "&apos;": "'", "&amp;": "&" };
+export const decodePredefinedEntities = (value: string) => value.replace(/&(lt|gt|quot|apos|amp);/g, (entity) => PREDEFINED_ENTITIES[entity] ?? entity);
 const text = (value: unknown): string => {
-  if (typeof value === "string") return value;
+  if (typeof value === "string") return decodePredefinedEntities(value);
   if (typeof value === "number") return String(value);
   if (value && typeof value === "object") {
     const record = value as Record<string, unknown>;

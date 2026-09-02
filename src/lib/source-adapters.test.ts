@@ -88,6 +88,15 @@ describe("PubMed adapter", () => {
     expect(result.limitation).toContain("must be proposed and reviewed");
   });
 
+  it("decodes the predefined XML entities in abstract text without enabling entity expansion", async () => {
+    const xml = `<?xml version="1.0"?><PubmedArticleSet><PubmedArticle><MedlineCitation><Article><ArticleTitle>Entities &amp; markup</ArticleTitle><Abstract><AbstractText Label="RESULTS">rate ratio 1.29; P&lt;0.001 &quot;log-rank&quot;</AbstractText></Abstract></Article></MedlineCitation></PubmedArticle></PubmedArticleSet>`;
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(xml, { status: 200, headers: { "Content-Type": "application/xml" } })));
+
+    const result = await fetchPubMedArticle("12345678");
+    expect(result.title).toBe("Entities & markup");
+    expect(result.abstractSections[0].text).toBe('rate ratio 1.29; P<0.001 "log-rank"');
+  });
+
   it("rejects oversized PubMed responses before parsing XML", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("<PubmedArticleSet />", {
       status: 200,

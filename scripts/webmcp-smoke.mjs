@@ -35,7 +35,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const profile = mkdtempSync(join(tmpdir(), "protocol-mirror-smoke-"));
 const chrome = spawn(chromePath, [
   "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
-  "--enable-features=WebMCPTesting", `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`,
+  "--enable-features=WebMCPTesting", "--force-prefers-reduced-motion", `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`,
   "--window-size=1280,900", "about:blank",
 ], { stdio: "ignore" });
 
@@ -95,10 +95,10 @@ async function waitFor(expression, description, timeoutMs = 15000) {
 
 const shotDir = args.screenshots;
 if (shotDir) mkdirSync(shotDir, { recursive: true });
-async function snap(name, viewportHeight = 900) {
+async function snap(name, viewportHeight = 900, width = 1280) {
   if (!shotDir) return;
-  await send("Emulation.setDeviceMetricsOverride", { width: 1280, height: viewportHeight, deviceScaleFactor: 1, mobile: false }, session);
-  await sleep(250);
+  await send("Emulation.setDeviceMetricsOverride", { width, height: viewportHeight, deviceScaleFactor: 1, mobile: width < 700 }, session);
+  await sleep(700);
   const { data } = await send("Page.captureScreenshot", { format: "png" }, session);
   writeFileSync(join(shotDir, `${name}.png`), Buffer.from(data, "base64"));
   log(`screenshot ${name}.png`);
@@ -163,6 +163,8 @@ try {
   if (!(await evaluate(badgeText)).includes("6 tools")) fail("badge does not report 6 tools");
   await evaluate("window.scrollTo(0, 0)");
   await snap("01-hero-connected", 720);
+  await snap("05-mobile", 844, 390);
+  await send("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false }, session);
 
   const trial = await evaluate(`window.__pm.call("get_live_clinical_trial", { nctId: ${JSON.stringify(nctId)} })`);
   const article = await evaluate(`window.__pm.call("get_live_pubmed_article", { pmid: ${JSON.stringify(pmid)} })`);
@@ -176,7 +178,7 @@ try {
   await waitFor(clickText("Review this pair"), "the Review this pair button");
   await waitFor(`[...document.querySelectorAll('section[aria-labelledby="registered-title"] .outcome-list h4')].some((node) => node.textContent.includes("Time to Recovery"))`, "the real registry outcomes to render");
   log("human promoted the live pair; registry column shows the real primary outcome");
-  await evaluate(`document.getElementById("workspace-title")?.scrollIntoView({ block: "start" })`);
+  await evaluate(`document.getElementById("workspace-title")?.scrollIntoView({ block: "start", behavior: "instant" })`);
   await snap("02-live-pair-comparison", 900);
 
   const state = await evaluate(`window.__pm.call("get_audit_state")`);
@@ -199,6 +201,8 @@ try {
   if ((await evaluate(`window.__pm.refresh()`)).includes("export_review_receipt")) fail("the receipt tool must not exist before a human decision");
   log(`proposal ${proposal.mapping.id} staged and focused; no accept/reject tool exists for the agent`);
   await snap("03-review-queue-live-proposal", 900);
+  await evaluate(`document.querySelector("#evidence-drawer")?.scrollIntoView({ block: "start", behavior: "instant" })`);
+  await snap("06-evidence-drawer", 900);
 
   await waitFor(`(() => { const accept = document.querySelector(".review-card.active .review-actions .accept"); if (!accept || accept.disabled) return false; accept.click(); return true; })()`, "an enabled Accept button on the active proposal");
   await waitFor(`${badgeText}.includes("7 tools")`, "the badge to report 7 tools");
@@ -210,11 +214,9 @@ try {
   log(`receipt ok: ${receipt.generatedFrom}; locators ${receipt.evidence.map((span) => span.locator).join(" | ")}`);
   await evaluate("window.scrollTo(0, 0)");
   await snap("04-seven-tools-after-decision", 720);
-  await evaluate(`document.querySelector(".activity-log")?.scrollIntoView({ block: "start" })`);
+  await evaluate(`document.querySelector(".activity-log")?.scrollIntoView({ block: "start", behavior: "instant" })`);
   await snap("05-session-log", 900);
-  await evaluate(`document.querySelector("#evidence-drawer")?.scrollIntoView({ block: "start" })`);
-  await snap("06-evidence-drawer", 900);
-  await evaluate(`document.querySelector(".reality-check")?.scrollIntoView({ block: "start" })`);
+  await evaluate(`document.querySelector(".reality-check")?.scrollIntoView({ block: "start", behavior: "instant" })`);
   await snap("07-benchmark", 900);
 
   await waitFor(clickText("Undo last decision"), "the Undo button");
